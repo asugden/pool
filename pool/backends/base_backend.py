@@ -330,13 +330,13 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         """
         out = []
         fpath = os.path.join(
-            os.path.dirname(__file__), '..', '..', 'analyses')
+            os.path.dirname(__file__), '..', 'analyses')
         if os.path.exists(fpath):
             files = os.listdir(fpath)
             for f in files:
                 if f[-3:] == '.py' and f[0] != '_':
                     module = import_module(
-                        '.analyses.%s' % (f[:-3]), package='replay.lib')
+                        '.analyses.%s' % (f[:-3]), package='pool')
                     out.extend(self._screenanalyzer(module))
         return out
 
