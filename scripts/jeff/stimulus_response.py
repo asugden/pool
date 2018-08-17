@@ -3,11 +3,11 @@ import matplotlib.pyplot as plt
 import os
 from sys import argv
 
-from replay.plotting import stimulus_plotting as sp
+from pool.plotting import stimulus_plotting as sp
 
 import flow
 from flow.misc import misc
-from flow.classes import sorters
+from flow.classes import DateSorter
 
 
 def parse_args_orig():
@@ -74,7 +74,8 @@ def generate_figs(sorter, lpars):
     """Do the real plotting."""
     # db = analysis.db()
     fig, ax = plt.subplots()
-    sp.stimulus_mean_response(ax, sorter)
+    for date in sorter:
+        sp.stimulus_mean_response(ax, date)
     return []
 
 
@@ -86,9 +87,8 @@ def main():
     lpars = parse_args()
     # sorter = sorters.RunSorter.frommice(
     #     [lpars['mouse']], spontaneous=True, training=True)
-    sorter = sorters.DateSorter.frommice(
+    sorter = DateSorter.frommice(
         [lpars['mouse']])
-    from pudb import set_trace; set_trace()
     figs = generate_figs(sorter, lpars)
     from pudb import set_trace; set_trace()
     save_pdf(figs, save_path, days, lpars)
