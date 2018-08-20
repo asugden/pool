@@ -142,7 +142,7 @@ def colors(clr=None):
 
     """
     p = params()
-    if colors is None:
+    if clr is None:
         return p['colors']
     else:
         return p['colors'].get(clr, '#7C7C7C')
