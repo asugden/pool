@@ -55,6 +55,9 @@ def parse_args():
     arg_parser.add_argument(
         "-m", "--mouse", action="store",
         help="Mice to analyze")
+    arg_parser.add_argument(
+        "-t", "--trace_type", action="store", default="dff",
+        help="Trace type to plot.")
 
     args = arg_parser.parse_args()
 
@@ -65,23 +68,23 @@ def parse_args():
 
 def save_pdf(figs, save_path, days, lpars):
     """Save figs to a pdf."""
-    header_fig = misc.summary_page(days, lpars)
-    figs.insert(0, header_fig)
+    # header_fig = misc.summary_page(days, lpars)
+    # figs.insert(0, header_fig)
     misc.save_figs(save_path, figs)
 
 
-def generate_figs(sorter, lpars):
+def generate_fig(sorter, lpars):
     """Do the real plotting."""
-    # db = analysis.db()
-    fig, ax = plt.subplots()
-    for date in sorter:
-        sp.stimulus_mean_response(ax, date)
-    return []
+    fig, axs = misc.layout_subplots(
+        len(sorter), width=16, height=9, sharey=True, sharex=True)
+    for date, ax in zip(sorter, axs.flat):
+        sp.stimulus_mean_response(ax, date, plot_all=False, trace_type=lpars['trace_type'])
+    return fig
 
 
 def main():
     """Main function."""
-    filename = 'stimulus_response_{}.pdf'.format(misc.timestamp())
+    filename = 'stimulus_response_{}.pdf'.format(misc.datestamp())
     save_path = os.path.join(
         flow.paths.graphd, 'stimulus_response', filename)
     lpars = parse_args()
@@ -89,9 +92,8 @@ def main():
     #     [lpars['mouse']], spontaneous=True, training=True)
     sorter = DateSorter.frommice(
         [lpars['mouse']])
-    figs = generate_figs(sorter, lpars)
-    from pudb import set_trace; set_trace()
-    save_pdf(figs, save_path, days, lpars)
+    fig = generate_fig(sorter, lpars)
+    save_pdf([fig], save_path, sorter, lpars)
     print(save_path)
 
 
