@@ -114,7 +114,10 @@ class SortOrder(object):
             else:
                 borders[cses[::-1][i]] = -1
 
-        borders['inhibited'] = groups.index(-1)
+        try:
+            borders['inhibited'] = groups.index(-1)
+        except ValueError:
+            borders['inhibited'] = -1
 
         return (cells[::-1], borders)
 
