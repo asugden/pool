@@ -7,8 +7,8 @@ import os.path as opath
 from scipy.stats import norm
 
 from flow import config, events, graphfns, paths
+from flow.classifier import classify
 from flow.misc import colors
-from replay.lib import classify
 
 import pool
 
