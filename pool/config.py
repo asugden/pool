@@ -82,6 +82,8 @@ def params(reload_=False):
 def reconfigure():
     """Re-set user-configurable parameters."""
     config_path = _find_config()
+    if config_path is None:
+        config_path = _initialize_config()
 
     print("Reconfiguring pool: {}".format(config_path))
     with open(config_path, 'r') as f:
