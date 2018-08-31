@@ -12,6 +12,7 @@ CONFIG_PATHS = [
     os.environ.get("POOL_CONF"),
 ]
 
+_stimuli = ['plus', 'neutral', 'minus']
 
 _colors = {
     'plus': '#47D1A8',  # mint
@@ -150,6 +151,13 @@ def colors(clr=None):
         return p['colors'].get(clr, '#7C7C7C')
 
 
+def stimuli():
+    """Return the default stimuli."""
+
+    p = params()
+    return p._stimuli
+
+
 def _load_config():
     global _settings, _colors
     config_path = _find_config()
@@ -159,7 +167,7 @@ def _load_config():
         print("Run `import pool.config as cfg; cfg.reconfigure()` to update.")
     with open(config_path, 'r') as f:
         loaded_config = json.load(f)
-        config = {'colors': copy.copy(_colors)}
+        config = {'colors': copy.copy(_colors), 'stimuli': copy.copy(_stimuli)}
         for key in loaded_config:
             # Just add keys in the config file other than 'colors'
             if key not in config:
