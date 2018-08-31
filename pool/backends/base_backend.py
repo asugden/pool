@@ -177,14 +177,12 @@ class BackendBase(with_metaclass(ABCMeta, object)):
             print('\tupdating analysis...', c)
 
             # Inject methods
-            setattr(c, 'trace2p', gdf.trace2p)
-            setattr(c, 'classifier', gdf.classifier)
             setattr(c, 'pars', pars)
             setattr(c, 'analysis', ga.analyze)
             setattr(c, 'andb', self)
             c.__init__(mdr)
 
-            out = c.get()
+            out = c._get()
             # for key, value in out.iteritems():
             #     key_keys = check_dependencies(out, keys)
             #     self.store(key, value, key_keys)
@@ -269,14 +267,12 @@ class BackendBase(with_metaclass(ABCMeta, object)):
 
                         co = object.__new__(c)
                         # Inject methods
-                        setattr(co, 'trace2p', gdf.trace2p)
-                        setattr(co, 'classifier', gdf.classifier)
                         setattr(co, 'pars', pars)
                         setattr(co, 'analysis', ga.analyze)
                         setattr(c, 'andb', self)
                         co.__init__(mdr)
 
-                        out = co.get()
+                        out = co._get()
                         self.store_all(out, keys, self.deps)
                         # for name in out:
                         #     self.dbrs[mouse]['%s-%s' % (key, name)] = out[name]
