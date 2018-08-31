@@ -25,9 +25,6 @@ def stimulus_mean_response(
         Time after stim to include, in seconds.
     trace_type : {'dff', 'raw', 'deconvolved'}
         Type of trace to plot.
-
-    Other parameters
-    ----------------
     **kwargs
         Additional keyword arguments are passed to t2p.cstraces().
 
