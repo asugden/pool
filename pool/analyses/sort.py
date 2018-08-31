@@ -6,10 +6,47 @@
 import math
 import numpy as np
 
-class SortOrder(object):
-    def __init__(self, data):
-        self.out = {}
-        self.analyze(data)
+from . import base
+
+class Sort(base.AnalysisBase):
+    def run(self, mouse, date, training, running, sated, hungry):
+        """
+        Run all analyses and returns results in a dictionary.
+
+        Parameters
+        ----------
+        mouse : str
+            mouse name
+        date : str
+            current date
+        training : list of ints
+            list of training run numbers as integers
+        running : list of ints
+            list of running-only run numbers as integers
+        sated : list of ints
+            list of sated spontaneous run numbers as integers
+        hungry : list of ints
+            list of hungry spontaneous run numbers as integers
+
+        Returns
+        -------
+        dict
+            All of the output values
+
+        """
+
+        out = {}
+
+        dffs = {}
+        for cs in config.stimuli():
+            stim = self.analysis('stim_%s' % cs)
+            dffs[cs] = np.copy(stim) if stim is not None else None
+            if np.sum(np.invert(np.isfinite(dffs[cs]))) > 4:
+                stim = self.analysis('stim_all_%s' % cs)
+                dffs[cs] = np.copy(stim) if stim is not None else None
+
+        out['sort_order'], self.out['sort_borders'] = self.simple(dffs, config.stimuli())
+        return out
 
 
     # ================================================================================== #
@@ -21,86 +58,49 @@ class SortOrder(object):
     #	classifier: whether a classifier will be required or not
 
     requires = []
-    sets = ['sort-order', 'sort-borders', 'sort-simple', 'sort-simple-borders']
+    sets = ['sort_order', 'sort_borders']
     across = 'day'
-    updated = '180131'
-
-    # def trace2p(self, run):
-    # 	"""
-    # 	Return trace2p file, automatically injected
-    # 	:param run: run number, int
-    # 	:return: trace2p instance
-    # 	"""
-
-    # def classifier(self, run, randomize=''):
-    # 	"""
-    # 	Return classifier (forced to be created if it doesn't exist), automatically injected
-    # 	:param run: run number, int
-    # 	:param randomize: randomization type, optional
-    # 	:return:
-    # 	"""
-
-    # pars = {}  # dict of parameters, automatically injected
-
-    def get(self):
-        """
-        Required function
-        :return: must return dict of outputs
-        """
-        return self.out
+    updated = '180831'
 
     # ================================================================================== #
     # ANYTHING YOU NEED
 
-    def group(self, data):
-        possiblecses = ['plus', 'neutral', 'minus', 'disengaged1', 'disengaged2']
-        cses = [cs for cs in possiblecses if cs in data]
+    @staticmethod
+    def simple(dffs, preferred_order):
+        """
+        Return a simple sort based on preferred response category
+        with an inhibited cell category at the end
+
+        Parameters
+        ----------
+        dffs : dict
+            dict by stimulus of numpy arrays of ncells
+        preferred_order : list
+            list of the preferred order of stimuli
+
+        Returns
+        -------
+        list, dict
+            Sorted list and the borders of between each category
+        """
+
+        cses = [cs for cs in preferred_order if cs in dffs]
 
         order = []
-        for cell in range(len(data[cses[0]])):
+        for cell in range(len(dffs[cses[0]])):
             mxcs = -1
             absmx = 0
             mx = 0
             for i, cs in enumerate(cses[::-1]):
-                if data[cs][cell] == np.nan: data[cs][cell] = 0
-                if np.isfinite(data[cs][cell]) and (mxcs < 0 or np.abs(data[cs][cell]) > absmx):
+                if not np.isfinite(dffs[cs][cell]):
+                    dffs[cs][cell] = 0
+
+                if dffs[cs][cell] > 0 and np.abs(dffs[cs][cell]) > absmx:
                     mxcs = i
-                    mx = data[cs][cell]
-                    absmx = np.abs(mx)
-
-            order.append((mxcs, mx, cell))
-        order.sort(reverse=True)
-
-        groups = [g[0] for g in order]
-        cells = [c[2] for c in order]
-        borders = {}
-        for i in range(len(cses)):
-            if i in groups:
-                borders[cses[::-1][i]] = groups.index(i)
-            else:
-                borders[cses[::-1][i]] = -1
-
-        return (cells[::-1], borders)
-
-    def simple(self, data):
-        possiblecses = ['plus', 'neutral', 'minus']
-        cses = [cs for cs in possiblecses if cs in data]
-
-        order = []
-        for cell in range(len(data[cses[0]])):
-            mxcs = -1
-            absmx = 0
-            mx = 0
-            for i, cs in enumerate(cses[::-1]):
-                if not np.isfinite(data[cs][cell]):
-                    data[cs][cell] = 0
-
-                if data[cs][cell] > 0 and np.abs(data[cs][cell]) > absmx:
-                    mxcs = i
-                    mx = data[cs][cell]
+                    mx = dffs[cs][cell]
                     absmx = np.abs(mx)
                 elif i == 0:
-                    mx = data[cs][cell]
+                    mx = dffs[cs][cell]
 
             order.append((mxcs, mx, cell))
         order.sort(reverse=True)
@@ -119,101 +119,4 @@ class SortOrder(object):
         except ValueError:
             borders['inhibited'] = -1
 
-        return (cells[::-1], borders)
-
-    def cslatency(self, stimdrive, peaktime, dff):
-        """
-        Set the sort order for latency for a specific cs
-        :param cs: stimulus
-        :return:
-        """
-
-        if stimdrive is None or peaktime is None or dff is None: return None
-
-        ncells = len(dff)
-        order = []
-        for cell in range(ncells):
-            if stimdrive[cell] > 0:
-                order.append((0, peaktime[cell], cell))
-            else:
-                order.append((1, dff[cell], cell))
-        order.sort()
-        return np.array([cell[2] for cell in order])
-
-    def latency(self, dff, sig, peak):
-        """
-        Get the latency sort across groups
-        :param dff:
-        :return:
-        """
-
-        possiblecses = ['plus', 'neutral', 'minus']
-        cses = [cs for cs in possiblecses if cs in peak and peak[cs] is not None]
-
-        order = []
-        for cell in range(len(dff[cses[0]])):
-            mxcs, sigcs = -1, -1
-            mx, absmx = 0, 0
-            siglat, sigabsmx = 0, 0
-
-            for i, cs in enumerate(cses):
-                if dff[cs][cell] == np.nan: dff[cs][cell] = 0
-                if sig[cs][cell] == np.nan: sig[cs][cell] = 0
-                if peak[cs][cell] == np.nan: sig[cs][cell] = 0
-
-                if sig[cs][cell] > 0:
-                    if sigcs < 0 or np.abs(dff[cs][cell]) > sigabsmx:
-                        sigcs = i
-                        siglat = peak[cs][cell]
-                        sigabsmx = dff[cs][cell]
-                else:
-                    if mxcs < 0 or np.abs(dff[cs][cell]) > absmx:
-                        mxcs = i
-                        mx = dff[cs][cell]
-                        absmx = np.abs(mx)
-
-            if sigcs > -1:
-                order.append((sigcs, siglat, cell))
-            else:
-                order.append((mxcs + len(cses), -mx, cell))
-        order.sort()
-
-        groups = [g[0] for g in order]
-        cells = [c[2] for c in order][::-1]
-        borders = {}
-        for i in range(len(cses)):
-            if i in groups:
-                borders[cses[i]] = groups.index(i)
-
-            if len(cses) + i in groups:
-                borders['%s-2'%cses[i]] = groups.index(len(cses)+i)
-
-        return (cells, borders)
-
-    def copyifnotnone(self, val):
-        """
-        Copy if not None, otherwise return None
-        :param val: any possible numpy value or None
-        :return: copy of val or None
-        """
-
-        if val is None: return None
-        else: return np.copy(val)
-
-    def analyze(self, data):
-        dffs = {}
-        sig = {}
-        peak = {}
-
-        for cs in ['plus', 'neutral', 'minus', 'disengaged1', 'disengaged2']:
-            dffs[cs] = self.copyifnotnone(self.analysis('stimulus-dff-0-2-%s'%cs))
-            if np.sum(np.invert(np.isfinite(dffs[cs]))) > 4:
-                dffs[cs] = self.copyifnotnone(self.analysis('stimulus-dff-all-0-2-%s'%cs))
-
-            # sig[cs] = self.copyifnotnone(self.analysis('stimulus-drive-%s'%cs))
-            # peak[cs] = self.copyifnotnone(self.analysis('peak-time-%s'%cs))
-
-            # self.out['sort-latency-%s'%cs] = self.cslatency(sig[cs], peak[cs], dffs[cs])
-        self.out['sort-order'], self.out['sort-borders'] = self.group(dffs)
-        self.out['sort-simple'], self.out['sort-simple-borders'] = self.simple(dffs)
-        # self.out['sort-latency'], self.out['sort-latency-borders'] = self.latency(dffs, sig, peak)
+        return cells[::-1], borders
