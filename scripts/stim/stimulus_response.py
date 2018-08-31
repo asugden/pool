@@ -36,7 +36,7 @@ def parse_args_orig():
     from pudb import set_trace; set_trace()
 
 
-def parse_args():
+def parse_args_orig2():
     defaults = {
         'graph': 'stimulus',
         'sort': '',  # Analysis upon which to sort
@@ -65,6 +65,33 @@ def parse_args():
 
     return lpars
 
+def parse_args():
+    arg_parser = misc.default_parser(
+        description="""
+        Script to plot mean stimulus response over days.""",
+        epilog="""
+        This is the epilog.
+        """)
+    arg_parser.add_argument(
+        "-t", "--trace_type", choices=('dff', ), default="dff",
+        help="Trace type to plot.")
+    arg_parser.add_argument(
+        "-T", "--t_range_ms", nargs=2, type=int, default=(-1000, 8000),
+        help="Time range around stimulus to plot.")
+    arg_parser.add_argument(
+        "-b", "--baseline", nargs=2, type=int, default=(-1000, 0),
+        help='Baseline used for dFF trace.')
+    arg_parser.add_argument(
+        "-e", "--error_trials", choices=(-1, 0, 1, 2), type=int, default=-1,
+        help="-1 is off, 0 is correct trials, 1 is error trials, 2 is diff of error trials.")
+    arg_parser.add_argument(
+        "-H", "--hungry_sated", choices=(0, 1, 2), type=int, default=0,
+        help="0 is hungry trials, 1 is sated trials, 2 is hungry-sated")
+
+    args = arg_parser.parse_args()
+
+    from pudb import set_trace; set_trace()
+    return args
 
 def save_pdf(figs, save_path, days, lpars):
     """Save figs to a pdf."""
