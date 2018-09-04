@@ -76,7 +76,7 @@ class Stim(base.AnalysisBase):
         trs = []
         for r in runs:
             with warnings.catch_warnings():
-                cstrs = self.trace2p(r).cstraces(cs, None, trange[0], trange[1],
+                cstrs = self.trace2p(r).cstraces(cs, trange[0], trange[1],
                                                  ttype, lick, err, bl)
 
                 warnings.simplefilter('ignore', category=RuntimeWarning)
@@ -87,7 +87,7 @@ class Stim(base.AnalysisBase):
                     trs = np.concatenate([trs, np.nanmean(cstrs, axis=1)], axis=1)
 
                 if trange[1] <= 2 and cs == 'plus':
-                    pav = self.trace2p(r).cstraces('pavlovian', None, trange[0], trange[1],
+                    pav = self.trace2p(r).cstraces('pavlovian', trange[0], trange[1],
                                                    ttype, lick, err, bl)
                     trs = np.concatenate([trs, np.nanmean(pav, axis=1)], axis=1)
 
