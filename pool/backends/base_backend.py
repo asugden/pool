@@ -44,6 +44,8 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         database backends.
 
         """
+        if dependencies is None:
+            dependencies = {}
         for key, val in data_dict.iteritems():
             self.store(key, val, keys, dependencies.get(key, {}))
 
@@ -85,15 +87,16 @@ class BackendBase(with_metaclass(ABCMeta, object)):
             return None
 
     def md(self, mouse, date=-1):
-        """
-        Set the mouse and date for indexing as a dict
+        """Set the mouse and date for indexing as a dict.
+
         :param mouse: mouse name, str or list of inputs
         :param date: date, str or int
         :return:
-        """
 
+        """
         # The output of sortedruns and sorteddays is a metadata list, account for this
-        if (isinstance(mouse, list) or isinstance(mouse, tuple))and len(mouse) > 1:
+        if (isinstance(mouse, list) or isinstance(mouse, tuple)) and \
+                len(mouse) > 1:
             date = mouse[1]
             mouse = mouse[0]
 
