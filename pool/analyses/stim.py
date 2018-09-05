@@ -6,6 +6,8 @@ import numpy as np
 import warnings
 
 from . import base
+from pool import config
+
 
 class Stim(base.AnalysisBase):
     def run(self, mouse, date, training, running, sated, hungry):
