@@ -7,8 +7,8 @@ from importlib import import_module
 import numpy as np
 from copy import deepcopy
 
-from flow import metadata, parseargv, paths
-
+from flow import metadata, paths
+import flow.config
 
 class BackendBase(with_metaclass(ABCMeta, object)):
     def __init__(self, **kwargs):
@@ -159,7 +159,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
 
         # Add the classifier name if possible, can use passed pars to generate name
         if 'classifier' in an['requires']:
-            pars = parseargv.parsekv(['-mouse', mouse, '-date', '%i' % (date)])
+            pars = default_parameters(mouse, date)
             keys['classifier_word'] = paths.classifierword(pars)
 
         keys['updated'] = an['updated']
@@ -170,10 +170,8 @@ class BackendBase(with_metaclass(ABCMeta, object)):
             mdr['spontaneous'], mdr['run'] = md, run
             mdr['hungry'], mdr['sated'] = metadata.hungrysated(mouse, date)
             if 'classifier' not in an['requires']:
-                pars = parseargv.parsekv(
-                    ['-mouse', mouse, '-date', '%i' % (date)])
+                pars = default_parameters(mouse, date)
 
-            gdf = GetDateFiles(pars)
             ga = GetAnalysis(self, mouse, date, run)
             c = object.__new__(an['class'])
 
@@ -224,8 +222,6 @@ class BackendBase(with_metaclass(ABCMeta, object)):
 
             self._indmouse, self._inddate = mouse, date
 
-            pars = parseargv.parsekv(['-mouse', mouse, '-date', '%i' % (date)])
-            gdf = GetDateFiles(pars)
             ga = GetAnalysis(self, mouse, date, -1)
 
             for c in self.clans:
@@ -377,51 +373,6 @@ def keyname(analysis, keys):
         return keyname
 
 
-class GetDateFiles():
-    def __init__(self, pars, force=True):
-        """
-        A class that holds loaded trace2p and classifier files so that they can be reused between analyses. Loads only
-        upon necessity.
-        :param pars: parameters dict, from settings
-        """
-
-        self.t2ps = {}
-        self.classifiers = {}
-        self.pars = pars
-        self.mouse = pars['mouse']
-        self.date = pars['comparison-date']
-        self.force = force
-
-    def trace2p(self, run):
-        """
-        Get trace2p file
-        :param run: run number, int
-        :return: t2p instance
-        """
-
-        if run not in self.t2ps:
-            self.t2ps[run] = paths.gett2p(self.mouse, self.date, run)
-        return self.t2ps[run]
-
-    def classifier(self, run, randomize='', n=1):
-        """
-        Get classifier output
-        :param run: run number, int
-        :return: classifier dict
-        """
-        if n <= 1 and len(randomize) == 0:
-            if run not in self.classifiers:
-                self.pars['comparison-run'] = run
-                self.classifiers[run] = parseargv.classifier(
-                    self.pars, randomize, force=self.force)
-            return self.classifiers[run]
-        elif n <= 1:
-            return parseargv.classifier(self.pars, randomize, force=self.force)
-        else:
-            self.pars['comparison-run'] = run
-            return parseargv.classifiers(self.pars, randomize, n)
-
-
 class GetAnalysis():
     def __init__(self, andb, mouse, date, run=-1):
         """
@@ -447,3 +398,21 @@ class GetAnalysis():
         # This is specific to the Shelve backend, need to see if it can be removed.
         self.db.save(closedb=False)
         return self.db.get(name, self.mouse, self.date, self.run)
+
+
+def default_parameters(mouse, date):
+    """
+    Parse command-line arguments and return.
+    """
+
+    pars = flow.config.default()
+    pars['mouse'] = mouse
+    pars['training-date'] = str(date)
+    pars['comparison-date'] = str(date)
+
+    # TODO: extract training runs and training other running runs
+    # df = metadata.dataframe(mice=mouse, dates=date)
+    # pars['training-runs'] = training_runs_somehow
+    # pars['training-other-running-runs'] = training_other_somehow
+
+    return pars
