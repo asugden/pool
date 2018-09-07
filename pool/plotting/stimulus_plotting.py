@@ -46,10 +46,10 @@ def stimulus_mean_response(
             ylabel = 'Raw fluorescence'
 
     responses = {}
-    runs = date.runs(runtypes=['train', 'spontaneous'])
-    framerate = runs[0].t2p.framerate
+    runs = date.runs(run_types=['training', 'spontaneous'])
+    framerate = runs[0].trace2p().framerate
     for run in runs:
-        t2p = run.t2p
+        t2p = run.trace2p()
         assert t2p.framerate == framerate
         for cs in cses:
             traces = t2p.cstraces(

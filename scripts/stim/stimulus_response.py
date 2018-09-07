@@ -6,8 +6,8 @@ from sys import argv
 from pool.plotting import stimulus_plotting as sp
 
 import flow
-from flow.misc import misc
-from flow.classes import DateSorter
+from flow import misc
+from flow.metadata2 import DateSorter
 
 
 def parse_args_orig():
@@ -36,47 +36,18 @@ def parse_args_orig():
     from pudb import set_trace; set_trace()
 
 
-def parse_args_orig2():
-    defaults = {
-        'graph': 'stimulus',
-        'sort': '',  # Analysis upon which to sort
-        # 'analyses': [],  # Analyses to display along right side
-        'color-max': 'auto',
-        'trace-type': 'dff',
-        # 'trange-ms': (-1000, 8000),
-        # 'baseline-ms': (-1000, 0),
-        'display': 'dff',
-        'remove-licking': False,
-        'error-trials': -1,  # -1 is off, 0 is correct trials, 1 is error trials, 2 is diff of error trials
-        'hungry-sated': 0,  # 0 is hungry trials, 1 is sated trials, 2 is hungry-sated
-    }
-
-    arg_parser = misc.smart_parser()
-    arg_parser.add_argument(
-        "-m", "--mouse", action="store",
-        help="Mice to analyze")
-    arg_parser.add_argument(
-        "-t", "--trace_type", action="store", default="dff",
-        help="Trace type to plot.")
-
-    args = arg_parser.parse_args()
-
-    lpars = flow.parseargv.parseargs(args, defaults)
-
-    return lpars
-
 def parse_args():
     arg_parser = misc.default_parser(
         description="""
         Script to plot mean stimulus response over days.""",
         epilog="""
         This is the epilog.
-        """, arguments=('mouse',))
+        """, arguments=('mouse', 'tags'))
     arg_parser.add_argument(
-        "-t", "--trace_type", choices=('dff', 'deconvolved', 'raw'), default="dff",
+        "-T", "--trace_type", choices=('dff', 'deconvolved', 'raw'), default="dff",
         help="Trace type to plot.")
     arg_parser.add_argument(
-        "-T", "--t_range_s", nargs=2, type=int, default=(-1, 8),
+        "-R", "--t_range_s", nargs=2, type=int, default=(-1, 8),
         help="Time range around stimulus to plot.")
     arg_parser.add_argument(
         "-b", "--baseline", nargs=2, type=int, default=None,
@@ -118,8 +89,8 @@ def main():
     save_path = os.path.join(
         flow.paths.graphd, 'stimulus_response', filename)
     args = parse_args()
-    sorter = DateSorter.frommice(
-        [args.mouse])
+    sorter = DateSorter.frommeta(
+        mice=args.mouse, tags=args.tags)
     fig = generate_fig(
         sorter, args.trace_type, args.t_range_s, args.error_trials,
         args.baseline)
@@ -130,4 +101,3 @@ def main():
 if __name__ == '__main__':
     main()
     # parse_args()
-    # parse_args_orig()
