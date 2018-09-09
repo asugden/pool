@@ -7,14 +7,6 @@ class MemoryBackend(BackendBase):
         """Initialization steps customizable by subclasses."""
         self._data = {}
 
-    def save(self):
-        """Save all updated databases.
-
-        Required by some backends.
-
-        """
-        pass
-
     def store(self, analysis_name, data, keys, dependents=None):
         """Store a value from running an analysis in the data store."""
         self._data[keyname(analysis_name, keys)] = data
