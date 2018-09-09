@@ -42,7 +42,7 @@ def parse_args():
         Script to plot mean stimulus response over days.""",
         epilog="""
         This is the epilog.
-        """, arguments=('mouse', 'tags'))
+        """, arguments=('mice', 'tags'))
     arg_parser.add_argument(
         "-T", "--trace_type", choices=('dff', 'deconvolved', 'raw'), default="dff",
         help="Trace type to plot.")
@@ -90,7 +90,7 @@ def main():
         flow.paths.graphd, 'stimulus_response', filename)
     args = parse_args()
     sorter = DateSorter.frommeta(
-        mice=args.mouse, tags=args.tags)
+        mice=args.mice, tags=args.tags)
     fig = generate_fig(
         sorter, args.trace_type, args.t_range_s, args.error_trials,
         args.baseline)
