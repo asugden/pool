@@ -164,7 +164,9 @@ class BackendBase(with_metaclass(ABCMeta, object)):
 
         keys['updated'] = an['updated']
 
-        if force or self.is_analysis_old(analysis, keys):
+        out, doupdate = self.recall(analysis, keys)
+
+        if force or doupdate:
             # md = metadata.md(mouse, date)
             # mdr = metadata.mdr(mouse, date, md[0])
             # mdr['spontaneous'], mdr['run'] = md, run
@@ -190,8 +192,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
             #     key_keys = check_dependencies(out, keys)
             #     self.store(key, value, key_keys)
             self.store_all(out, keys, self.deps)
-
-        out = deepcopy(self.recall(analysis, keys))
+            out, _ = self.recall(analysis, keys)
 
         if isinstance(out, float) and np.isnan(out):
             return None

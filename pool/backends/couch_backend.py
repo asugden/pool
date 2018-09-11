@@ -65,9 +65,14 @@ class CouchBackend(BackendBase):
 
     def recall(self, analysis_name, keys):
         """Return the value from the data store for a given analysis."""
-        out = self.database.get(keyname(analysis_name, keys)).get(
-            'value', None)
-        return out
+
+        dbentry = self.database.get(keyname(analysis_name, keys))
+        if dbentry is None:
+            return None, True
+
+        out = dbentry.get('value', None)
+        updated = dbentry.get('updated')
+        return out, int(updated) != int(keys['updated'])
 
     def is_analysis_old(self, analysis_name, keys):
         """Determine if the analysis needs to be re-run."""
