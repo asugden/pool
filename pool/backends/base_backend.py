@@ -412,7 +412,11 @@ def default_parameters(mouse, date):
     pars['mouse'] = mouse
     pars['training-date'] = str(date)
     pars['comparison-date'] = str(date)
-    pars['training-runs'] = metadata.dataframe(mouse, date, tags='training')['run'].as_list()
-    pars['training-other-running-runs'] = metadata.dataframe(mouse, date, tags='running')['run'].as_list()
+    pars['training-runs'] = metadata2.meta(
+        mice=[mouse], dates=[date], run_types=['training']).run.tolist()
+    pars['training-other-running-runs'] = metadata2.meta(
+        mice=[mouse], dates=[date], run_types=['running']).run.tolist()
+    # pars['training-runs'] = metadata.dataframe(mouse, date,tags='training')['run'].as_list()
+    # pars['training-other-running-runs'] = metadata.dataframe(mouse, date, tags='running')['run'].as_list()
 
     return pars

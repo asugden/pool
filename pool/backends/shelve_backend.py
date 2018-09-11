@@ -36,15 +36,20 @@ class ShelveBackend(BackendBase):
 
     def recall(self, analysis_name, keys):
         """Return the value from the data store for a given analysis."""
+        andate = keys.get('updated', -1)
         mouse = keys.get('mouse')
         key = keyname(analysis_name, keys)
         self._open(mouse)
         try:
             out = deepcopy(self.dbrs[mouse][key])
+        except KeyError:
+            return None, True
         except:
             sleep(10)
             out = deepcopy(self.dbrs[mouse][key])
-        return out
+
+        updated = self.dbus.get(mouse, {}).get(key, 0)
+        return out, int(andate) != int(updated) and andate > 0
 
     def is_analysis_old(self, analysis_name, keys):
         """Determine if the analysis needs to be re-run.

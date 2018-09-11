@@ -13,7 +13,10 @@ class MemoryBackend(BackendBase):
 
     def recall(self, analysis_name, keys):
         """Return the value from the data store for a given analysis."""
-        return self._data.get(keyname(analysis_name, keys))
+        try:
+            return self._data[keyname(analysis_name, keys)], False
+        except KeyError:
+            return None, True
 
     def is_analysis_old(self, analysis_name, keys):
         """Determine if the analysis needs to be re-run."""
