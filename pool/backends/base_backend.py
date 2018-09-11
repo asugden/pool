@@ -7,7 +7,7 @@ from importlib import import_module
 import numpy as np
 from copy import deepcopy
 
-from flow import metadata, paths
+from flow import metadata, metadata2, paths
 import flow.config
 
 class BackendBase(with_metaclass(ABCMeta, object)):
@@ -165,10 +165,12 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         keys['updated'] = an['updated']
 
         if force or self.is_analysis_old(analysis, keys):
-            md = metadata.md(mouse, date)
-            mdr = metadata.mdr(mouse, date, md[0])
-            mdr['spontaneous'], mdr['run'] = md, run
-            mdr['hungry'], mdr['sated'] = metadata.hungrysated(mouse, date)
+            # md = metadata.md(mouse, date)
+            # mdr = metadata.mdr(mouse, date, md[0])
+            # mdr['spontaneous'], mdr['run'] = md, run
+            # mdr['hungry'], mdr['sated'] = metadata.hungrysated(mouse, date)
+            mdr = metadata2.data(mouse, date)
+            mdr['run'] = run
             if 'classifier' not in an['requires']:
                 pars = default_parameters(mouse, date)
 
@@ -212,7 +214,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         # if self.m not in self.dbrs:
         #     self._open(self.m)
         if dates is None:
-            dates = metadata.dates(mouse)
+            dates = metadata2.dates(mouse)
         if isinstance(dates, str) or isinstance(dates, int):
             dates = [dates]
 

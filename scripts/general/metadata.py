@@ -5,7 +5,7 @@ import os.path as opath
 import re
 
 import flow
-import flow.metadata as fm
+import flow.metadata2 as fm
 
 
 DEFAULTS = {
@@ -35,40 +35,55 @@ DEFAULTS = {
 
 def add_mouse_date_runs(
         mouse, date, runs, mouse_tags=None, date_tags=None, run_tags=None,
-        photometry=None):
+        photometry=None, no_action=False, verbose=False):
     """Add a set of runs to the metadata record.
 
     Parameters
     ----------
     mouse: str
     date : int
-    runa : list of int
-    mouse_tags : optional, list of str
-    date_tags : optional list of str
-    run_tags : optional, list of str
-    photometry : optional, list of str
+    runs : list of int
+    mouse_tags : list of str. optional
+    date_tags : list of str, optional
+    run_tags : list of str, optional
+    photometry : list of str, optional
+    no_action : bool
+        If True, do everything except actually writing data; nothing will change.
+    verbose : bool
+        If True, report all changes that are made.
 
     """
     if run_tags is None:
         run_tags = []
 
-    try:
-        fm.add_mouse(mouse, tags=mouse_tags, overwrite=False)
-    except fm.AlreadyPresentError:
-        pass
+    if verbose:
+        print("Adding mouse: {}, tags: {}".format(mouse, mouse_tags))
+    if not no_action:
+        try:
+            fm.add_mouse(mouse, tags=mouse_tags, overwrite=False)
+        except fm.AlreadyPresentError:
+            pass
 
-    try:
-        fm.add_date(
-            mouse, date, photometry=photometry, tags=date_tags,
-            overwrite=False)
-    except fm.AlreadyPresentError:
-        pass
+    if verbose:
+        print("Adding date: {}-{}, tags: {}".format(mouse, date, date_tags))
+    if not no_action:
+        try:
+            fm.add_date(
+                mouse, date, photometry=photometry, tags=date_tags,
+                overwrite=False)
+        except fm.AlreadyPresentError:
+            pass
 
     for run in runs:
         run_type = DEFAULTS[run]['run_type']
         tags = sorted(set(DEFAULTS[run]['tags']).union(run_tags))
-        fm.add_run(
-            mouse, date, run, run_type=run_type, tags=tags, overwrite=False)
+        if verbose:
+            print("Adding run: {}-{}-{}, tags: {}".format(
+                mouse, date, run, tags))
+        if not no_action:
+            fm.add_run(
+                mouse, date, run, run_type=run_type, tags=tags,
+                overwrite=False)
 
 
 def check_runs(mouse, date, runs):
@@ -139,6 +154,13 @@ def main():
     arg_parser.add_argument(
         "-r", "--run_tags", action="append", default=None,
         help="Tags to add to ALL runs. Combined with default tags.")
+    arg_parser.add_argument(
+        "-n", "--no_action", action="store_true",
+        help="Do nothing.")
+    arg_parser.add_argument(
+        "-v", "--verbose", action="store_true",
+        help="Be verbose."
+    )
     args = arg_parser.parse_args()
 
     runs = check_runs(args.mouse, args.date, args.runs)

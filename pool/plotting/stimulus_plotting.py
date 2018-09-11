@@ -32,7 +32,6 @@ def stimulus_mean_response(
     adb = pool.database.db()
     colors = pool.config.colors()
     cses = ['plus', 'minus', 'neutral']
-    framerate = None
 
     # Use mean for spikes and median for fluorescence
     if trace_type == 'deconvolved':
@@ -46,10 +45,10 @@ def stimulus_mean_response(
             ylabel = 'Raw fluorescence'
 
     responses = {}
-    runs = date.runs(runtypes=['train', 'spontaneous'])
-    framerate = runs[0].t2p.framerate
+    runs = date.runs(run_types=['training', 'spontaneous'])
+    framerate = runs[0].trace2p().framerate
     for run in runs:
-        t2p = run.t2p
+        t2p = run.trace2p()
         assert t2p.framerate == framerate
         for cs in cses:
             traces = t2p.cstraces(
@@ -58,8 +57,8 @@ def stimulus_mean_response(
                 responses[cs] = traces
             else:
                 responses[cs] = np.concatenate([responses[cs], traces], 2)
-    sort_order = np.array(adb.get('sort-simple', date.mouse, date.date))
-    sort_borders = adb.get('sort-simple-borders', date.mouse, date.date)
+    sort_order = np.array(adb.get('sort_order', date.mouse, date.date))
+    sort_borders = adb.get('sort_borders', date.mouse, date.date)
 
     for cs in cses:
         start_idx = sort_borders[cs]

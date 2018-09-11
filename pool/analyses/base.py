@@ -3,9 +3,7 @@
 from six import with_metaclass
 from abc import ABCMeta, abstractmethod
 
-import flow.paths
-from .. import config
-
+from flow import paths
 
 class AnalysisBase(with_metaclass(ABCMeta, object)):
     """Base class for all analyses."""
@@ -47,7 +45,7 @@ class AnalysisBase(with_metaclass(ABCMeta, object)):
             self._c2ps = {}
 
         self.out = self.run(self._data['mouse'], self._data['date'], self._data['training'],
-                            self.data['running'], self._data['sated'], self._data['hungry'])
+                            self._data['running'], self._data['sated'], self._data['hungry'])
 
     @abstractmethod
     def run(self, mouse, date, training, running, sated, hungry):

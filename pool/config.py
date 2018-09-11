@@ -155,11 +155,10 @@ def stimuli():
     """Return the default stimuli."""
 
     p = params()
-    return p._stimuli
+    return p['stimuli']
 
 
 def _load_config():
-    global _settings, _colors
     config_path = _find_config()
     if config_path is None:
         config_path = _initialize_config()
