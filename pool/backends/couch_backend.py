@@ -214,7 +214,7 @@ class Database(object):
         if isinstance(val, float) and np.isnan(val):
             return '__NaN__'
         elif isinstance(val, dict):
-            return {key: Database._strip_nan(item) for key, item in val.iteritems()}
+            return {key: Database._strip_nan(item) for key, item in val.items()}
         elif isinstance(val, list) or isinstance(val, tuple):
             return [Database._strip_nan(item) for item in val]
         elif isinstance(val, set):
@@ -317,7 +317,7 @@ class Database(object):
     def _restore_nan(val):
         """Replace NaN's.
 
-        As a side-efect, converts all iterables to lists.
+        As a side-effect, converts all iterables to lists.
 
         """
         if val == '__NaN__':
@@ -409,14 +409,14 @@ def test_put_numpy():
     import numpy as np
     import timeit
 
-    import replay.lib.dep.backends.couch_backend as cb
+    import pool.backends.couch_backend as cb
 
     n = 100
     key = 'np_test'
     data_arr = {'value': [1, 2, 3, 4, 5]}
     data_np = {'value': np.arange(5)}
 
-    db = cb.Connection(host='tolman').database('testing')
+    db = cb.Database('testing', host='localhost')
 
     db.put(_id=key, **data_arr)
     returned = db.get(key)
@@ -427,33 +427,33 @@ def test_put_numpy():
     assert all(x == y for x, y in zip(returned['value'], data_np['value']))
 
     put_arr = timeit.timeit(
-        'db.put(_id=key, **data)', setup="import replay.lib.dep.backends.couch_backend as cb; " +
+        'db.put(_id=key, **data)', setup="import pool.backends.couch_backend as cb; " +
         "data = {'value': [1, 2, 3]}; " +
-        "db = cb.Connection(host='tolman').database('testing'); " +
+        "db = cb.Database('testing', host='localhost'); " +
         'key = "{}"'.format(key), number=n)
     get_arr = timeit.timeit(
-        'db.get(key)', setup="import replay.lib.dep.backends.couch_backend as cb; " +
-        "db = cb.Connection(host='tolman').database('testing'); " +
+        'db.get(key)', setup="import pool.backends.couch_backend as cb; " +
+        "db = cb.Database('testing', host='localhost'); " +
         'key = "{}"'.format(key), number=n)
 
     put_np = timeit.timeit(
-        'db.put(_id=key, **data)', setup="import replay.lib.dep.backends.couch_backend as cb; import numpy; " +
+        'db.put(_id=key, **data)', setup="import pool.backends.couch_backend as cb; import numpy; " +
         "data = {'value': numpy.arange(3)}; " +
-        "db = cb.Connection(host='tolman').database('testing'); " +
+        "db = cb.Database('testing', host='localhost'); " +
         'key = "{}"'.format(key), number=n)
     get_np = timeit.timeit(
-        'db.get(key)', setup="import replay.lib.dep.backends.couch_backend as cb; " +
-        "db = cb.Connection(host='tolman').database('testing'); " +
+        'db.get(key)', setup="import pool.backends.couch_backend as cb; " +
+        "db = cb.Database('testing', host='localhost'); " +
         'key = "{}"'.format(key), number=n)
 
     put_np_as_arr = timeit.timeit(
-        "data2 = {'value': data['value'].tolist()}; db.put(_id=key, **data2)", setup="import replay.lib.dep.backends.couch_backend as cb; import numpy; " +
+        "data2 = {'value': data['value'].tolist()}; db.put(_id=key, **data2)", setup="import pool.backends.couch_backend as cb; import numpy; " +
         "data = {'value': numpy.arange(3)}; " +
-        "db = cb.Connection(host='tolman').database('testing'); " +
+        "db = cb.Database('testing', host='localhost'); " +
         'key = "{}"'.format(key), number=n)
     get_np_as_arr = timeit.timeit(
-        'data = db.get(key); data = numpy.array(data)', setup="import replay.lib.dep.backends.couch_backend as cb; import numpy;" +
-        "db = cb.Connection(host='tolman').database('testing'); " +
+        'data = db.get(key); data = numpy.array(data)', setup="import pool.backends.couch_backend as cb; import numpy;" +
+        "db = cb.Database('testing', host='localhost'); " +
         'key = "{}"'.format(key), number=n)
 
     print("key = {}".format(key))
@@ -467,9 +467,9 @@ def test_put_numpy():
 
 if __name__ == '__main__':
     # test_put()
-    # test_put_numpy()
+    test_put_numpy()
 
-    db = CouchBackend(host='tolman')
+    # db = CouchBackend(host='localhost')
     # print(db.get('qdist-run11-0.1-minus', 'OA32', 170417, force=True))
-    print(db.get('sort-simple-borders', 'OA178', 180601, force=True))
+    # print(db.get('sort_borders', 'OA178', 180601, force=True))
     # print(db.get('dprime', 'AS20', 160816, force=True))

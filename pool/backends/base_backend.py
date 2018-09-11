@@ -50,7 +50,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
             self.store(key, val, keys, dependencies.get(key, {}))
 
     @abstractmethod
-    def recall(self, analysis_name, **keys):
+    def recall(self, analysis_name, keys):
         """Return the value from the data store for a given analysis."""
         raise NotImplementedError
 
