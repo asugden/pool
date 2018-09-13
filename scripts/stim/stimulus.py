@@ -2,12 +2,12 @@ import matplotlib.gridspec as grd
 import matplotlib.pyplot as plt
 import numpy as np
 
-from flow import graphfns
 from flow import paths
 from flow import metadata
 
 from pool import config
 from pool import stimulusdff
+from pool.plotting import graphfns
 
 
 def axheatmaplabels(fig, ax, data, framerate):
@@ -88,8 +88,8 @@ def sortorder(andb, mouse, date, analysis=''):
 
     borders = {}
     if analysis == '':
-        return andb.get('sort-order', mouse, date), \
-            andb.get('sort-borders', mouse, date)
+        return andb.get('sort_order', mouse, date), \
+            andb.get('sort_borders', mouse, date)
 
     vals = andb.get(analysis, mouse, date)
     order = sorted([(v, i) for i, v in enumerate(vals)])

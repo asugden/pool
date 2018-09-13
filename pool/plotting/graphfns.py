@@ -8,7 +8,7 @@ import os
 import pool
 
 from pool.plotting import colors
-from . import outfns
+from flow import outfns
 
 
 def open():
@@ -152,8 +152,8 @@ def sortorder(andb, mouse, date, analysis=''):
             sortcat[(labels[gr]) & (sortcat < 0)] = i
 
         # Merge in with original sorting
-        extrasort = andb.get('sort-order', mouse, date)[::-1]
-        branges = borderrange(andb.get('sort-borders', mouse, date), len(extrasort))
+        extrasort = andb.get('sort_order', mouse, date)[::-1]
+        branges = borderrange(andb.get('sort_borders', mouse, date), len(extrasort))
         special = np.nonzero(sortcat > -1)[0]
 
         newgs = ['plus', 'ensure-only', 'ensure-multiplexed', 'neutral', 'minus',
@@ -178,9 +178,10 @@ def sortorder(andb, mouse, date, analysis=''):
 
         return newsort[::-1], borders
 
-    # if analysis == '': return andb.get('sort-order', date), andb.get('sort-borders', date)
     if analysis == '':
-        return andb.get('sort-simple', mouse, date), andb.get('sort-simple-borders', mouse, date)
+        return andb.get('sort_order', mouse, date), andb.get('sort_borders', mouse, date)
+    # if analysis == '':
+    #     return andb.get('sort-simple', mouse, date), andb.get('sort-simple-borders', mouse, date)
     elif 'rot-sort-order-plus' in analysis:
         return andb.get('rot-sort-order-plus', mouse, date), andb.get('rot-sort-borders-plus', mouse, date)
     elif 'rot-sort-order-minus' in analysis:
