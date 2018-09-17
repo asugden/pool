@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import os
 from sys import argv
 
-from pool.plotting import stimulus_plotting as sp
+from pool.plotting import stimulus as pps
 
 import flow
 from flow import misc
@@ -76,7 +76,7 @@ def generate_fig(sorter, trace_type, t_range_s, error_trials, baseline):
     fig, axs = misc.layout_subplots(
         len(sorter), width=16, height=9, sharey=False, sharex=True)
     for date, ax in zip(sorter, axs.flat):
-        sp.stimulus_mean_response(
+        pps.stimulus_mean_response(
             ax, date, plot_all=False, trace_type=trace_type,
             start_s=t_range_s[0], end_s=t_range_s[1], errortrials=error_trials,
             baseline=baseline)
