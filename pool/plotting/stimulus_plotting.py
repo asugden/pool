@@ -31,7 +31,7 @@ def stimulus_mean_response(
     """
     adb = pool.database.db()
     colors = pool.config.colors()
-    cses = ['plus', 'minus', 'neutral']
+    cses = pool.config.stimuli()
 
     # Use mean for spikes and median for fluorescence
     if trace_type == 'deconvolved':
@@ -52,13 +52,16 @@ def stimulus_mean_response(
         assert t2p.framerate == framerate
         for cs in cses:
             traces = t2p.cstraces(
-                cs, start_s=start_s, end_s=end_s, trace_type=trace_type)
+                cs, start_s=start_s, end_s=end_s, trace_type=trace_type,
+                **kwargs)
             if cs not in responses:
                 responses[cs] = traces
             else:
                 responses[cs] = np.concatenate([responses[cs], traces], 2)
     sort_order = np.array(adb.get('sort_order', date.mouse, date.date))
     sort_borders = adb.get('sort_borders', date.mouse, date.date)
+
+    # from pudb import set_trace; set_trace()
 
     for cs in cses:
         start_idx = sort_borders[cs]
@@ -92,3 +95,26 @@ def stimulus_mean_response(
     ax.set_xticks([start_s, 0, end_s])
     ax.legend()
     # from pudb import set_trace; set_trace()
+
+
+def all_stimulus_heatmap(
+        ax, date, roi_idx, stim_type):
+    """Plot all responses as a heatmap."""
+    pass
+
+def all_stimulus_traces(
+        ax, date, roi_idx, stim_type, start_s=-1, end_s=2, trace_type='dff',
+        **kwargs):
+    """"Plot all responses as individual staggered traces."""
+
+    traces = []
+    runs = date.runs(run_types=['training', 'spontaneous'])
+    framerate = runs[0].trace2p().framerate
+    for run in runs:
+        t2p = run.trace2p()
+        assert t2p.framerate == framerate
+        all_traces = t2p.cstraces(
+            stim_type, start_s=start_s, end_s=end_s, trace_type=trace_type, **kwargs)
+        )
+        from pudb import set_trace; set_trace()
+
