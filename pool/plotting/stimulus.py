@@ -5,6 +5,7 @@ try:
 except ImportError:
     from numpy import nanmean, nanmedian
 
+import flow
 import pool
 
 
@@ -61,8 +62,6 @@ def stimulus_mean_response(
     sort_order = np.array(adb.get('sort_order', date.mouse, date.date))
     sort_borders = adb.get('sort_borders', date.mouse, date.date)
 
-    # from pudb import set_trace; set_trace()
-
     for cs in cses:
         start_idx = sort_borders[cs]
         borders = np.array(sort_borders.values())
@@ -94,7 +93,6 @@ def stimulus_mean_response(
     ax.set_title('{} - {}'.format(date.mouse, date.date))
     ax.set_xticks([start_s, 0, end_s])
     ax.legend()
-    # from pudb import set_trace; set_trace()
 
 
 def all_stimulus_heatmap(
@@ -115,6 +113,9 @@ def all_stimulus_traces(
         assert t2p.framerate == framerate
         all_traces = t2p.cstraces(
             stim_type, start_s=start_s, end_s=end_s, trace_type=trace_type, **kwargs)
-        )
-        from pudb import set_trace; set_trace()
+        traces.append(all_traces[roi_idx])
+    traces = np.concatenate(traces, axis=1)
 
+    flow.misc.plotting.plot_traces(ax, traces, (start_s, end_s))
+
+    ax.set_title(stim_type)
