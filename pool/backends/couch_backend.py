@@ -307,7 +307,12 @@ class Database(object):
         return self._parse_doc(doc)
 
     def _parse_doc(self, doc):
-        if doc['value'] == '__attachment__':
+        try:
+            val = doc['value']
+        except TypeError:
+            assert doc is None
+            return doc
+        if val == '__attachment__':
             attachment = self._db.get_attachment(doc['_id'], 'value')
             if isinstance(attachment, couchdb.http.ResponseBody):
                 doc['value'] = np.load(couchdb.util.StringIO(
