@@ -1,4 +1,4 @@
-"""Figure layouts for analyzing stimulus repsonses."""
+"""Figure layouts for analyzing stimulus responses."""
 
 import pool
 from pool.plotting import stimulus as pps

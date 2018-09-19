@@ -95,27 +95,25 @@ def stimulus_mean_response(
     ax.legend()
 
 
-def all_stimulus_heatmap(
-        ax, date, roi_idx, stim_type):
-    """Plot all responses as a heatmap."""
-    pass
-
 def all_stimulus_traces(
         ax, date, roi_idx, stim_type, start_s=-1, end_s=2, trace_type='dff',
-        **kwargs):
+        normalize=False, **kwargs):
     """"Plot all responses as individual staggered traces."""
 
-    traces = []
-    runs = date.runs(run_types=['training', 'spontaneous'])
+    traces, errors = [], []
+    runs = date.runs(run_types=['training'])
     framerate = runs[0].trace2p().framerate
     for run in runs:
         t2p = run.trace2p()
         assert t2p.framerate == framerate
         all_traces = t2p.cstraces(
-            stim_type, start_s=start_s, end_s=end_s, trace_type=trace_type, **kwargs)
+            stim_type, start_s=start_s, end_s=end_s, trace_type=trace_type,
+            **kwargs)
         traces.append(all_traces[roi_idx])
+        errors.extend(t2p.errors(stim_type))
     traces = np.concatenate(traces, axis=1)
 
-    flow.misc.plotting.plot_traces(ax, traces, (start_s, end_s))
+    flow.misc.plotting.plot_traces(
+        ax, traces, (start_s, end_s), normalize=normalize, errors=errors)
 
     ax.set_title(stim_type)
