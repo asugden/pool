@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from flow import paths
-from flow import metadata
+import flow.metadata2 as metadata
 
 from pool import config
 from pool import stimulusdff
@@ -117,14 +117,14 @@ def heatmaptype(fig, ax, args, lpars, sorting, borders):
 
     md = metadata.data(args[-1]['mouse'], args[-1]['training-date'])
     if 'sated-stim' not in md: md['sated-stim'] = []
-    runs = md['train']
+    runs = md['training']
     if lpars['hungry-sated'] == 1: runs = md['sated-stim'] + md['sated']
     elif lpars['hungry-sated'] < 0: runs += md['sated-stim'] + md['sated']
 
     plot, framerate = stimulusdff.dff(args[-1], tlpars, runs)
 
     if lpars['error-trials'] == 2 or lpars['hungry-sated'] == 2:
-        runs = md['train']
+        runs = md['training']
         if lpars['hungry-sated'] == 1: runs = md['sated-stim'] + md['sated']
         elif lpars['hungry-sated'] < 0: runs += md['sated-stim'] + md['sated']
         if lpars['hungry-sated'] == 2: runs = md['sated-stim'] + md['sated']
