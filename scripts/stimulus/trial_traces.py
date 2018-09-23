@@ -5,7 +5,6 @@ if 'DISPLAY' not in os.environ:
     mpl.use('Agg')
 
 import itertools as it
-import matplotlib.pyplot as plt
 from operator import itemgetter
 import os
 import pandas as pd
@@ -75,11 +74,10 @@ def traces_per_cell(
             max_rois_per_group).reset_index().set_index('roi_idx')
     for _, (roi_idx, group) in rois.reset_index().sort_values(
             'sort_idx')[['roi_idx', 'sort_label']].iterrows():
-        fig = plt.figure(figsize=(16, 9))
-        pls.all_stimulus_traces(
-            fig, date, roi_idx, start_s=t_range_s[0], end_s=t_range_s[1],
-            trace_type=trace_type, errortrials=errortrials,
-            baseline=baseline, normalize=normalize)
+        fig = pls.trial_traces(
+            date, roi_idx, t_range_s=t_range_s, trace_type=trace_type,
+            errortrials=errortrials, baseline=baseline, normalize=normalize,
+            fig_kw={'figsize': (16, 9)})
         fig.suptitle(
             '{} - {} - {} - {}'.format(
                 date.mouse, date.date, roi_idx, group))
@@ -88,17 +86,18 @@ def traces_per_cell(
 
 def main():
     """Main function."""
-    filename = '{}_{}_trial_traces.pdf'
+    filename = '{}_trial_traces.pdf'
     save_dir = os.path.join(flow.paths.graphd, 'trial_traces')
     args = parse_args()
     sorter = metadata.DateSorter.frommeta(
         mice=args.mice, dates=args.dates, tags=args.tags)
     for date in sorter:
-        date_filename = filename.format(date.mouse, date.date)
-        save_path = os.path.join(save_dir, date.mouse, date_filename)
-        # Make this script cron-jobable
+        save_path = os.path.join(save_dir, date.mouse, filename.format(date))
+
+        # Make this script cron-able
         if not args.overwrite and os.path.exists(save_path):
             continue
+
         figs = traces_per_cell(
             date, args.trace_type, args.t_range_s, args.errortrials,
             args.baseline, args.maxrois, args.normalize)

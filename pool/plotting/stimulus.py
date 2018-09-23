@@ -10,9 +10,12 @@ import pool
 
 
 def stimulus_mean_response(
-        ax, date, plot_all=False, start_s=-1, end_s=2, trace_type='dff',
-        **kwargs):
+        ax, date, plot_all=False, t_range_s=(-1, 2), trace_type='dff',
+        cses=None, **kwargs):
     """Plot the mean stimulus response to each stim type.
+
+    Classifies each ROI by peak response to one of the stims, or inhibited.
+    Plots the mean of each category of cell.
 
     Parameters
     ----------
@@ -20,19 +23,21 @@ def stimulus_mean_response(
     date : Date
     plot_all : bool
         If True, plot each cell individually instead of averaging.
-    start_s : int
-        Time before stim to include, in seconds.
-    end_s : int
-        Time after stim to include, in seconds.
+    t_range_s : tuple of int
+        2 element tuple of start and end time relative to stimulus (in seconds).
     trace_type : {'dff', 'raw', 'deconvolved'}
         Type of trace to plot.
+    cses : list of str, optional
+        List of stimuli to plot. If None, defaults to cses in config file.
     **kwargs
         Additional keyword arguments are passed to t2p.cstraces().
 
     """
+    start_s, end_s = t_range_s
+    if cses is None:
+        cses = pool.config.stimuli()
     adb = pool.database.db()
     colors = pool.config.colors()
-    cses = pool.config.stimuli()
 
     # Use mean for spikes and median for fluorescence
     if trace_type == 'deconvolved':
@@ -95,10 +100,11 @@ def stimulus_mean_response(
     ax.legend()
 
 
-def all_stimulus_traces(
-        ax, date, roi_idx, stim_type, start_s=-1, end_s=2, trace_type='dff',
+def trial_traces(
+        ax, date, roi_idx, stim_type, t_range_s=(-1, 2), trace_type='dff',
         normalize=False, **kwargs):
-    """"Plot all responses as individual staggered traces."""
+    """"Plot all trials as individual staggered traces."""
+    start_s, end_s = t_range_s
 
     traces, errors = [], []
     runs = date.runs(run_types=['training'])
