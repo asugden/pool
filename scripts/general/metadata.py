@@ -213,7 +213,11 @@ def list_runs(
 
     with pd.option_context('display.max_rows', None,
                            'display.max_columns', None):
-        print(meta.set_index(['mouse', 'date', 'run']))
+        try:
+            new_meta = meta.set_index(['mouse', 'date', 'run'])
+        except KeyError:
+            new_meta = meta
+        print(new_meta)
 
 
 def main():
