@@ -7,8 +7,9 @@ from importlib import import_module
 import numpy as np
 from copy import deepcopy
 
-from flow import metadata, metadata2, paths
+from flow import paths
 import flow.config
+import flow.metadata2 as metadata
 
 class BackendBase(with_metaclass(ABCMeta, object)):
     def __init__(self, **kwargs):
@@ -171,7 +172,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
             # mdr = metadata.mdr(mouse, date, md[0])
             # mdr['spontaneous'], mdr['run'] = md, run
             # mdr['hungry'], mdr['sated'] = metadata.hungrysated(mouse, date)
-            mdr = metadata2.data(mouse, date)
+            mdr = metadata.data(mouse, date)
             mdr['run'] = run
             if 'classifier' not in an['requires']:
                 pars = default_parameters(mouse, date)
@@ -215,7 +216,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         # if self.m not in self.dbrs:
         #     self._open(self.m)
         if dates is None:
-            dates = metadata2.dates(mouse)
+            dates = metadata.dates(mouse)
         if isinstance(dates, str) or isinstance(dates, int):
             dates = [dates]
 
@@ -261,11 +262,13 @@ class BackendBase(with_metaclass(ABCMeta, object)):
 
                     if not fnd or force:
                         print('\tupdating analysis...', c)
-                        md = metadata.md(mouse, date)
-                        mdr = metadata.mdr(mouse, date, md[0])
-                        mdr['spontaneous'], mdr['run'] = md, -1
-                        mdr['hungry'], mdr['sated'] = \
-                            metadata.hungrysated(mouse, date)
+                        # md = metadata.md(mouse, date)
+                        # mdr = metadata.mdr(mouse, date, md[0])
+                        # mdr['spontaneous'], mdr['run'] = md, -1
+                        # mdr['hungry'], mdr['sated'] = \
+                        #     metadata.hungrysated(mouse, date)
+                        mdr = metadata.data(mouse, date)
+                        mdr['run'] = -1
 
                         co = object.__new__(c)
                         # Inject methods
@@ -412,9 +415,9 @@ def default_parameters(mouse, date):
     pars['mouse'] = mouse
     pars['training-date'] = str(date)
     pars['comparison-date'] = str(date)
-    pars['training-runs'] = metadata2.meta(
+    pars['training-runs'] = metadata.meta(
         mice=[mouse], dates=[date], run_types=['training']).run.tolist()
-    pars['training-other-running-runs'] = metadata2.meta(
+    pars['training-other-running-runs'] = metadata.meta(
         mice=[mouse], dates=[date], run_types=['running']).run.tolist()
     # pars['training-runs'] = metadata.dataframe(mouse, date,tags='training')['run'].as_list()
     # pars['training-other-running-runs'] = metadata.dataframe(mouse, date, tags='running')['run'].as_list()
