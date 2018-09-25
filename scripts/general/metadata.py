@@ -3,6 +3,7 @@ import argparse
 import glob
 import os
 import os.path as opath
+import pandas as pd
 import re
 import textwrap
 
@@ -177,6 +178,44 @@ def locate_runs(mouse, date):
     return sorted(runs)
 
 
+def list_runs(
+        mouse, date=None, runs=None, mouse_tags=None, date_tags=None,
+        run_tags=None, photometry=None):
+    """Print all runs that match the given parameters.
+
+    Parameters
+    ----------
+    mouse : str
+    date : int, optional
+    runs : list of int, optional
+    mouse_tags : list of str, optional
+    date_tags : list of str, optional
+    run_tags : list of str, optional
+    photometry : list of str, optional
+
+    """
+    if date is None or date < 0:
+        dates = None
+    else:
+        dates = [date]
+    if runs is None or not len(runs):
+        runs = None
+    if mouse_tags is None:
+        mouse_tags = []
+    if date_tags is None:
+        date_tags = []
+    if run_tags is None:
+        run_tags = []
+    tags = mouse_tags + date_tags + run_tags
+
+    meta = fm.meta(mice=[mouse], dates=dates, runs=runs, tags=tags,
+                   photometry=photometry)
+
+    with pd.option_context('display.max_rows', None,
+                           'display.max_columns', None):
+        print(meta.set_index(['mouse', 'date', 'run']))
+
+
 def main():
     """Main script."""
     arg_parser = argparse.ArgumentParser(description=textwrap.dedent("""
@@ -189,17 +228,20 @@ def main():
         > python metadata.py OA178 180701
         Specify a single mouse, finds all dates and runs from simpcells.
         > python metadata.py OA178
+        List all matching runs and don't add anything.
+        > python metadata.py --list OA178 180701
         """), epilog=textwrap.dedent("""
         Run types and default run tags are inferred based on our lab standards.
         Photometry and the tags can be specified multiple times to add more
-        than 1 value. For example:
-        `python metadata.py OA178 180701 1 2 3 9 10 11 -m jeff -m test`.
+        than 1 value.
+        For example:
+        > python metadata.py OA178 180701 1 2 3 9 10 11 -m jeff -m test
         """), formatter_class=argparse.RawDescriptionHelpFormatter,)
     arg_parser.add_argument(
         "mouse", action="store", help="Name of mouse to add.")
     arg_parser.add_argument(
         "date", action="store", type=int, nargs='?', default=-1,
-        help="Date to add. If none passed, check simpcells.")
+        help="Date to add. If none passed, checks simpcells.")
     arg_parser.add_argument(
         "runs", action="store", type=int, nargs="*",
         help="Runs to add. If none passed, checks simpcells.")
@@ -216,12 +258,20 @@ def main():
         "-r", "--run_tags", action="append", default=None,
         help="Tags to add to ALL runs. Combined with default tags.")
     arg_parser.add_argument(
+        "-l", "--list", action="store_true",
+        help="Only list currently matching runs, don't actually add anything.")
+    arg_parser.add_argument(
         "-n", "--no_action", action="store_true",
         help="Do nothing.")
     arg_parser.add_argument(
         "-v", "--verbose", action="store_true",
         help="Be verbose.")
     args = arg_parser.parse_args()
+
+    if args.list:
+        list_runs(args.mouse, args.date, args.runs, args.mouse_tags,
+                  args.date_tags, args.run_tags, args.photometry)
+        return
 
     dates = check_date(args.mouse, args.date)
 
