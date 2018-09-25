@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from flow import paths
-import flow.metadata2 as metadata
+import flow.metadata as metadata
 
 from pool import config
 from pool import stimulusdff

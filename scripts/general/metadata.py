@@ -5,7 +5,7 @@ import os.path as opath
 import re
 
 import flow
-import flow.metadata2 as fm
+import flow.metadata as fm
 
 
 DEFAULTS = {

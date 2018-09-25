@@ -9,7 +9,7 @@ from copy import deepcopy
 
 from flow import paths
 import flow.config
-import flow.metadata2 as metadata
+import flow.metadata as metadata
 
 class BackendBase(with_metaclass(ABCMeta, object)):
     def __init__(self, **kwargs):

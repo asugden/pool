@@ -8,7 +8,7 @@ import os
 
 import flow
 from flow import misc
-import flow.metadata2 as metadata
+import flow.metadata as metadata
 
 from pool.layouts import stimulus as pls
 
