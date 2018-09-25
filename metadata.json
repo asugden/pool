@@ -6556,6 +6556,104 @@
             }
           ],
           "tags": []
+        },
+        {
+          "date": 180716,
+          "photometry": [],
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 11,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ],
+          "tags": []
+        },
+        {
+          "date": 180718,
+          "photometry": [],
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 11,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ],
+          "tags": []
         }
       ],
       "name": "OA178",
@@ -6592,13 +6690,6 @@
             },
             {
               "run": 9,
-              "run_type": "spontaneous",
-              "tags": [
-                "sated"
-              ]
-            },
-            {
-              "run": 10,
               "run_type": "spontaneous",
               "tags": [
                 "sated"
@@ -7093,13 +7184,6 @@
               "tags": [
                 "sated"
               ]
-            },
-            {
-              "run": 11,
-              "run_type": "spontaneous",
-              "tags": [
-                "sated"
-              ]
             }
           ],
           "tags": []
@@ -7155,6 +7239,342 @@
         },
         {
           "date": 180815,
+          "photometry": [],
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 11,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ],
+          "tags": []
+        },
+        {
+          "date": 180817,
+          "photometry": [],
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 11,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ],
+          "tags": []
+        },
+        {
+          "date": 180821,
+          "photometry": [],
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 11,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ],
+          "tags": []
+        },
+        {
+          "date": 180823,
+          "photometry": [],
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 11,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ],
+          "tags": []
+        },
+        {
+          "date": 180827,
+          "photometry": [],
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 11,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ],
+          "tags": []
+        },
+        {
+          "date": 180829,
+          "photometry": [],
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 11,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ],
+          "tags": []
+        },
+        {
+          "date": 180831,
+          "photometry": [],
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ],
+          "tags": []
+        },
+        {
+          "date": 180904,
           "photometry": [],
           "runs": [
             {
@@ -7580,6 +8000,447 @@
             }
           ],
           "tags": []
+        },
+        {
+          "date": 180822,
+          "photometry": [],
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 11,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ],
+          "tags": []
+        },
+        {
+          "date": 180830,
+          "photometry": [],
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 11,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ],
+          "tags": []
+        },
+        {
+          "date": 180903,
+          "photometry": [],
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 11,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ],
+          "tags": []
+        },
+        {
+          "date": 180905,
+          "photometry": [],
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 11,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ],
+          "tags": []
+        },
+        {
+          "date": 180907,
+          "photometry": [],
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 11,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ],
+          "tags": []
+        },
+        {
+          "date": 180911,
+          "photometry": [],
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 11,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ],
+          "tags": []
+        },
+        {
+          "date": 180913,
+          "photometry": [],
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 11,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ],
+          "tags": []
+        },
+        {
+          "date": 180917,
+          "photometry": [],
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 11,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ],
+          "tags": []
+        },
+        {
+          "date": 180919,
+          "photometry": [],
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 11,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ],
+          "tags": []
         }
       ],
       "name": "OA192",
@@ -7780,8 +8641,8 @@
         {
           "date": 170331,
           "photometry": [
-            "nacc",
-            "ca1"
+            "ca1",
+            "nacc"
           ],
           "runs": [
             {
@@ -7911,8 +8772,8 @@
         {
           "date": 170404,
           "photometry": [
-            "nacc",
-            "ca1"
+            "ca1",
+            "nacc"
           ],
           "runs": [
             {
