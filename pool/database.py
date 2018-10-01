@@ -1,5 +1,8 @@
 from .backends import MemoryBackend, ShelveBackend, CouchBackend
-from .backends._cloudant_backend import CloudantBackend
+try:
+    from .backends._cloudant_backend import CloudantBackend
+except ImportError:
+    pass
 from . import config
 
 _dbs = {}
