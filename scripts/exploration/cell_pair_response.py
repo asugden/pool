@@ -1,0 +1,60 @@
+"""Look at stimulus responses."""
+import matplotlib as mpl
+import os
+
+import flow
+from flow import misc
+import flow.metadata as metadata
+
+from pool.layouts import stimulus as pls
+
+
+def parse_args():
+    arg_parser = misc.default_parser(
+        description="""
+        Script to plot mean stimulus response over days.""",
+        epilog="""
+        The 'dates' option really only makes sense with a single Mouse.
+        """, arguments=('mice', 'tags', 'dates'))
+    arg_parser.add_argument(
+        "-T", "--trace_type", choices=('dff', 'deconvolved', 'raw'), default="dff",
+        help="Trace type to plot.")
+    arg_parser.add_argument(
+        "-R", "--t_range_s", nargs=2, type=int, default=(-1, 8),
+        help="Time range around stimulus to plot.")
+    arg_parser.add_argument(
+        "-b", "--baseline", nargs=2, type=int, default=None,
+        help='Baseline used for dFF trace.')
+    arg_parser.add_argument(
+        "-e", "--errortrials", choices=(-1, 0, 1, 2), type=int, default=-1,
+        help="-1 is off, 0 is correct trials, 1 is error trials, 2 is diff of error trials.")
+    # arg_parser.add_argument(
+    #     "-H", "--hungry_sated", choices=(0, 1, 2), type=int, default=0,
+    #     help="0 is hungry trials, 1 is sated trials, 2 is hungry-sated")
+
+    args = arg_parser.parse_args()
+
+    return args
+
+
+def main():
+    """Main function."""
+    filename = '{}_cell_response.pdf'
+    save_dir = os.path.join(flow.paths.graphd, 'cell_response')
+    args = parse_args()
+    sorter = metadata.DatePairSorter.frommeta(
+        mice=args.mice, dates=args.dates, day_distance=args.day_distance,
+        cross_reversal=args.cross_reversal, tags=args.tags)
+    for mouse in sorter:
+        save_path = os.path.join(save_dir, filename.format(mouse))
+        fig = pls.stimulus_response(
+            mouse.dates(dates=args.dates, tags=args.tags),
+            t_range_s=args.t_range_s, trace_type=args.trace_type,
+            errortrials=args.errortrials, baseline=args.baseline)
+        summary_fig = misc.summary_page(sorter, figsize=(16, 9), **vars(args))
+        misc.save_figs(save_path, [summary_fig, fig])
+        print(save_path)
+
+
+if __name__ == '__main__':
+    main()
