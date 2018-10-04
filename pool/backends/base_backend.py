@@ -27,6 +27,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
 
         self._indmouse = ''
         self._inddate = -1
+        self._indrun = None
 
     @abstractmethod
     def _initialize(self, **kwargs):
@@ -120,7 +121,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
 
         return self.get(analysis, self._indmouse, self._inddate)
 
-    def get(self, analysis, mouse, date, run=-1, force=False):
+    def get(self, analysis, mouse, date, run=None, force=False, pars=None):
         """Get an analysis.
 
         :param analysis: string designating analysis to be returned
@@ -132,66 +133,39 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         :return: analysis, if it exists
 
         """
-        # Check if analysis exists
+
+        # TODO: Add checking for dependencies
+
         if analysis not in self.ans:
-            return None
+            raise ValueError('Analysis %s not found' % analysis)
 
-        # # Format correctly
-        # if date is None:
-        #     date = mouse
-        #     mouse = self.m
-        # TODO: remove. should always pass in date as an integer
-        if isinstance(date, str):
-            date = int(date)
-        # self.m = mouse
-
-        self._indmouse, self._inddate = mouse, date
+        # Format input correctly
+        date = date if not isinstance(date, str) else int(date)
+        pars = pars if pars is not None else default_parameters(mouse, date)
+        self._indmouse, self._inddate, self._indrun = mouse, date, run
 
         # Get the keyword of the analysis
         an = self.ans[analysis]
-        keys = {}
-        keys['mouse'] = mouse
+        keys = {
+            'mouse': mouse,
+            'date': date,
+            'run': run,
+            'classifier_word': paths.classifierword(pars)
+            if 'classifier' in an['requires'] else None,
+            'updated': an['updated'],
+        }
 
-        keys['date'] = date
-        if an['across'] == 'day':
-            pass
-        elif an['across'] == 'run':
-            keys['run'] = run
-
-        # Add the classifier name if possible, can use passed pars to generate name
-        if 'classifier' in an['requires']:
-            pars = default_parameters(mouse, date)
-            keys['classifier_word'] = paths.classifierword(pars)
-
-        keys['updated'] = an['updated']
-
+        # Get the analysis, or calculate if necessary
         out, doupdate = self.recall(analysis, keys)
-
         if force or doupdate:
-            # md = metadata.md(mouse, date)
-            # mdr = metadata.mdr(mouse, date, md[0])
-            # mdr['spontaneous'], mdr['run'] = md, run
-            # mdr['hungry'], mdr['sated'] = metadata.hungrysated(mouse, date)
-            mdr = metadata.data(mouse, date)
-            mdr['run'] = run
-            if 'classifier' not in an['requires']:
-                pars = default_parameters(mouse, date)
-
-            ga = GetAnalysis(self, mouse, date, run)
             c = object.__new__(an['class'])
-
             print('\tupdating analysis...', c)
-
-            # Inject methods
-            setattr(c, 'pars', pars)
-            setattr(c, 'analysis', ga.analyze)
-            setattr(c, 'andb', self)
-            c.__init__(mdr)
-
+            c.__init__(metadata.Run(mouse, date, run) if an['across'] == 'run'
+                       else metadata.Date(mouse, date), self, pars)
             out = c._get()
-            # for key, value in out.iteritems():
-            #     key_keys = check_dependencies(out, keys)
-            #     self.store(key, value, key_keys)
+            for key in out:
+                if key not in self.ans:
+                    raise ValueError('%s analysis was not declared in sets.' % key)
             self.store_all(out, keys, self.deps)
             out, _ = self.recall(analysis, keys)
 
@@ -210,6 +184,9 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         :return:
 
         """
+
+        # TODO: Add DateSorter/RunSorter
+        raise NotImplementedError('Update needs to be fixed to include DateSorter or RunSorter')
 
         # if len(mouse) > 0:
         #     self.m = mouse
@@ -274,7 +251,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
                         # Inject methods
                         setattr(co, 'pars', pars)
                         setattr(co, 'analysis', ga.analyze)
-                        setattr(c, 'andb', self)
+                        setattr(co, 'andb', self)
                         co.__init__(mdr)
 
                         out = co._get()
@@ -368,42 +345,15 @@ def keyname(analysis, keys):
 
         keyname = '%s-%i' % (keys['mouse'], int(keys['date']))
 
-        if 'run' in keys:
+        if 'run' in keys and keys['run'] is not None:
             keyname += '%02i' % (keys['run'])
 
-        if 'classifier_word' in keys:
+        if 'classifier_word' in keys and 'classifier_word' is not None:
             keyname += '-%s' % (keys['classifier_word'])
 
         keyname += '-%s' % (analysis)
 
         return keyname
-
-
-class GetAnalysis():
-    def __init__(self, andb, mouse, date, run=-1):
-        """
-        Make a class that holds the analysis database, mouse, date, and, run for calling within analysis functions
-        :param andb: "self" from the analysis db
-        :param mouse: name of the mouse
-        :param date: date, str
-        :param run: run, int, set to -1 if ignored
-        """
-
-        self.db = andb
-        self.mouse = mouse
-        self.date = date
-        self.run = run
-
-    def analyze(self, name):
-        """
-        Return an analysis to another analysis type
-        :param name: name of the analysis, str
-        :return: results of the analysis
-        """
-
-        # This is specific to the Shelve backend, need to see if it can be removed.
-        self.db.save(closedb=False)
-        return self.db.get(name, self.mouse, self.date, self.run)
 
 
 def default_parameters(mouse, date):

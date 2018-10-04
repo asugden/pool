@@ -1,7 +1,3 @@
-# Data will be passed in a dict with the list of runs for training, spontaneous, running, and for across='run', run
-# Two methods are automatically injected: trace2p and classifier.
-# It is required to return via the function get
-
 import numpy as np
 import warnings
 
@@ -10,24 +6,13 @@ from pool import config
 
 
 class Stim(base.AnalysisBase):
-    def run(self, mouse, date, training, running, sated, hungry):
+    def run(self, date):
         """
         Run all analyses and returns results in a dictionary.
 
         Parameters
         ----------
-        mouse : str
-            mouse name
-        date : str
-            current date
-        training : list of ints
-            list of training run numbers as integers
-        running : list of ints
-            list of running-only run numbers as integers
-        sated : list of ints
-            list of sated spontaneous run numbers as integers
-        hungry : list of ints
-            list of hungry spontaneous run numbers as integers
+        date : Date object
 
         Returns
         -------
@@ -36,25 +21,19 @@ class Stim(base.AnalysisBase):
 
         """
 
-        out = {}
+        out = self.nanoutput()
 
         for cs in config.stimuli():
-            out['stim_dff_%s' % cs] = self.get_stimuli(training, cs, (0, 2), 'dff', False)
-            out['stim_dff_alltrials_%s' % cs] = self.get_stimuli(training, cs, (0, 2), 'dff', True)
+            out['stim_dff_%s' % cs] = self.get_stimuli(date.runs('training'), cs, (0, 2), 'dff', False)
+            out['stim_dff_2_4_%s'%cs] = self.get_stimuli(date.runs('training'), cs, (2, 4), 'dff', False)
+            out['stim_dff_alltrials_%s' % cs] = self.get_stimuli(date.runs('training'), cs, (0, 2), 'dff', True)
 
         return out
 
 
-    # ================================================================================== #
-    # REQUIRED PARAMETERS AND INJECTED FUNCTIONS
-
-    # Set the screening parameters by which protocols are selected
-    # Screening by protocol is required. Any other screening is optional
-    # Options for requires include:
-    #   classifier: whether a classifier will be required or not
-
     requires = ['']
     sets = ['stim_dff_%s' % cs for cs in config.stimuli()] + \
+           ['stim_dff_2_4_%s'%cs for cs in config.stimuli()] + \
            ['stim_dff_alltrials_%s' % cs for cs in config.stimuli()]
     across = 'day'
     updated = '180831'
@@ -65,21 +44,38 @@ class Stim(base.AnalysisBase):
 
     def get_stimuli(self, runs, cs, trange, ttype, all=False):
         """
-        Get all stimuli and take means across different time periods.
-        :param data:
-        :return:
+        Get stimulus responses from training runs
+
+        Parameters
+        ----------
+        runs : RunSorter
+            Contains all Run objects
+        cs : str
+            Stimulus name
+        trange : tuple of ints
+            Time range to average over
+        ttype : str
+            Trace type, 'dff' or 'deconvolved'
+        all : bool
+            If true, include time after licking and miss trials
+
+        Returns
+        -------
+        numpy array
+            Vector of mean responses of length ncells
         """
 
         err = -1 if all else 0
         lick = -1 if all else 100
-        bl = (-1, 0) if 'dec' not in ttype else (-1, -1)
+        baseline = (-1, 0) if 'dec' not in ttype else (-1, -1)
 
         # Go through the added stimuli and add all onsets
         trs = []
-        for r in runs:
+        for run in runs:
             with warnings.catch_warnings():
-                cstrs = self.trace2p(r).cstraces(cs, trange[0], trange[1],
-                                                 ttype, lick, err, bl)
+                t2p = run.trace2p()
+                cstrs = t2p.cstraces(cs, trange[0], trange[1],
+                                     ttype, lick, err, baseline)
 
                 warnings.simplefilter('ignore', category=RuntimeWarning)
 
@@ -89,8 +85,8 @@ class Stim(base.AnalysisBase):
                     trs = np.concatenate([trs, np.nanmean(cstrs, axis=1)], axis=1)
 
                 if trange[1] <= 2 and cs == 'plus':
-                    pav = self.trace2p(r).cstraces('pavlovian', trange[0], trange[1],
-                                                   ttype, lick, err, bl)
+                    pav = t2p.cstraces('pavlovian', trange[0], trange[1],
+                                       ttype, lick, err, baseline)
                     trs = np.concatenate([trs, np.nanmean(pav, axis=1)], axis=1)
 
         return np.nanmean(trs, axis=1)

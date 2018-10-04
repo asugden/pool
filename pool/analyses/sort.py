@@ -1,8 +1,3 @@
-# Updated: 170414
-# Data will be passed in a dict with the list of days for training, spontaneous, running, and for across='run', run
-# Two methods are automatically injected: trace2p and classifier.
-# It is required to return via the function get
-
 import math
 import numpy as np
 
@@ -10,24 +5,13 @@ from . import base
 from .. import config
 
 class Sort(base.AnalysisBase):
-    def run(self, mouse, date, training, running, sated, hungry):
+    def run(self, date):
         """
         Run all analyses and returns results in a dictionary.
 
         Parameters
         ----------
-        mouse : str
-            mouse name
-        date : str
-            current date
-        training : list of ints
-            list of training run numbers as integers
-        running : list of ints
-            list of running-only run numbers as integers
-        sated : list of ints
-            list of sated spontaneous run numbers as integers
-        hungry : list of ints
-            list of hungry spontaneous run numbers as integers
+        date : Date object
 
         Returns
         -------
@@ -36,7 +20,7 @@ class Sort(base.AnalysisBase):
 
         """
 
-        out = {}
+        out = self.nanoutput()
 
         dffs = {}
         for cs in config.stimuli():
