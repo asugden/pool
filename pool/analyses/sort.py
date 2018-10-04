@@ -4,7 +4,13 @@ import numpy as np
 from . import base
 from .. import config
 
+
 class Sort(base.AnalysisBase):
+    requires = []
+    sets = ['sort_order', 'sort_borders']
+    across = 'day'
+    updated = '180831'
+
     def run(self, date):
         """
         Run all analyses and returns results in a dictionary.
@@ -32,23 +38,6 @@ class Sort(base.AnalysisBase):
 
         out['sort_order'], out['sort_borders'] = self.simple(dffs, config.stimuli())
         return out
-
-
-    # ================================================================================== #
-    # REQUIRED PARAMETERS AND INJECTED FUNCTIONS
-
-    # Set the screening parameters by which protocols are selected
-    # Screening by protocol is required. Any other screening is optional
-    # Options for requires include:
-    #	classifier: whether a classifier will be required or not
-
-    requires = []
-    sets = ['sort_order', 'sort_borders']
-    across = 'day'
-    updated = '180831'
-
-    # ================================================================================== #
-    # ANYTHING YOU NEED
 
     @staticmethod
     def simple(dffs, preferred_order):

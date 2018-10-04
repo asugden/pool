@@ -6,6 +6,13 @@ from pool import config
 
 
 class Stim(base.AnalysisBase):
+    requires = ['']
+    sets = ['stim_dff_%s'%cs for cs in config.stimuli()] + \
+           ['stim_dff_2_4_%s'%cs for cs in config.stimuli()] + \
+           ['stim_dff_alltrials_%s'%cs for cs in config.stimuli()]
+    across = 'day'
+    updated = '180831'
+
     def run(self, date):
         """
         Run all analyses and returns results in a dictionary.
@@ -29,18 +36,6 @@ class Stim(base.AnalysisBase):
             out['stim_dff_alltrials_%s' % cs] = self.get_stimuli(date.runs('training'), cs, (0, 2), 'dff', True)
 
         return out
-
-
-    requires = ['']
-    sets = ['stim_dff_%s' % cs for cs in config.stimuli()] + \
-           ['stim_dff_2_4_%s'%cs for cs in config.stimuli()] + \
-           ['stim_dff_alltrials_%s' % cs for cs in config.stimuli()]
-    across = 'day'
-    updated = '180831'
-
-
-    # ================================================================================== #
-    # ANYTHING YOU NEED
 
     def get_stimuli(self, runs, cs, trange, ttype, all=False):
         """

@@ -5,6 +5,11 @@ from pool import config
 
 
 class Good(base.AnalysisBase):
+    requires = ['']
+    sets = ['good_%s'%cs for cs in config.stimuli()]
+    across = 'day'
+    updated = '181003'
+
     def run(self, date):
         """
         Run all analyses and returns results in a dictionary.
@@ -28,8 +33,3 @@ class Good(base.AnalysisBase):
             out['good_%s' % cs] = dff_active > 0.05
 
         return out
-
-    requires = ['']
-    sets = ['good_%s' % cs for cs in config.stimuli()]
-    across = 'day'
-    updated = '181003'

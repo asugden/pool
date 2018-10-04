@@ -6,6 +6,12 @@ from pool import config
 
 
 class Vdrive(base.AnalysisBase):
+    requires = ['']
+    sets = ['vdrive_%s'%cs for cs in config.stimuli()] + \
+           ['vdrive_fraction_%s'%cs for cs in config.stimuli()]
+    across = 'day'
+    updated = '180911'
+
     def run(self, date):
         """
         Run all analyses and returns results in a dictionary.
@@ -28,15 +34,6 @@ class Vdrive(base.AnalysisBase):
             out['vdrive_fraction_%s' % cs] = np.nansum(out['vdrive_%s'%cs] > 50)/len(out['vdrive_%s'%cs])
 
         return out
-
-    requires = ['']
-    sets = ['vdrive_%s' % cs for cs in config.stimuli()] + \
-           ['vdrive_fraction_%s' % cs for cs in config.stimuli()]
-    across = 'day'
-    updated = '180911'
-
-    # ================================================================================== #
-    # ANYTHING YOU NEED
 
     def median_first_lick(self, runs, cs):
         """
