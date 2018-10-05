@@ -121,7 +121,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
 
         return self.get(analysis, self._indmouse, self._inddate)
 
-    def get(self, analysis, mouse, date, run=None, force=False, pars=None):
+    def get(self, analysis, mouse, date, run=None, force=False, pars=None, metadata_object=None):
         """Get an analysis.
 
         :param analysis: string designating analysis to be returned
@@ -160,8 +160,11 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         if force or doupdate:
             c = object.__new__(an['class'])
             print('\tupdating analysis...', c)
-            c.__init__(metadata.Run(mouse, date, run) if an['across'] == 'run'
-                       else metadata.Date(mouse, date), self, pars)
+            if metadata_object is None and an['across'] == 'run':
+                metadata_object = metadata.Run(mouse, date, run)
+            elif metadata_object is None:
+                metadata_object = metadata.Date(mouse, date)
+            c.__init__(metadata_object, self, pars)
             out = c._get()
             for key in out:
                 if key not in self.ans:

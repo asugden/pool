@@ -28,30 +28,21 @@ class AnalysisBase(with_metaclass(ABCMeta, object)):
     # re-run (YYMMDD)
     updated = '000101'
 
-    # Cache for lazy loading
-    _mouse = None
-    _date = None
-    _run = None
-    _mdobject = None
-
     def __init__(self, metadata_object, analysis_database, classifier_parameters):
         """Default analysis init."""
         self._andb = analysis_database
         self._pars = classifier_parameters
 
-        # Check for lazy loading
-        if (metadata_object.mouse != self._mouse
-                or metadata_object.date != self._date
-                or metadata_object.run != self._run):
-            self._mouse = metadata_object.mouse
-            self._date = metadata_object.date
-            try:
-                self._run = metadata_object.run
-            except AttributeError:
-                self._run = None
-            self._mdobject = metadata_object
+        # Cache for lazy loading
+        self._mouse = metadata_object.mouse
+        self._date = metadata_object.date
+        self._mdobject = metadata_object
+        try:
+            self._run = metadata_object.run
+        except AttributeError:
+            self._run = None
 
-        self.out = self.run(self._mdobject)
+        self.out = self.run(metadata_object)
 
     @abstractmethod
     def run(self, mdobject):
@@ -72,7 +63,7 @@ class AnalysisBase(with_metaclass(ABCMeta, object)):
 
         return {}
 
-    def analysis(self, name):
+    def analysis(self, name, run=None):
         """
         Get an analysis from the analysis database.
 
@@ -80,13 +71,26 @@ class AnalysisBase(with_metaclass(ABCMeta, object)):
         ----------
         name : str
             Analysis name
+        run : int or Run
+            Run number or run object
 
         Returns
         -------
         Output of analysis
 
         """
-        return self._andb.get(name, self._mouse, self._date, self._run, force=True)
+
+        pass_object = None
+        if run is not None and not isinstance(run, int):
+            pass_object = run
+            run = run.run
+        elif run == self._run:
+            pass_object = self._mdobject
+        elif self._run is None and run is not None:
+            pass_object = self._mdobject.runs()[run]
+
+        return self._andb.get(name, self._mouse, self._date, self._run,
+                              pars=self._pars, metadata_object=pass_object)
 
     def nanoutput(self):
         """
