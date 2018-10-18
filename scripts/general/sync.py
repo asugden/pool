@@ -114,17 +114,28 @@ def delete_conflicts(
     try:
         _ = conflicts.total_rows
     except couchdb.http.ResourceNotFound:
+        print("Adding conflict view.")
         _add_conflict_view(
             name=name, host=host, port=port, user=user, password=password)
 
-    nconflicts = 0
+    print("Beginning deletion of conflicting docs.")
+    n_conflicts = 0
     for row in conflicts:
-        nconflicts += 1
+        n_conflicts += 1
         key = row['key']
         while key in db:
             db.delete(key)
-    print("Deleted {} conflicting doc(s) from {} on {}.".format(
-        nconflicts, name, host))
+    print("Deleted {} conflicting doc{} from {} on {}.".format(
+        n_conflicts, '' if n_conflicts == 1 else 's', name, host))
+
+
+def cleanup(
+        name='analysis', host='localhost', port=5984, user=None,
+        password=None):
+    """Cleanup database by deleting conflicts and purging old documents."""
+    delete_conflicts(
+        name=name, host=host, port=port, user=user, password=password)
+    compact(name=name, host=host, port=port, user=user, password=password)
 
 
 def _add_conflict_view(
@@ -158,7 +169,7 @@ def _get_current_replication(result):
 if __name__ == '__main__':
     argParser = argparse.ArgumentParser(description="""
         Helper script to sync multiple couchdb analysis databases. Currently
-        supports the following commands: push, pull, compact, and sync.
+        supports the following commands: push, pull, sync, compact, and cleanup.
         """, epilog="""
         After every 'push' or 'pull' all conflicting documents are deleted.
         'sync' performs a push, then a pull, and then compacts both databases.
@@ -188,3 +199,5 @@ if __name__ == '__main__':
              remote_host=args.remote_host, user=USER, password=PASSWORD)
     elif args.command == 'compact':
         compact(name=args.name, user=USER, password=PASSWORD)
+    elif args.command == 'cleanup':
+        cleanup(name=args.name, user=USER, password=PASSWORD)
