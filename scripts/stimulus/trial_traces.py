@@ -22,7 +22,7 @@ def parse_args():
         Script to plot mean stimulus response over days.""",
         epilog="""
         This is the epilog.
-        """, arguments=('mice', 'tags', 'dates', 'overwrite'))
+        """, arguments=('mice', 'tags', 'dates', 'overwrite', 'verbose'))
     arg_parser.add_argument(
         "-T", "--trace_type", choices=('dff', 'deconvolved', 'raw'), default="dff",
         help="Trace type to plot.")
@@ -97,7 +97,8 @@ def main():
         # Make this script cron-able
         if not args.overwrite and os.path.exists(save_path):
             continue
-
+        if args.verbose:
+            print('Generating trial traces: {}_{}'.format(date.mouse, date))
         figs = traces_per_cell(
             date, args.trace_type, args.t_range_s, args.errortrials,
             args.baseline, args.maxrois, args.normalize)
