@@ -5,3 +5,4 @@ dist/
 *.DS_Store
 pool.egg-info
 .idea/
+*.ipynb_checkpoints/
