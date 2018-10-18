@@ -24,6 +24,12 @@ DEFAULTS = {
     4: {
         'run_type': 'training',
         'tags': ['hungry']},
+    6: {
+        'run_type': 'spontaneous',
+        'tags': ['sated']},
+    8: {
+        'run_type': 'spontaneous',
+        'tags': ['sated']},
     9: {
         'run_type': 'spontaneous',
         'tags': ['sated']},
@@ -90,14 +96,23 @@ def add_mouse_date_runs(
     for run in runs:
         run_type = DEFAULTS[run]['run_type']
         tags = sorted(set(DEFAULTS[run]['tags']).union(run_tags))
-        if verbose:
-            print("Adding run: {}-{}-{}, tags: {}".format(
-                mouse, date, run, tags))
         if not no_action:
-            fm.add_run(
-                mouse, date, run, run_type=run_type, tags=tags,
-                overwrite=False)
-
+            try:
+                fm.add_run(
+                    mouse, date, run, run_type=run_type, tags=tags,
+                    overwrite=False)
+            except fm.AlreadyPresentError:
+                if verbose:
+                    print("Run already present, skipping: {}-{}-{}".format(
+                        mouse, date, run))
+            else:
+                if verbose:
+                    print("Added run: {}-{}-{}, tags: {}".format(
+                        mouse, date, run, tags))
+        else:
+            if verbose:
+                print("Adding run: {}-{}-{}, tags: {}".format(
+                    mouse, date, run, tags))
 
 def check_date(mouse, date):
     """Check date and locate if needed.
@@ -149,7 +164,7 @@ def locate_dates(mouse):
     for f in os.listdir(mouse_dir):
         if opath.isdir(opath.join(mouse_dir, f)):
             try:
-                date = flow.misc.parse_date(f)
+                flow.misc.parse_date(f)
             except ValueError:
                 pass
             else:
@@ -253,14 +268,14 @@ def main():
         "-p", "--photometry", action="append", default=None,
         help="Add photometry.")
     arg_parser.add_argument(
-        "-m", "--mouse_tags", action="append", default=None,
-        help="Tags to add to the mouse.")
+        "-m", "--mouse_tag", action="append", default=None,
+        help="Tag to add to the mouse.")
     arg_parser.add_argument(
-        "-d", "--date_tags", action="append", default=None,
-        help="Tags to add to the date.")
+        "-d", "--date_tag", action="append", default=None,
+        help="Tag to add to the date.")
     arg_parser.add_argument(
-        "-r", "--run_tags", action="append", default=None,
-        help="Tags to add to ALL runs. Combined with default tags.")
+        "-r", "--run_tag", action="append", default=None,
+        help="Tag to add to ALL runs. Combined with default tags.")
     arg_parser.add_argument(
         "-l", "--list", action="store_true",
         help="Only list currently matching runs, don't actually add anything.")
@@ -273,8 +288,8 @@ def main():
     args = arg_parser.parse_args()
 
     if args.list:
-        list_runs(args.mouse, args.date, args.runs, args.mouse_tags,
-                  args.date_tags, args.run_tags, args.photometry)
+        list_runs(args.mouse, args.date, args.runs, args.mouse_tag,
+                  args.date_tag, args.run_tag, args.photometry)
         return
 
     dates = check_date(args.mouse, args.date)
@@ -283,8 +298,8 @@ def main():
         runs = check_runs(args.mouse, date, args.runs)
         add_mouse_date_runs(
             mouse=args.mouse, date=date, runs=runs,
-            mouse_tags=args.mouse_tags, date_tags=args.date_tags,
-            run_tags=args.run_tags, photometry=args.photometry,
+            mouse_tags=args.mouse_tag, date_tags=args.date_tag,
+            run_tags=args.run_tag, photometry=args.photometry,
             no_action=args.no_action, verbose=args.verbose)
 
 
