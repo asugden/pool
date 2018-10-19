@@ -8645,7 +8645,8 @@
               "run": 3,
               "run_type": "training",
               "tags": [
-                "hungry"
+                "hungry",
+                "bad"
               ]
             },
             {
