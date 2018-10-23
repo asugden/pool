@@ -1,10 +1,13 @@
+from copy import copy
 import matplotlib.gridspec as grd
 import matplotlib.pyplot as plt
 import numpy as np
 
-from flow import paths
+import flow
+from flow import misc, paths
 import flow.metadata as metadata
 
+import pool
 from pool import config
 from pool import stimulusdff
 from pool.plotting import graphfns
@@ -219,12 +222,36 @@ def setgraph(args, andb, mouse, lpars):
     graphfns.save(fig, path)
 
 
-if __name__ == '__main__':
-    from sys import argv
-    from flow import parseargv
-    from pool import database
+def parse_args():
+    arg_parser = misc.default_parser(
+        description="""
+        Script to plot mean stimulus response over days.""",
+        epilog="""
+        The 'dates' option really only makes sense with a single Mouse.
+        """, arguments=('mouse', 'date'))
+    arg_parser.add_argument(
+        "-T", "--trace_type", choices=('dff', 'deconvolved', 'raw'), default="dff",
+        help="Trace type to plot.")
+    arg_parser.add_argument(
+        "-R", "--t_range_s", nargs=2, type=int, default=(-1, 8),
+        help="Time range around stimulus to plot.")
+    arg_parser.add_argument(
+        "-b", "--baseline", nargs=2, type=int, default=(-1, 0),
+        help='Baseline used for dFF trace.')
+    arg_parser.add_argument(
+        "-e", "--errortrials", choices=(-1, 0, 1, 2), type=int, default=-1,
+        help="-1 is off, 0 is correct trials, 1 is error trials, 2 is diff of error trials.")
+    arg_parser.add_argument(
+        "-H", "--hungry_sated", choices=(0, 1, 2), type=int, default=0,
+        help="0 is hungry trials, 1 is sated trials, 2 is hungry-sated")
 
-    defaults = {
+    args = arg_parser.parse_args()
+
+    return args
+
+
+def main():
+    lpars = {
         'graph': 'stimulus',
         'sort': '',  # Analysis upon which to sort
         'analyses': [],  # Analyses to display along right side
@@ -238,18 +265,29 @@ if __name__ == '__main__':
         'error-trials': -1,  # -1 is off, 0 is correct trials, 1 is error trials, 2 is diff of error trials
         'hungry-sated': 0,  # 0 is hungry trials, 1 is sated trials, 2 is hungry-sated
     }
+    args = parse_args()
+    lpars['trange-ms'] = (args.t_range_s[0] * 1000, args.t_range_s[1] * 1000)
+    lpars['baseline-ms'] = (args.baseline[0] * 1000, args.baseline[1] * 1000)
+    lpars['trace-type'] = args.trace_type
+    lpars['display'] = args.trace_type
+    lpars['error-trials'] = args.errortrials
+    lpars['hungry-sated'] = args.hungry_sated
 
-    lpars = parseargv.extractkv(argv, defaults)
-    if not isinstance(lpars['analyses'], list): lpars['analyses'] = [lpars['analyses']]
-    first = True
-    days = parseargv.sorteddays(argv, classifier=False, trace=False, force=True)
-    while days.next():
-        md, args = days.get()
-        if first:
-            first = False
-            andb = database.db()
+    defaults = flow.config.default()
+    defaults['mouse'] = args.mouse
+    defaults['comparison-date'] = str(args.date)
+    defaults['training-date'] = str(args.date)
 
-        setgraph(args, andb, md[0], lpars)
+    runs = flow.metadata.runs(
+        mouse=args.mouse, date=args.date, run_types=['spontaneous'])
+    params = []
+    for run in runs:
+        params.append(copy(defaults))
+        params[-1]['comparison-run'] = run
 
-    days.reset()
-    andb.save()
+    setgraph(params, pool.database.db(), args.mouse, lpars)
+
+
+if __name__ == '__main__':
+    main()
+
