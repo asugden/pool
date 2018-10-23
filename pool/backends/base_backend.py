@@ -159,7 +159,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         out, doupdate = self.recall(analysis, keys)
         if force or doupdate:
             c = object.__new__(an['class'])
-            print('\tupdating analysis...', c)
+            print('\tupdating analysis...', c, mouse, date)
             if metadata_object is None and an['across'] == 'run':
                 metadata_object = metadata.Run(mouse, date, run)
             elif metadata_object is None:

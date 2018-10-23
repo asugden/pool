@@ -44,6 +44,9 @@ class AnalysisBase(with_metaclass(ABCMeta, object)):
 
         self.out = self.run(metadata_object)
 
+    def __str__(self):
+        return str(self.__class__.__name__)
+
     @abstractmethod
     def run(self, mdobject):
         """

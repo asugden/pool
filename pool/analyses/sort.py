@@ -56,6 +56,7 @@ class Sort(base.AnalysisBase):
         -------
         list, dict
             Sorted list and the borders of between each category
+
         """
 
         cses = [cs for cs in preferred_order if cs in dffs]
