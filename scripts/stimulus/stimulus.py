@@ -218,17 +218,15 @@ def setgraph(args, andb, mouse, lpars):
 
     savevals = [lpars['graph'], '-'.join(lpars['analyses'])]
     path = '%s-%s'%(path, '-'.join(k for k in savevals if len(k) > 0))
-    print path + '.pdf'
+    print(path + '.pdf')
     graphfns.save(fig, path)
 
 
 def parse_args():
     arg_parser = misc.default_parser(
         description="""
-        Script to plot mean stimulus response over days.""",
-        epilog="""
-        The 'dates' option really only makes sense with a single Mouse.
-        """, arguments=('mouse', 'date'))
+        Script to plot mean response heatmap, sorted by preferred stimulus.""",
+        arguments=('mouse', 'date'))
     arg_parser.add_argument(
         "-T", "--trace_type", choices=('dff', 'deconvolved', 'raw'), default="dff",
         help="Trace type to plot.")

@@ -6,12 +6,12 @@ import numpy as np
 import os.path as opath
 from scipy.stats import norm
 
-from flow import config, events, graphfns, paths
+import flow
+from flow import classify2p, config, misc, paths
 from flow.classifier import classify
-from flow.misc import colors
 
 import pool
-
+from pool.plotting import colors, graphfns
 
 class ClassifierHeatmap:
     def __init__(self, path, ts, trs, cls={}, beh={}, bord={}, top={}, clrs={}, zoom=-1, tracetype='deconvolved'):
@@ -642,7 +642,7 @@ def grevents(classifier, t2p, md, gri, lpars, basepath):
         for cs in classifier[results]:
             print cs
             if 'other' not in cs and 'run' not in cs and 'rand' not in cs:
-                evs = events.peaks(classifier[results][cs], t2p, lpars['threshold'])
+                evs = classify2p.peaks(classifier[results][cs], t2p, lpars['threshold'])
                 for frame in evs:
                     if frame > fmin:
                         path = opath.join(basepath, 'replay %s-%s-%02i %s-%i.pdf'%(md[0], md[1], md[2], cs, frame))
@@ -708,7 +708,8 @@ def activity(andb, sated=True):
 
     return actbl, actvar, actouts
 
-if __name__ == '__main__':
+
+def old_main():
     from sys import argv
     from flow import parseargv
 
@@ -765,3 +766,66 @@ if __name__ == '__main__':
 
         if lpars['delete-classifier']: deleteclassifier(args)
         if lpars['open']: getoutput('open %s'%path.replace(' ', '\\ '))
+
+
+def parse_args():
+    arg_parser = misc.default_parser(
+        description="""
+        Script to plot replays.""", arguments=('mouse', 'date'))
+    arg_parser.add_argument(
+        "-T", "--trace_type", choices=('dff', 'deconvolved', 'raw'), default="deconvolved",
+        help="Trace type to plot.")
+    arg_parser.add_argument(
+        "-R", "--t_range_m", nargs=2, type=int, default=(-1, 1),
+        help="Time range to plot.")
+    arg_parser.add_argument(
+        "-D", "--display_training", action="store_true",
+        help="Also plot stimulus responses, otherwise just plots spontaneous time.")
+
+    args = arg_parser.parse_args()
+
+    return args
+
+
+def main():
+    lpars = {
+        'sort': '',  # 'dff-no-lick', 'information'
+
+        'display-classifier': 'identity',  # can also be 'time' or 'joint'
+        'display-ancillary': False,
+        'display-other': False,
+        'temporal-filter': False,
+
+        'events': False,
+        'display-training': False,
+        'skip-boxcar': False,
+        'threshold': 0.25,
+        'trange-m': (-1, 1),
+        'frame': -1,
+
+        'top-trace': 'photometry',  # can be 'ripple', 'temporal', or 'none', False
+        'top-tracetype': 'dff',  # can be 'deconvolved', only applied if top-trace is photometry
+
+        'display-type': 'deconvolved',  # can be 'dff'
+
+        'delete-classifier': False,
+        'open': False,
+
+        'realtime': False,
+    }
+
+    args = parse_args()
+
+    lpars['display-type'] = args.trace_type
+    lpars['trange-m'] = args.t_range_m
+    lpars['display-training'] = args.display_training
+
+    run_types = ['training', 'spontaneous'] if args.display_training else ['spontaneous']
+    runs = flow.metadata.RunSorter.frommeta(
+        mice=[args.mouse], dates=[args.date], run_types=run_types)
+    for run in runs:
+        from pudb import set_trace; set_trace()
+
+
+if __name__ == '__main__':
+    main()
