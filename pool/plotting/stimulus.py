@@ -67,6 +67,9 @@ def stimulus_mean_response(
     sort_order = np.array(adb.get('sort_order', date.mouse, date.date))
     sort_borders = adb.get('sort_borders', date.mouse, date.date)
 
+    # sort_order is for heatmaps, to plot the first group at the top
+    sort_order = sort_order[::-1]
+
     for cs in cses:
         start_idx = sort_borders[cs]
         borders = np.array(sort_borders.values())
