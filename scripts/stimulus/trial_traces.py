@@ -99,16 +99,16 @@ def main():
         mice=args.mice, dates=args.dates, tags=args.tags)
     for date in sorter:
         save_path = os.path.join(save_dir, date.mouse, filename.format(date))
-
-        # Make this script cron-able
         if not args.overwrite and os.path.exists(save_path):
             continue
+
         if args.verbose:
             print('Generating trial traces: {}'.format(date))
+
         figs = traces_per_cell(
             date, args.trace_type, args.t_range_s, args.errortrials,
             args.baseline, args.maxrois, args.normalize)
-        summary_fig = misc.summary_page(sorter, figsize=(16, 9), **vars(args))
+        summary_fig = misc.summary_page(date.runs(), figsize=(16, 9), **vars(args))
         misc.save_figs(save_path, it.chain([summary_fig], figs))
         print(save_path)
 

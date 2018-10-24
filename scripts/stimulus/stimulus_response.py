@@ -19,7 +19,7 @@ def parse_args():
         Script to plot mean stimulus response over days.""",
         epilog="""
         The 'dates' option really only makes sense with a single Mouse.
-        """, arguments=('mice', 'tags', 'dates'))
+        """, arguments=('mice', 'tags', 'dates', 'overwrite', 'verbose'))
     arg_parser.add_argument(
         "-T", "--trace_type", choices=('dff', 'deconvolved', 'raw'), default="dff",
         help="Trace type to plot.")
@@ -27,7 +27,7 @@ def parse_args():
         "-R", "--t_range_s", nargs=2, type=int, default=(-1, 8),
         help="Time range around stimulus to plot.")
     arg_parser.add_argument(
-        "-b", "--baseline", nargs=2, type=int, default=None,
+        "-b", "--baseline", nargs=2, type=int, default=(-1, 0),
         help='Baseline used for dFF trace.')
     arg_parser.add_argument(
         "-e", "--errortrials", choices=(-1, 0, 1, 2), type=int, default=-1,
@@ -50,11 +50,18 @@ def main():
         mice=args.mice, tags=args.tags)
     for mouse in sorter:
         save_path = os.path.join(save_dir, filename.format(mouse))
+        if not args.overwrite and os.path.exists(save_path):
+            continue
+
+        if args.verbose:
+            print('Generating stimulus response plots: {}'.format(mouse))
+
         fig = pls.stimulus_response(
             mouse.dates(dates=args.dates, tags=args.tags),
             t_range_s=args.t_range_s, trace_type=args.trace_type,
             errortrials=args.errortrials, baseline=args.baseline, sharey=True)
-        summary_fig = misc.summary_page(sorter, figsize=(16, 9), **vars(args))
+        summary_fig = misc.summary_page(
+            mouse.dates(), figsize=(16, 9), **vars(args))
         misc.save_figs(save_path, [summary_fig, fig])
         print(save_path)
 
