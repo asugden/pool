@@ -32,9 +32,13 @@ def style(sz=20):
     :return:
     """
     mpl.use('Agg', warn=False)
-    f = {'family': 'Gotham', 'weight': 'light', 'size': sz}
-    mpl.rc('font', **f)
-    mpl.rcParams['lines.linewidth'] = 0.75
+    params = ({'font.family': 'Gotham',
+               'font.weight': 'light',
+               'font.size': sz,
+               'lines.linewidth': 0.75
+    })
+    params.update(pool.config.params().get('mpl', {}))
+    mpl.rcParams.update(params)
 
 def save(fig, path, format='pdf'):
     # Fix the axes, dependent on graph type
