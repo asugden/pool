@@ -24,7 +24,7 @@ class ClassifierHeatmap:
 
         nframes = np.shape(trs)[1]
         fig, gs = self.getfig(nframes, top!={}, zoom)
-        self.pregraph()
+        graphfns.style(sz=20)
 
         if top != {}:
             self.toptrace(plt.subplot(gs[0]), ts, top)
@@ -35,7 +35,7 @@ class ClassifierHeatmap:
 
         plt.tight_layout()
         with graphfns.SuppressErrors():
-            plt.savefig(path, transparent=True, dpi=200)
+            plt.savefig(path, transparent=False, dpi=200)
         plt.close(fig)
         plt.close('all')
 
@@ -222,13 +222,6 @@ class ClassifierHeatmap:
 
             # =====================================================================
             # GRAPHING ESSENTIALS
-
-    def pregraph(self):
-        """Prep the plot so that it looks pretty."""
-        mpl.use('Agg', warn=False)
-        f = {'family': 'Gotham', 'weight': 'light', 'size': 20}
-        mpl.rc('font', **f)
-        mpl.rcParams['lines.linewidth'] = 0.75
 
     def _noaxis(self, ax):
         """
@@ -604,7 +597,7 @@ class ReplayGraphInputs:
                         self._clstraces[key] = np.copy(classifier['time-results'][key])
 
 
-def graph(path, frame, ttype):
+def graph(path, frame, ttype, gri):
     """
     Graph
     :param path:
@@ -650,7 +643,7 @@ def grevents(classifier, t2p, md, gri, lpars, basepath):
                         graph(path, frame, lpars['display-type'])
     else:
         path = opath.join(basepath, '%s-%s-%02i-heat-classifier.png'%(md[0], md[1], md[2]))
-        graph(path, -1, lpars['display-type'])
+        graph(path, -1, lpars['display-type'], gri)
 
     print path
     return path
@@ -772,7 +765,7 @@ def old_main():
 def parse_args():
     arg_parser = misc.default_parser(
         description="""
-        Script to plot replays.""", arguments=('mouse', 'date'))
+        Script to plot replays.""", arguments=('mice', 'dates', 'tags'))
     arg_parser.add_argument(
         "-T", "--trace_type", choices=('dff', 'deconvolved', 'raw'), default="deconvolved",
         help="Trace type to plot.")
@@ -822,36 +815,37 @@ def main():
     lpars['display-training'] = args.display_training
 
     defaults = flow.config.default()
-    defaults['mouse'] = args.mouse
-    defaults['comparison-date'] = str(args.date)
-    defaults['training-date'] = str(args.date)
 
     andb = pool.database.db()
 
     run_types = ['training', 'spontaneous'] if args.display_training else ['spontaneous']
-    runs = flow.metadata.RunSorter.frommeta(
-        mice=[args.mouse], dates=[args.date], run_types=run_types)
-    for run in runs:
-        md = (run.mouse, str(run.date), run.run, '')
 
-        params = copy(defaults)
-        params['comparison-run'] = run.run
-        params['training-runs'] = flow.metadata.runs(
-            run.mouse, run.date, run_types=['training'])
-        params['training-other-running-runs'] = flow.metadata.runs(
-            run.mouse, run.date, run_types=['running'])
+    dates = flow.metadata.DateSorter.frommeta(
+        mice=args.mice, dates=args.dates, tags=args.tags)
+    for date in dates:
+        defaults['mouse'] = date.mouse
+        defaults['comparison-date'] = str(date.date)
+        defaults['training-date'] = str(date.date)
+        for run in date.runs(run_types=run_types):
+            md = (run.mouse, str(run.date), run.run, '')
 
-        t2p = run.trace2p()
-        c2p = run.classify2p()
-        # from pudb import set_trace; set_trace()
+            params = copy(defaults)
+            params['comparison-run'] = run.run
+            params['training-runs'] = flow.metadata.runs(
+                run.mouse, run.date, run_types=['training'])
+            params['training-other-running-runs'] = flow.metadata.runs(
+                run.mouse, run.date, run_types=['running'])
 
-        gri = ReplayGraphInputs(andb, params, lpars, c2p, t2p, md[0], md[1], params['classification-ms'],
-                                params['probability']['plus'])
-        basepath = paths.graphgroup(params, 'heatmap')
-        path = grevents(c2p, t2p, md, gri, lpars, basepath)
+            t2p = run.trace2p()
+            c2p = run.classify2p()
 
-        if lpars['delete-classifier']: deleteclassifier(params)
-        if lpars['open']: getoutput('open %s' % path.replace(' ', '\\ '))
+            gri = ReplayGraphInputs(andb, params, lpars, c2p.d, t2p, md[0], md[1], params['classification-ms'],
+                                    params['probability']['plus'])
+            basepath = paths.graphgroup(params, 'heatmap')
+            path = grevents(c2p, t2p, md, gri, lpars, basepath)
+
+            if lpars['delete-classifier']: deleteclassifier(params)
+            if lpars['open']: getoutput('open %s' % path.replace(' ', '\\ '))
 
 
 if __name__ == '__main__':
