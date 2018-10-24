@@ -7897,6 +7897,7 @@
               "run": 11,
               "run_type": "spontaneous",
               "tags": [
+                "bad",
                 "sated"
               ]
             }
@@ -8645,8 +8646,8 @@
               "run": 3,
               "run_type": "training",
               "tags": [
-                "hungry",
-                "bad"
+                "bad",
+                "hungry"
               ]
             },
             {
