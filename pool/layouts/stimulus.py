@@ -50,8 +50,9 @@ def trial_traces(
 
 
 def stimulus_response(
-        dates, t_range_s, trace_type, **kwargs):
-    """
+        dates, t_range_s, trace_type, sharey=False, **kwargs):
+    """Layout and plot mean response to each stimulus across days.
+
     Parameters
     ----------
     dates : DateSorter
@@ -59,6 +60,8 @@ def stimulus_response(
     t_range_s : tuple of int
         2 element tuple of start and end time relative to stimulus (in seconds).
     trace_type : {'dff', 'raw', 'deconvolved'}
+    sharey : bool
+        If True, match all y scales.
     **kwargs
         Additional keyword arguments are passed to the actual plotting function.
 
@@ -68,9 +71,16 @@ def stimulus_response(
 
     """
     fig, axs = flow.misc.plotting.layout_subplots(
-        len(dates), width=16, height=9, sharey=False, sharex=True)
+        len(dates), width=16, height=9, sharey=sharey, sharex=True)
     for date, ax in zip(dates, axs.flat):
         pps.stimulus_mean_response(
             ax, date, plot_all=False, trace_type=trace_type,
             t_range_s=t_range_s, **kwargs)
+
+    axs.flat[0].legend(frameon=False)
+    for ax in axs[:-1, :].flat:
+        ax.set_xlabel('')
+    for ax in axs[:, 1:].flat:
+        ax.set_ylabel('')
+
     return fig

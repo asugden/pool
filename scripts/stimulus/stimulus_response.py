@@ -53,7 +53,7 @@ def main():
         fig = pls.stimulus_response(
             mouse.dates(dates=args.dates, tags=args.tags),
             t_range_s=args.t_range_s, trace_type=args.trace_type,
-            errortrials=args.errortrials, baseline=args.baseline)
+            errortrials=args.errortrials, baseline=args.baseline, sharey=True)
         summary_fig = misc.summary_page(sorter, figsize=(16, 9), **vars(args))
         misc.save_figs(save_path, [summary_fig, fig])
         print(save_path)

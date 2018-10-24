@@ -87,20 +87,22 @@ def stimulus_mean_response(
             for roi in roi_means:
                 ax.plot(x, roi, c=color)
         else:
-            data_mean = mean(mean(responses[cs][idxs], 2), 0)
+            cell_means = mean(responses[cs][idxs], 2)
+            n_cells = cell_means.shape[0]
+            data_mean = mean(cell_means, 0)
             # median absolute deviation instead of std with median?
-            data_std = mean(responses[cs][idxs], 2).std(0)
+            data_std = cell_means.std(0)
 
             ax.plot(x, data_mean, c=color, label=cs)
             ax.fill_between(
-                x, data_mean - data_std, data_mean + data_std, color=color,
+                x, data_mean - data_std / np.sqrt(n_cells),
+                data_mean + data_std / np.sqrt(n_cells), color=color,
                 alpha=0.2)
 
     ax.set_ylabel(ylabel)
     ax.set_xlabel('Time (s)')
     ax.set_title('{} - {}'.format(date.mouse, date.date))
     ax.set_xticks([start_s, 0, end_s])
-    ax.legend()
 
 
 def trial_traces(
