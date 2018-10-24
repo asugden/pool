@@ -127,7 +127,7 @@ def check_date(mouse, date):
     dates : list of int
 
     """
-    if date < 0 :
+    if date < 0:
         dates = locate_dates(mouse)
     else:
         dates = [date]
@@ -243,17 +243,19 @@ def main():
         Can be called several different ways.
         Specify a single mouse, single date and runs:
         > python metadata.py OA178 180701 1 2 3 4
+        
         Specify a single mouse and date, infers runs from simpcells.
         > python metadata.py OA178 180701
+        
         Specify a single mouse, finds all dates and runs from simpcells.
         > python metadata.py OA178
+        
         List all matching runs and don't add anything.
         > python metadata.py --list OA178 180701
         """), epilog=textwrap.dedent("""
         Run types and default run tags are inferred based on our lab standards.
         Photometry and the tags can be specified multiple times to add more
-        than 1 value.
-        For example:
+        than 1 value. For example:
         > python metadata.py OA178 180701 1 2 3 9 10 11 -m jeff -m test
         """), formatter_class=argparse.RawDescriptionHelpFormatter,)
     arg_parser.add_argument(
