@@ -1,4 +1,5 @@
 from commands import getoutput
+from copy import copy
 import matplotlib as mpl
 import matplotlib.gridspec as grd
 import matplotlib.pyplot as plt
@@ -820,11 +821,37 @@ def main():
     lpars['trange-m'] = args.t_range_m
     lpars['display-training'] = args.display_training
 
+    defaults = flow.config.default()
+    defaults['mouse'] = args.mouse
+    defaults['comparison-date'] = str(args.date)
+    defaults['training-date'] = str(args.date)
+
+    andb = pool.database.db()
+
     run_types = ['training', 'spontaneous'] if args.display_training else ['spontaneous']
     runs = flow.metadata.RunSorter.frommeta(
         mice=[args.mouse], dates=[args.date], run_types=run_types)
     for run in runs:
-        from pudb import set_trace; set_trace()
+        md = (run.mouse, str(run.date), run.run, '')
+
+        params = copy(defaults)
+        params['comparison-run'] = run.run
+        params['training-runs'] = flow.metadata.runs(
+            run.mouse, run.date, run_types=['training'])
+        params['training-other-running-runs'] = flow.metadata.runs(
+            run.mouse, run.date, run_types=['running'])
+
+        t2p = run.trace2p()
+        c2p = run.classify2p()
+        # from pudb import set_trace; set_trace()
+
+        gri = ReplayGraphInputs(andb, params, lpars, c2p, t2p, md[0], md[1], params['classification-ms'],
+                                params['probability']['plus'])
+        basepath = paths.graphgroup(params, 'heatmap')
+        path = grevents(c2p, t2p, md, gri, lpars, basepath)
+
+        if lpars['delete-classifier']: deleteclassifier(params)
+        if lpars['open']: getoutput('open %s' % path.replace(' ', '\\ '))
 
 
 if __name__ == '__main__':
