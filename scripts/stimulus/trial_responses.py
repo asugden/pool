@@ -31,7 +31,7 @@ def parse_args():
         "-R", "--t_range_s", nargs=2, type=int, default=(-2, 8),
         help="Time range around stimulus to plot.")
     arg_parser.add_argument(
-        "-b", "--baseline", nargs=2, type=int, default=(-2, 0),
+        "-b", "--baseline", nargs=2, type=int, default=None,
         help='Baseline used for dFF trace.')
     arg_parser.add_argument(
         "-e", "--errortrials", choices=(-1, 0, 1, 2), type=int, default=-1,
