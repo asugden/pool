@@ -128,3 +128,54 @@ def trial_traces(
         ax, traces, (start_s, end_s), normalize=normalize, errors=errors)
 
     ax.set_title(stim_type)
+
+
+def trial_heatmap(
+        ax, date, roi_idx, stim_type, t_range_s=(-1, 2), trace_type='dff',
+        normalize=False, errors=None, **kwargs):
+    """Plot all trial responses as a heatmap."""
+    start_s, end_s = t_range_s
+
+    traces, errors = [], []
+    runs = date.runs(run_types=['training'])
+    framerate = runs[0].trace2p().framerate
+    for run in runs:
+        t2p = run.trace2p()
+        assert t2p.framerate == framerate
+        all_traces = t2p.cstraces(
+            stim_type, start_s=start_s, end_s=end_s, trace_type=trace_type,
+            **kwargs)
+        traces.append(all_traces[roi_idx])
+        errors.extend(t2p.errors(stim_type))
+    traces = np.concatenate(traces, axis=1)
+
+    mean_trace = np.nanmean(traces, 1)[:, None]
+    nan_trace = np.empty(len(mean_trace))[:, None]
+    nan_trace.fill(np.nan)
+    traces = np.concatenate([traces, nan_trace, nan_trace, mean_trace, mean_trace], axis=1)
+
+    pool.plotting.graphfns.axheatmap(
+        ax.figure, ax, traces.T, [], trace_type, 'auto')
+
+    ax.set_title(stim_type)
+
+    # Set x-axis
+    if start_s < 0 and end_s > 0:
+        zero = traces.T.shape[1] * np.abs(start_s) / (end_s - start_s)
+        ax.axvline(zero, color='k', linestyle='--')
+        xticks = [0, zero, traces.T.shape[1]-1]
+        xticklabels = [str(start_s), '0', str(end_s)]
+    else:
+        xticks = [0, traces.T.shape[1]]
+        xticklabels = [str(start_s), str(end_s)]
+
+    ax.set_xticks(xticks)
+    ax.set_xticklabels(xticklabels)
+    ax.set_xlabel('Time (s)')
+
+    # Set y-axis
+    yticks = [0.5, traces.T.shape[0]-4.5, traces.T.shape[0]-1.5]
+    yticklabels = ['1', str(traces.T.shape[0]), 'mean']
+    ax.set_yticks(yticks)
+    ax.set_yticklabels(yticklabels)
+    ax.set_ylabel('Trial')

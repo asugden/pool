@@ -6,9 +6,9 @@ import pool
 from pool.plotting import stimulus as pps
 
 
-def trial_traces(
+def trial_responses(
         date, roi_idx, t_range_s=(-1, 2), trace_type='dff', cses=None,
-        fig_kw=None, **kwargs):
+        mode='traces', fig_kw=None, **kwargs):
     """Plots all stimuli responses for a single ROI.
 
     Parameters
@@ -23,6 +23,8 @@ def trial_traces(
         Type of trace to plot.
     cses : list of str, optional
         List of stimuli to plot. If None, defaults to cses in config file.
+    mode : {'traces', 'heatmap'}
+        How to plot the data, as individual traces or a heatmap.
     fig_kw : dict
         Keyword arguments to be passed to the figure-generating
         function.
@@ -41,9 +43,14 @@ def trial_traces(
 
     fig, axs = plt.subplots(1, len(cses), **fig_kw)
     for ax, cs in zip(axs, cses):
-        pps.trial_traces(
-            ax, date, roi_idx, cs, t_range_s=t_range_s, trace_type=trace_type,
-            **kwargs)
+        if mode == 'traces':
+            pps.trial_traces(
+                ax, date, roi_idx, cs, t_range_s=t_range_s, trace_type=trace_type,
+                **kwargs)
+        elif mode == 'heatmap':
+            pps.trial_heatmap(
+                ax, date, roi_idx, cs, t_range_s=t_range_s, trace_type=trace_type,
+                **kwargs)
         if ax != axs[0]:
             ax.set_ylabel('')
     return fig

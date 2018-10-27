@@ -1,11 +1,9 @@
 from commands import getoutput
 from copy import copy
-import matplotlib as mpl
 import matplotlib.gridspec as grd
 import matplotlib.pyplot as plt
 import numpy as np
 import os.path as opath
-from scipy.stats import norm
 
 import flow
 from flow import classify2p, config, misc, paths
