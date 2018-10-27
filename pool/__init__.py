@@ -3,5 +3,5 @@ import warnings
 warnings.filterwarnings("ignore", message="numpy.dtype size changed")
 warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
 
-from . import backends
+from . import backends, layouts, plotting
 from . import config, database
