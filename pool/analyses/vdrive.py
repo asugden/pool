@@ -10,7 +10,7 @@ class Vdrive(base.AnalysisBase):
     sets = ['vdrive_%s'%cs for cs in config.stimuli()] + \
            ['vdrive_fraction_%s'%cs for cs in config.stimuli()]
     across = 'day'
-    updated = '180911'
+    updated = '181028'
 
     def run(self, date):
         """
