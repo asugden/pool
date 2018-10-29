@@ -31,7 +31,7 @@ class Vdrive(base.AnalysisBase):
 
         for cs in config.stimuli():
             out['vdrive_%s' % cs] = self.responses(date.runs('training'), cs)
-            out['vdrive_fraction_%s' % cs] = np.nansum(out['vdrive_%s'%cs] > 50)/len(out['vdrive_%s'%cs])
+            out['vdrive_fraction_%s' % cs] = np.nansum(out['vdrive_%s'%cs] > 50)/float(len(out['vdrive_%s'%cs]))
 
         return out
 
