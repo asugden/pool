@@ -231,7 +231,7 @@ def parse_args():
         "-T", "--trace_type", choices=('dff', 'deconvolved', 'raw'), default="dff",
         help="Trace type to plot.")
     arg_parser.add_argument(
-        "-R", "--t_range_s", nargs=2, type=int, default=(-1, 8),
+        "-R", "--t_range_s", nargs=2, type=int, default=(-2, 8),
         help="Time range around stimulus to plot.")
     arg_parser.add_argument(
         "-b", "--baseline", nargs=2, type=int, default=(-1, 0),
