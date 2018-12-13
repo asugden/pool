@@ -1,0 +1,14 @@
+version: '2'
+services:
+    pooldocs:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            # network: host
+        image: pooldocs
+        container_name: pooldocs
+        restart: "always"
+        volumes:
+            - "../build/html:/usr/local/apache2/htdocs:rw"
+        ports:
+            - 8082:80

@@ -1,0 +1,4 @@
+stimulusdff
+===========
+
+.. automodule:: pool.stimulusdff
