@@ -32,7 +32,7 @@ def reactivation_probability_throughout_trials(
     if 'label' not in kwargs:
         kwargs['label'] = replay_type
 
-    all_results = []
+    all_results = [pd.DataFrame()]
     for run in runs:
         all_results.append(_classifier_by_trial(
             run.classify2p(), run.trace2p(), pre_s=pre_s, post_s=post_s,
@@ -87,7 +87,7 @@ def _classifier_by_trial(c2p, t2p, pre_s=2, post_s=None, errortrials=-1):
     fr = t2p.framerate
     pre_f = int(np.ceil(pre_s * fr))
 
-    result = []
+    result = [pd.DataFrame()]
     for trial_idx, (onset, next_onset, cond, err) in enumerate(
             zip(all_onsets, next_onsets, conditions, errors)):
         if errortrials == 0 and err:
@@ -117,7 +117,7 @@ def _classifier_by_trial(c2p, t2p, pre_s=2, post_s=None, errortrials=-1):
 
     final_result = pd.concat(result, axis=0)
 
-    if post_s is not None:
+    if len(final_result) and post_s is not None:
         final_result = final_result.loc(axis=0)[:, :, :post_s]
 
     return final_result

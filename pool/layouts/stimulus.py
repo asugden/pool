@@ -53,6 +53,9 @@ def trial_responses(
                 **kwargs)
         if ax != axs[0]:
             ax.set_ylabel('')
+    fig.suptitle(
+        '{} - {} - {}'.format(
+            date.mouse, date.date, roi_idx))
     return fig
 
 
@@ -91,3 +94,12 @@ def stimulus_response(
         ax.set_ylabel('')
 
     return fig
+
+# INCOMPLETE
+# def reward_response(dates, t_range_s, trace_type, sharey=True, **kwargs):
+#     fig, axs = flow.misc.plotting.layout_subplots(
+#         len(dates), width=16, height=9, sharey=sharey, sharex=True)
+#     for date, ax in zip(dates, axs.flat):
+#         pps.psth_heatmap(ax, date, 'reward', trace_type=trace_type, t_range_s=t_range_s, **kwargs)
+
+#     return fig
