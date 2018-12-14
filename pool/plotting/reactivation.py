@@ -41,7 +41,9 @@ def reactivation_probability_throughout_trials(
 
     grouped = result.groupby(level=['condition', 'time']).mean()
 
-    ax.plot(grouped.loc[trial_type, (replay_type, 'median')], **kwargs)
+    # We could have no trials of the desired error type (or trial type in general)
+    if trial_type in grouped.index:
+        ax.plot(grouped.xs(trial_type).loc[:, replay_type], **kwargs)
 
     # def percentile10(x):
     #     return np.percentile(x, 0.1)
