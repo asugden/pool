@@ -35,7 +35,7 @@ def reactivation_probability_throughout_trials(
     all_results = [pd.DataFrame()]
     for run in runs:
         all_results.append(_classifier_by_trial(
-            run.classify2p(), run.trace2p(), pre_s=pre_s, post_s=post_s,
+            run, pre_s=pre_s, post_s=post_s,
             errortrials=errortrials))
     result = pd.concat(all_results, axis=0)
 
@@ -55,7 +55,19 @@ def reactivation_probability_throughout_trials(
     #                 grouped.loc[trial_type, (replay_type, 'percentile90')], alpha=0.5, **kwargs)
 
 
-def _classifier_by_trial(c2p, t2p, pre_s=2, post_s=None, errortrials=-1):
+def reactivation_events_throughout_trials(
+        ax, runs, pre_s=5, iti_start_s=5, iti_end_s=10, stim_pad_s=0.1,
+        threshold=0.1):
+    edges = [-pre_s, -stim_pad_s, 0, 2, 2 + stim_pad_s, iti_start_s, iti_end_s]
+    bin_labels = ['pre', 'pre_buffer', 'stim', 'post_buffer', 'post', 'iti']
+
+    for run in runs:
+        events, times = _events_by_trial(run, threshold, xmask=False)
+
+        events_binned = _bin_events(events, times, edges, bin_labels)
+
+
+def _classifier_by_trial(run, pre_s=2, post_s=None, errortrials=-1):
     """Return the classifier probability of all stimuli around stim presentations.
 
     Parameters
@@ -70,6 +82,9 @@ def _classifier_by_trial(c2p, t2p, pre_s=2, post_s=None, errortrials=-1):
         -1 is all trials, 0 is correct trials, 1 is error trials
 
     """
+    c2p = run.classify2p()
+    t2p = run.trace2p()
+
     classifier_results = c2p.results()
     all_onsets = t2p.csonsets()
     conditions = t2p.conditions()
@@ -121,3 +136,124 @@ def _classifier_by_trial(c2p, t2p, pre_s=2, post_s=None, errortrials=-1):
         final_result = final_result.loc(axis=0)[:, :, :post_s]
 
     return final_result
+
+
+def _events_df(run, threshold=0.1, xmask=False):
+    import pool
+    t2p = run.trace2p()
+    c2p = run.classify2p()
+    events_list = [pd.DataFrame()]
+    for event_type in pool.config.stimuli():
+        events = c2p.events(
+            event_type, threshold=threshold, traces=t2p, xmask=xmask)
+        index = pd.MultiIndex.from_product(
+            [[run.mouse], [run.date], [run.run], [event_type],
+             np.arange(len(events))],
+            names=['mouse', 'date', 'run', 'event_type', 'event_idx'])
+        events_list.append(pd.DataFrame({'frame': events}, index=index))
+
+    return pd.concat(events_list, axis=0)
+
+
+def _frames_df(run):
+    t2p = run.trace2p()
+    frame_period = 1. / t2p.framerate
+    frames = np.arange(t2p.nframes)
+    index = pd.MultiIndex.from_product(
+        [[run.mouse], [run.date], [run.run] * len(frames)],
+        names=['mouse', 'date', 'run'])
+    frames_df = pd.DataFrame({'frame': frames, 'frame_period': frame_period},
+                             index=index)
+    return frames_df
+
+
+def _events_by_trial(run, threshold, xmask=False):
+    t2p = run.trace2p()
+
+    all_onsets = t2p.csonsets()
+    conditions = t2p.conditions()
+    errors = t2p.errors(cs=None)
+
+    next_onsets = np.concatenate([all_onsets[1:], t2p.nframes], axis=None)
+    prev_onsets = np.concatenate([0, all_onsets[:-1]], axis=None)
+
+    fr = t2p.framerate
+
+    events = _events_df(run, threshold, xmask=xmask)
+    frames = _frames_df(run)
+
+    result, times = [pd.DataFrame()], [pd.DataFrame()]
+    for trial_idx, (onset, next_onset, prev_onset, cond, err) in enumerate(zip(
+            all_onsets, next_onsets, prev_onsets, conditions, errors)):
+
+        trial_events = events.loc[
+            (events.frame >= prev_onset) & (events.frame < next_onset)].copy()
+        trial_events -= onset
+        trial_events['time'] = trial_events.frame / fr
+
+        trial_frames = frames.loc[
+            (frames.frame >= prev_onset) & (frames.frame < next_onset)].copy()
+        trial_frames.frame -= onset
+        trial_frames['time'] = trial_frames.frame * trial_frames.frame_period
+
+        # add in trial_idx, condition, error
+        trial_events = pd.concat(
+            [trial_events], keys=[trial_idx], names=['trial_idx'])
+        trial_events = pd.concat(
+            [trial_events], keys=[cond], names=['condition'])
+        trial_events = pd.concat(
+            [trial_events], keys=[err], names=['error'])
+
+        trial_frames = pd.concat(
+            [trial_frames], keys=[trial_idx], names=['trial_idx'])
+
+        result.append(trial_events)
+        times.append(trial_frames)
+    events_df = pd.concat(result)
+    events_df = events_df.reorder_levels(
+        ['mouse', 'date', 'run', 'trial_idx', 'condition', 'error',
+         'event_type', 'event_idx'])
+    events_df.drop(columns=['frame'], inplace=True)
+
+    times_df = pd.concat(times)
+    times_df = times_df.reorder_levels(
+        ['mouse', 'date', 'run', 'trial_idx'])
+    times_df.drop(columns=['frame'], inplace=True)
+
+    return events_df, times_df
+
+
+def _bin_events(events, times, edges, bin_labels):
+    events['time_cat'] = pd.cut(
+        events.time, edges, labels=bin_labels)
+    times['time_cat'] = pd.cut(
+        times.time, edges, labels=bin_labels)
+
+    events_gb = (events
+                 .groupby(
+                     ['mouse', 'date', 'run', 'trial_idx', 'condition',
+                      'error', 'event_type', 'time_cat'])
+                 .count()
+                 .dropna()
+                 .rename(columns={'time': 'events'}))
+
+    times_gb = (times
+                .groupby(
+                    ['mouse', 'date', 'run', 'trial_idx', 'time_cat',
+                     'frame_period'])
+                .count()
+                .dropna()
+                .reset_index('frame_period')
+                .rename(columns={'time': 'frames'}))
+
+    result = pd.merge(
+        events_gb.reset_index(['condition', 'error', 'event_type']),
+        times_gb,
+        how='left',
+        on=['mouse', 'date', 'run', 'trial_idx', 'time_cat'])
+    result = result.reset_index(['time_cat'])
+
+    result['event_rate'] = \
+        result.events / (result.frame_period * result.frames)
+
+    return result
