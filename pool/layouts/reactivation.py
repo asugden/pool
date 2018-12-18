@@ -1,5 +1,7 @@
 """Reactivation figure layouts."""
 import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
 
 from flow.misc.plotting import right_label
 
@@ -7,7 +9,7 @@ from .. import config
 from ..plotting import reactivation as react
 
 
-def reactivation_probability_throughout_trials(runs, pre_s=2, post_s=None):
+def probability_throughout_trials(runs, pre_s=2, post_s=None):
     """Layout reactivation probability trial plots.
 
     Lays out an array of 2*n_trial_types x n_replay_types array of plots
@@ -58,3 +60,44 @@ def reactivation_probability_throughout_trials(runs, pre_s=2, post_s=None):
         ax.set_xlabel('Time from stim (s)')
 
     return fig
+
+
+def event_distributions_throughout_trials(
+        runs, pre_s=5, post_s=10, stim_pad_s=0.1, exclude_window=(-0.1, 2.1),
+        threshold=0.1):
+    all_events = []
+    for run in runs:
+        events, _ = react._events_by_trial(run, threshold)
+        all_events.append(events)
+    events = pd.concat(all_events, axis=0)
+
+    events.reset_index(['event_type', 'error', 'condition'], inplce=True)
+
+    events = events[
+        (events.time > -pre_s) &
+        (events.time < post_s) &
+        ((events.condition == 'blank') |
+            ((events.time < exclude_window[0]) |
+                (events.time > exclude_window[1])))]
+
+    grid = sns.FacetGrid(
+        events, col='event_type', row='condition', hue='error',
+        row_order=['plus', 'neutral', 'minus', 'pavlovian', 'blank'],
+        col_order=['plus', 'neutral', 'minus'], margin_titles=True)
+    grid.map(plt.axvline, x=0, ls=':', color='k')
+    grid.map(sns.distplot, 'time', rug=True, hist=False, kde=True)
+    grid.set(xlim=(-pre_s, post_s), ylim=(0, 0.2))
+    grid.add_legend()
+
+    return grid
+
+def binned_event_distrbituions_throughout_trials(
+        runs, pre_s=5, iti_start_s=5, iti_end_s=10, stim_pad_s=0.1,
+        threshold=0.1):
+    edges = [-pre_s, -stim_pad_s, 0, 2, 2 + stim_pad_s, iti_start_s, iti_end_s]
+    bin_labels = ['pre', 'pre_buffer', 'stim', 'post_buffer', 'post', 'iti']
+
+    for run in runs:
+        events, times = _events_by_trial(run, threshold, xmask=False)
+
+        events_binned = _bin_events(events, times, edges, bin_labels)

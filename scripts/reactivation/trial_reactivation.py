@@ -54,7 +54,7 @@ def main():
             dates, figsize=(16, 9), **vars(args))
         figs = [summary_fig]
         for date in dates:
-            fig = plr.reactivation_probability_throughout_trials(
+            fig = plr.probability_throughout_trials(
                 date.runs(run_types=['training'], tags=args.tags),
                 pre_s=pre_s, post_s=post_s)
             dprime = adb.get('behavior_dprime_orig', date.mouse, date.date)

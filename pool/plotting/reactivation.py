@@ -246,12 +246,32 @@ def _bin_events(events, times, edges, bin_labels):
                 .reset_index('frame_period')
                 .rename(columns={'time': 'frames'}))
 
+    # Expand across event types so that the merge will add in empty values
+    all_times = []
+    for event_type in config.stimuli():
+        all_times.append(times_gb
+                         .assign(event_type=event_type)
+                         .set_index('event_type', append=True))
+    times_gb = pd.concat(all_times)
+
     result = pd.merge(
-        events_gb.reset_index(['condition', 'error', 'event_type']),
+        events_gb.reset_index(['condition', 'error']),
         times_gb,
-        how='left',
-        on=['mouse', 'date', 'run', 'trial_idx', 'time_cat'])
+        how='right',
+        on=['mouse', 'date', 'run', 'trial_idx', 'time_cat', 'event_type'])
     result = result.reset_index(['time_cat'])
+
+    # Add in 0's
+    def fill_values(df):
+        df['condition'] = \
+            df['condition'].fillna(method='ffill').fillna(method='bfill')
+        df['error'] = df['error'].fillna(method='ffill').fillna(method='bfill')
+        df['events'] = df['events'].fillna(0)
+        return df
+
+    result = (result
+              .groupby(['mouse', 'date', 'run', 'trial_idx'])
+              .apply(fill_values))
 
     result['event_rate'] = \
         result.events / (result.frame_period * result.frames)
