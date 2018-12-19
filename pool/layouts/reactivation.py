@@ -63,15 +63,14 @@ def probability_throughout_trials(runs, pre_s=2, post_s=None):
 
 
 def event_distributions_throughout_trials(
-        runs, pre_s=5, post_s=10, stim_pad_s=0.1, exclude_window=(-0.1, 2.1),
-        threshold=0.1):
+        runs, pre_s=5, post_s=10, exclude_window=(-0.1, 2.1), threshold=0.1):
     all_events = []
     for run in runs:
         events, _ = react._events_by_trial(run, threshold)
         all_events.append(events)
     events = pd.concat(all_events, axis=0)
 
-    events.reset_index(['event_type', 'error', 'condition'], inplce=True)
+    events.reset_index(['event_type', 'error', 'condition'], inplace=True)
 
     events = events[
         (events.time > -pre_s) &
@@ -80,24 +79,49 @@ def event_distributions_throughout_trials(
             ((events.time < exclude_window[0]) |
                 (events.time > exclude_window[1])))]
 
-    grid = sns.FacetGrid(
+    g = sns.FacetGrid(
         events, col='event_type', row='condition', hue='error',
         row_order=['plus', 'neutral', 'minus', 'pavlovian', 'blank'],
         col_order=['plus', 'neutral', 'minus'], margin_titles=True)
-    grid.map(plt.axvline, x=0, ls=':', color='k')
-    grid.map(sns.distplot, 'time', rug=True, hist=False, kde=True)
-    grid.set(xlim=(-pre_s, post_s), ylim=(0, 0.2))
-    grid.add_legend()
 
-    return grid
+    g.map(plt.axvline, x=0, ls=':', color='k')
+    g.map(sns.distplot, 'time', rug=True, hist=False, kde=True)
+    if exclude_window is not None:
+        g.map(
+            plt.fill_betweenx, y=plt.ylim(), x1=exclude_window[0],
+            x2=exclude_window[1], color='0.9')
+
+    g.set(xlim=(-pre_s, post_s), ylim=(0, 0.2))
+    g.set_ylabels('Normalized density')
+    g.add_legend()
+
+    return g
 
 def binned_event_distrbituions_throughout_trials(
         runs, pre_s=5, iti_start_s=5, iti_end_s=10, stim_pad_s=0.1,
-        threshold=0.1):
+        threshold=0.1, kind='bar'):
     edges = [-pre_s, -stim_pad_s, 0, 2, 2 + stim_pad_s, iti_start_s, iti_end_s]
     bin_labels = ['pre', 'pre_buffer', 'stim', 'post_buffer', 'post', 'iti']
 
+    all_events = []
     for run in runs:
-        events, times = _events_by_trial(run, threshold, xmask=False)
+        events, times = react._events_by_trial(run, threshold, xmask=False)
 
-        events_binned = _bin_events(events, times, edges, bin_labels)
+        events_binned = react._bin_events(events, times, edges, bin_labels)
+        all_events.append(events_binned)
+    events_binned = pd.concat(all_events, axis=0)
+
+    events_binned = events_binned[
+        events_binned.time_cat.isin(['pre', 'post', 'iti'])]
+    events_binned.time_cat.cat.remove_unused_categories(inplace=True)
+
+    g = sns.catplot(
+        x='time_cat', y='event_rate', col='event_type', row='condition',
+        hue='error', data=events_binned, kind=kind, margin_titles=True, 
+        row_order=['plus', 'neutral', 'minus', 'pavlovian', 'blank'],
+        col_order=['plus', 'neutral', 'minus'])
+
+    g.set_xlabels('')
+    g.set_ylabels('Event rate (Hz)')
+
+    return g

@@ -246,6 +246,7 @@ def _bin_events(events, times, edges, bin_labels):
                 .reset_index('frame_period')
                 .rename(columns={'time': 'frames'}))
 
+    # There has to be a better way to do this (merge?)
     # Expand across event types so that the merge will add in empty values
     all_times = []
     for event_type in config.stimuli():
@@ -259,7 +260,7 @@ def _bin_events(events, times, edges, bin_labels):
         times_gb,
         how='right',
         on=['mouse', 'date', 'run', 'trial_idx', 'time_cat', 'event_type'])
-    result = result.reset_index(['time_cat'])
+    result = result.reset_index(['time_cat', 'event_type'])
 
     # Add in 0's
     def fill_values(df):
@@ -272,6 +273,9 @@ def _bin_events(events, times, edges, bin_labels):
     result = (result
               .groupby(['mouse', 'date', 'run', 'trial_idx'])
               .apply(fill_values))
+
+    # Reset error to a boolean
+    result['error'] = result['error'].astype('bool')
 
     result['event_rate'] = \
         result.events / (result.frame_period * result.frames)
