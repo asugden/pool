@@ -167,7 +167,9 @@ def _frames_df(run):
     return frames_df
 
 
-def _events_by_trial(run, threshold, xmask=False):
+def _events_by_trial(
+        run, threshold, xmask=False, next_onset_pad_s=0.1,
+        prev_onset_pad_s=2.5):
     t2p = run.trace2p()
 
     all_onsets = t2p.csonsets()
@@ -178,6 +180,8 @@ def _events_by_trial(run, threshold, xmask=False):
     prev_onsets = np.concatenate([0, all_onsets[:-1]], axis=None)
 
     fr = t2p.framerate
+    next_onset_pad_fr = int(np.ceil(next_onset_pad_s * fr))
+    prev_onset_pad_fr = int(np.ceil(prev_onset_pad_s * fr))
 
     events = _events_df(run, threshold, xmask=xmask)
     frames = _frames_df(run)
@@ -187,12 +191,14 @@ def _events_by_trial(run, threshold, xmask=False):
             all_onsets, next_onsets, prev_onsets, conditions, errors)):
 
         trial_events = events.loc[
-            (events.frame >= prev_onset) & (events.frame < next_onset)].copy()
+            (events.frame >= prev_onset + prev_onset_pad_fr) &
+            (events.frame < next_onset - next_onset_pad_fr)].copy()
         trial_events -= onset
         trial_events['time'] = trial_events.frame / fr
 
         trial_frames = frames.loc[
-            (frames.frame >= prev_onset) & (frames.frame < next_onset)].copy()
+            (frames.frame >= prev_onset + prev_onset_pad_fr) &
+            (frames.frame < next_onset - next_onset_pad_fr)].copy()
         trial_frames.frame -= onset
         trial_frames['time'] = trial_frames.frame * trial_frames.frame_period
 

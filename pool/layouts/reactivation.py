@@ -63,7 +63,7 @@ def probability_throughout_trials(runs, pre_s=2, post_s=None):
 
 
 def event_distributions_throughout_trials(
-        runs, pre_s=5, post_s=10, exclude_window=(-0.1, 2.1), threshold=0.1):
+        runs, pre_s=5, post_s=10, exclude_window=(-0.1, 2.5), threshold=0.1):
     all_events = []
     for run in runs:
         events, _ = react._events_by_trial(run, threshold)
@@ -86,6 +86,7 @@ def event_distributions_throughout_trials(
 
     g.map(plt.axvline, x=0, ls=':', color='k')
     g.map(sns.distplot, 'time', rug=True, hist=False, kde=True)
+    g.add_legend()
     if exclude_window is not None:
         g.map(
             plt.fill_betweenx, y=plt.ylim(), x1=exclude_window[0],
@@ -93,7 +94,6 @@ def event_distributions_throughout_trials(
 
     g.set(xlim=(-pre_s, post_s), ylim=(0, 0.2))
     g.set_ylabels('Normalized density')
-    g.add_legend()
 
     return g
 
