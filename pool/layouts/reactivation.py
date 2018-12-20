@@ -128,20 +128,33 @@ def binned_event_distrbituions_throughout_trials(
     return g
 
 
-def peri_event_behavior(df):
+def peri_event_behavior(df, limit_conditions=False):
     """Show mean before performance before and after each replay event.
 
     Parameters
     ----------
     df : pd.DataFrame
         pool.dataframes.reactivation.peri_event_behavior_df
+    limit_conditions : bool
+        If True, only include conditions that match possible events types.
 
     """
-    grouped = df.groupby(['mouse', 'date', 'condition', 'trial_idx']).mean()
+    grouped = (df
+               .groupby(
+                    ['mouse', 'date', 'condition', 'event_type', 'trial_idx'])
+               .mean()
+               .reset_index())
+
+    if limit_conditions:
+        grouped = grouped[
+            grouped['condition'].isin(['plus', 'neutral', 'minus'])]
+        row_order = ['plus', 'neutral', 'minus']
+    else:
+        row_order=['plus', 'neutral', 'minus', 'pavlovian', 'blank']
 
     g = sns.catplot(
-        x='trial_idx', y='error', col='condition',
-        data=grouped.reset_index(), kind='bar', margin_titles=True,
-        col_order=['plus', 'neutral', 'minus'])
+        x='trial_idx', y='error', col='event_type', row='condition',
+        data=grouped, kind='bar', margin_titles=True,
+        row_order=row_order, col_order=['plus', 'neutral', 'minus'])
 
     return g
