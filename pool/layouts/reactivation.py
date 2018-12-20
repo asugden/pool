@@ -97,6 +97,7 @@ def event_distributions_throughout_trials(
 
     return g
 
+
 def binned_event_distrbituions_throughout_trials(
         runs, pre_s=5, iti_start_s=5, iti_end_s=10, stim_pad_s=0.1,
         threshold=0.1, kind='bar'):
@@ -123,5 +124,24 @@ def binned_event_distrbituions_throughout_trials(
 
     g.set_xlabels('')
     g.set_ylabels('Event rate (Hz)')
+
+    return g
+
+
+def peri_event_behavior(df):
+    """Show mean before performance before and after each replay event.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        pool.dataframes.reactivation.peri_event_behavior_df
+
+    """
+    grouped = df.groupby(['mouse', 'date', 'condition', 'trial_idx']).mean()
+
+    g = sns.catplot(
+        x='trial_idx', y='error', col='condition',
+        data=grouped.reset_index(), kind='bar', margin_titles=True,
+        col_order=['plus', 'neutral', 'minus'])
 
     return g

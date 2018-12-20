@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 from .. import config
-
+from . import behavior as bdf
 
 def events_df(runs, threshold=0.1, xmask=False):
 
@@ -43,13 +43,12 @@ def trial_events_df(
 
         events = events_df([run], threshold, xmask=xmask)
 
-        result = [pd.DataFrame()]
         for trial_idx, (onset, next_onset, prev_onset, cond, err) in enumerate(zip(
                 all_onsets, next_onsets, prev_onsets, conditions, errors)):
 
             trial_events = events.loc[
-                (events.frame >= prev_onset + prev_onset_pad_fr) &
-                (events.frame < next_onset - next_onset_pad_fr)].copy()
+                (events.frame >= (prev_onset + prev_onset_pad_fr)) &
+                (events.frame < (next_onset - next_onset_pad_fr))].copy()
             trial_events -= onset
             trial_events['time'] = trial_events.frame / fr
 
@@ -68,5 +67,55 @@ def trial_events_df(
         ['mouse', 'date', 'run', 'trial_idx', 'condition', 'error',
          'event_type', 'event_idx'])
     result_df.drop(columns=['frame'], inplace=True)
+
+    return result_df
+
+
+def peri_event_behavior_df(runs, threshold=0.1):
+
+    behavior = bdf.behavior_df(runs)
+    events = trial_events_df(
+        runs, threshold=threshold, xmask=False)
+    print(events.shape)
+    edges = [-5, -0.1, 0, 2, 2.5, 5, 10]
+    bin_labels = ['pre', 'pre_buffer', 'stim', 'post_buffer', 'post', 'iti']
+    events['time_cat'] = pd.cut(
+        events.time, edges, labels=bin_labels)
+    iti_events = events[events.time_cat == 'iti']
+    print(iti_events.shape)
+
+    result = [pd.DataFrame()]
+    for event in iti_events.itertuples():
+        mouse, date, run, trial_idx, condition, error, event_type, event_idx = \
+            event.Index
+
+        trial_errors = (behavior[behavior['condition'] == event_type]
+                        .loc[(mouse, date, run, slice(None)), 'error']
+                        .reset_index('trial_idx'))
+
+        prev_errors = (trial_errors[trial_errors['trial_idx'] <= trial_idx]
+                       .iloc[-2:])
+        # Reset trial_idx to be relative to event, handling edge cases
+        prev_errors['trial_idx'] = np.arange(-prev_errors.shape[0], 0)
+        # Put 'condition' and 'event_idx' back in the dataframe
+        prev_errors = pd.concat(
+            [prev_errors], keys=[condition], names=['condition'])
+        prev_errors = pd.concat(
+            [prev_errors], keys=[event_idx], names=['event_idx'])
+
+        next_errors = (trial_errors[trial_errors['trial_idx'] > trial_idx]
+                       .iloc[:2])
+        next_errors['trial_idx'] = np.arange(1, next_errors.shape[0] + 1)
+        next_errors = pd.concat(
+            [next_errors], keys=[condition], names=['condition'])
+        next_errors = pd.concat(
+            [next_errors], keys=[event_idx], names=['event_idx'])
+
+        result.append(prev_errors)
+        result.append(next_errors)
+
+    result_df = pd.concat(result, axis=0)
+    result_df = result_df.reorder_levels(
+        ['mouse', 'date', 'run', 'condition', 'event_idx'])
 
     return result_df
