@@ -4,15 +4,20 @@ import pandas as pd
 from .. import config
 from . import behavior as bdf
 
-def events_df(runs, threshold=0.1, xmask=False):
 
+def events_df(runs, threshold=0.1, xmask=False, use_inactivity_mask=False):
     events_list = [pd.DataFrame()]
     for run in runs:
         t2p = run.trace2p()
         c2p = run.classify2p()
+        if use_inactivity_mask:
+            mask = t2p.inactivity()
+        else:
+            mask = None
         for event_type in config.stimuli():
             events = c2p.events(
-                event_type, threshold=threshold, traces=t2p, xmask=xmask)
+                event_type, threshold=threshold, traces=t2p, xmask=xmask,
+                mask=mask)
             index = pd.MultiIndex.from_product(
                 [[run.mouse], [run.date], [run.run], [event_type],
                  np.arange(len(events))],
@@ -21,10 +26,58 @@ def events_df(runs, threshold=0.1, xmask=False):
 
     return pd.concat(events_list, axis=0)
 
+def trial_classifier_df(runs, errortrials=-1, next_onset_pad_s=0.1,
+        prev_onset_pad_s=2.5)
+    result = [pd.DataFrame()]
+    for run in runs:
+        c2p = run.classify2p()
+        t2p = run.trace2p()
+
+        classifier_results = c2p.results()
+        all_onsets = t2p.csonsets()
+        conditions = t2p.conditions()
+        errors = t2p.errors(cs=None)
+        replay_types = config.stimuli()
+
+        next_onsets = np.concatenate([all_onsets[1:], t2p.nframes], axis=None)
+        prev_onsets = np.concatenate([0, all_onsets[:-1]], axis=None)
+
+        fr = t2p.framerate
+
+        next_onset_pad_fr = int(np.ceil(next_onset_pad_s * fr))
+        prev_onset_pad_fr = int(np.ceil(prev_onset_pad_s * fr))
+
+        for trial_idx, (onset, next_onset, prev_onset, cond, err) in enumerate(
+                zip(all_onsets, next_onsets, prev_onsets, conditions, errors)):
+            if errortrials == 0 and err:
+                continue
+            elif errortrials == 1 and not err:
+                continue
+
+            start_fr = prev_onset + prev_onset_pad_fr
+            end_fr = next_onset - next_onset_pad_fr
+            pre_fr = onset - start_fr
+
+            trial_result = []
+            for replay_type in replay_types:
+                trial_replay_result = classifier_results[replay_type][
+                    start_fr:end_fr - 1]
+                time = np.arange(len(trial_replay_result)) / fr - pre_fr
+
+                index = pd.MultiIndex.from_product(
+                    [[trial_idx], [cond], time],
+                    names=['trial_idx', 'condition', 'time'])
+                trial_result.append(
+                    pd.Series(trial_replay_result, index=index, name=replay_type))
+            result.append(pd.concat(trial_result, axis=1))
+
+    final_result = pd.concat(result, axis=0)
+
+    return final_result
 
 def trial_events_df(
         runs, threshold=0.1, xmask=False, next_onset_pad_s=0.1,
-        prev_onset_pad_s=2.5):
+        prev_onset_pad_s=2.5, use_inactivity_mask=False):
 
     result = [pd.DataFrame()]
     for run in runs:
@@ -41,7 +94,9 @@ def trial_events_df(
         next_onset_pad_fr = int(np.ceil(next_onset_pad_s * fr))
         prev_onset_pad_fr = int(np.ceil(prev_onset_pad_s * fr))
 
-        events = events_df([run], threshold, xmask=xmask)
+        events = events_df(
+            [run], threshold, xmask=xmask,
+            use_inactivity_mask=use_inactivity_mask)
 
         for trial_idx, (onset, next_onset, prev_onset, cond, err) in enumerate(zip(
                 all_onsets, next_onsets, prev_onsets, conditions, errors)):

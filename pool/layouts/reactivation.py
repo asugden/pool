@@ -63,26 +63,34 @@ def probability_throughout_trials(runs, pre_s=2, post_s=None):
 
 
 def event_distributions_throughout_trials(
-        runs, pre_s=5, post_s=10, exclude_window=(-0.1, 2.5), threshold=0.1):
-    all_events = []
-    for run in runs:
-        events, _ = react._events_by_trial(run, threshold)
-        all_events.append(events)
-    events = pd.concat(all_events, axis=0)
+        df, pre_s=5, post_s=10, exclude_window=(-0.1, 2.5),
+        threshold=0.1, limit_conditions=False):
 
-    events.reset_index(['event_type', 'error', 'condition'], inplace=True)
+    # Make sure Index levels are in the correct order
+    df = df.reorder_levels(
+        ['mouse', 'date', 'run', 'trial_idx', 'condition', 'error',
+         'event_type', 'event_idx'])
 
-    events = events[
-        (events.time > -pre_s) &
-        (events.time < post_s) &
-        ((events.condition == 'blank') |
-            ((events.time < exclude_window[0]) |
-                (events.time > exclude_window[1])))]
+    # Limit to only {'plus', 'neutral', 'minus'}
+    if limit_conditions:
+        df = df.loc(axis=0)[:, :, :, :, ['plus', 'neutral', 'minus'], :, :, :]
+        row_order=['plus', 'neutral', 'minus']
+    else:
+        row_order=['plus', 'neutral', 'minus', 'pavlovian', 'blank']
+
+    df = df.reset_index(['event_type', 'error', 'condition'])
+
+    df = df[
+        (df.time > -pre_s) &
+        (df.time < post_s) &
+        ((df.condition == 'blank') |
+            ((df.time < exclude_window[0]) |
+                (df.time > exclude_window[1])))]
 
     g = sns.FacetGrid(
-        events, col='event_type', row='condition', hue='error',
-        row_order=['plus', 'neutral', 'minus', 'pavlovian', 'blank'],
-        col_order=['plus', 'neutral', 'minus'], margin_titles=True)
+        df, col='event_type', row='condition', hue='error',
+        row_order=row_order, col_order=['plus', 'neutral', 'minus'],
+        margin_titles=True)
 
     g.map(plt.axvline, x=0, ls=':', color='k')
     g.map(sns.distplot, 'time', rug=True, hist=False, kde=True)
@@ -92,7 +100,9 @@ def event_distributions_throughout_trials(
             plt.fill_betweenx, y=plt.ylim(), x1=exclude_window[0],
             x2=exclude_window[1], color='0.9')
 
-    g.set(xlim=(-pre_s, post_s), ylim=(0, 0.2))
+    # g.set(xlim=(-pre_s, post_s), ylim=(0, 0.2))
+    g.set(xlim=(-pre_s, post_s))
+    g.set_xlabels('Time from stim onset (s)')
     g.set_ylabels('Normalized density')
 
     return g
@@ -100,7 +110,7 @@ def event_distributions_throughout_trials(
 
 def binned_event_distrbituions_throughout_trials(
         runs, pre_s=5, iti_start_s=5, iti_end_s=10, stim_pad_s=0.1,
-        threshold=0.1, kind='bar'):
+        threshold=0.1, kind='bar', limit_conditions=False, **plot_kwargs):
     edges = [-pre_s, -stim_pad_s, 0, 2, 2 + stim_pad_s, iti_start_s, iti_end_s]
     bin_labels = ['pre', 'pre_buffer', 'stim', 'post_buffer', 'post', 'iti']
 
@@ -118,9 +128,9 @@ def binned_event_distrbituions_throughout_trials(
 
     g = sns.catplot(
         x='time_cat', y='event_rate', col='event_type', row='condition',
-        hue='error', data=events_binned, kind=kind, margin_titles=True, 
+        hue='error', data=events_binned, kind=kind, margin_titles=True,
         row_order=['plus', 'neutral', 'minus', 'pavlovian', 'blank'],
-        col_order=['plus', 'neutral', 'minus'])
+        col_order=['plus', 'neutral', 'minus'], **plot_kwargs)
 
     g.set_xlabels('')
     g.set_ylabels('Event rate (Hz)')
@@ -128,7 +138,7 @@ def binned_event_distrbituions_throughout_trials(
     return g
 
 
-def peri_event_behavior(df, limit_conditions=False):
+def peri_event_behavior(df, limit_conditions=False, **plot_kwargs):
     """Show mean before performance before and after each replay event.
 
     Parameters
@@ -141,7 +151,7 @@ def peri_event_behavior(df, limit_conditions=False):
     """
     grouped = (df
                .groupby(
-                    ['mouse', 'date', 'condition', 'event_type', 'trial_idx'])
+                   ['mouse', 'date', 'condition', 'event_type', 'trial_idx'])
                .mean()
                .reset_index())
 
@@ -155,6 +165,7 @@ def peri_event_behavior(df, limit_conditions=False):
     g = sns.catplot(
         x='trial_idx', y='error', col='event_type', row='condition',
         data=grouped, kind='bar', margin_titles=True,
-        row_order=row_order, col_order=['plus', 'neutral', 'minus'])
+        row_order=row_order, col_order=['plus', 'neutral', 'minus'],
+        **plot_kwargs)
 
     return g

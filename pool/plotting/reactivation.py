@@ -55,16 +55,16 @@ def reactivation_probability_throughout_trials(
     #                 grouped.loc[trial_type, (replay_type, 'percentile90')], alpha=0.5, **kwargs)
 
 
-def reactivation_events_throughout_trials(
-        ax, runs, pre_s=5, iti_start_s=5, iti_end_s=10, stim_pad_s=0.1,
-        threshold=0.1):
-    edges = [-pre_s, -stim_pad_s, 0, 2, 2 + stim_pad_s, iti_start_s, iti_end_s]
-    bin_labels = ['pre', 'pre_buffer', 'stim', 'post_buffer', 'post', 'iti']
+# def reactivation_events_throughout_trials(
+#         ax, runs, pre_s=5, iti_start_s=5, iti_end_s=10, stim_pad_s=0.1,
+#         threshold=0.1):
+#     edges = [-pre_s, -stim_pad_s, 0, 2, 2 + stim_pad_s, iti_start_s, iti_end_s]
+#     bin_labels = ['pre', 'pre_buffer', 'stim', 'post_buffer', 'post', 'iti']
 
-    for run in runs:
-        events, times = _events_by_trial(run, threshold, xmask=False)
+#     for run in runs:
+#         events, times = _events_by_trial(run, threshold, xmask=False)
 
-        events_binned = _bin_events(events, times, edges, bin_labels)
+#         events_binned = _bin_events(events, times, edges, bin_labels)
 
 
 def _classifier_by_trial(run, pre_s=2, post_s=None, errortrials=-1):
@@ -138,14 +138,19 @@ def _classifier_by_trial(run, pre_s=2, post_s=None, errortrials=-1):
     return final_result
 
 
-def _events_df(run, threshold=0.1, xmask=False):
+def _events_df(run, threshold=0.1, xmask=False, use_inactivity_mask=False):
     import pool
     t2p = run.trace2p()
     c2p = run.classify2p()
     events_list = [pd.DataFrame()]
+    if use_inactivity_mask:
+        mask = t2p.inactivity()
+    else:
+        mask = None
     for event_type in pool.config.stimuli():
         events = c2p.events(
-            event_type, threshold=threshold, traces=t2p, xmask=xmask)
+            event_type, threshold=threshold, traces=t2p, xmask=xmask,
+            mask=mask)
         index = pd.MultiIndex.from_product(
             [[run.mouse], [run.date], [run.run], [event_type],
              np.arange(len(events))],
@@ -155,10 +160,12 @@ def _events_df(run, threshold=0.1, xmask=False):
     return pd.concat(events_list, axis=0)
 
 
-def _frames_df(run):
+def _frames_df(run, use_inactivity_mask=False):
     t2p = run.trace2p()
     frame_period = 1. / t2p.framerate
     frames = np.arange(t2p.nframes)
+    if use_inactivity_mask:
+        frames = frames[t2p.inactivity()]
     index = pd.MultiIndex.from_product(
         [[run.mouse], [run.date], [run.run] * len(frames)],
         names=['mouse', 'date', 'run'])

@@ -2,12 +2,14 @@ import numpy as np
 import pandas as pd
 
 
-def frames_df(runs):
+def frames_df(runs, use_inactivity_mask=False):
     frames_list = [pd.DataFrame()]
     for run in runs:
         t2p = run.trace2p()
         frame_period = 1. / t2p.framerate
         frames = np.arange(t2p.nframes)
+        if use_inactivity_mask:
+            frames = frames[t2p.inactivity()]
         index = pd.MultiIndex.from_product(
             [[run.mouse], [run.date], [run.run] * len(frames)],
             names=['mouse', 'date', 'run'])
