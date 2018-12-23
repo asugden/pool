@@ -9,10 +9,11 @@ Requires:
 import couchdb
 from couchdb.mapping import DateTimeField
 import datetime
+from getpass import getuser
 import numpy as np
+import pandas as pd
 from tempfile import TemporaryFile
 from uuid import uuid4
-from getpass import getuser
 # from json_tricks import numpy_encode, json_numpy_obj_hook
 
 from .base_backend import BackendBase, keyname
@@ -34,6 +35,7 @@ class CouchBackend(BackendBase):
             database, host=host, port=port, user=user, password=password)
 
     def __repr__(self):
+        """Repr."""
         return "CouchBackend(host={}, port={}, database={})".format(
             self.database.host, self.database.port, self.database.name)
 
@@ -179,12 +181,15 @@ class Database(object):
 
     def put(self, _id=None, **data):
         """Store a value in the database."""
-        new_data, numpy_array = Database._put_prep(data)
+        new_data, attachment_data = _put_prep(data)
         _id, _rev = self._put_assume_new(_id, **new_data)
-        if numpy_array is not None:
+        if attachment_data is not None:
             doc = {'_id': _id, '_rev': _rev}
             temp_file = TemporaryFile()
-            np.save(temp_file, numpy_array)
+            if new_data['value'] == '__attachment__':
+                np.save(temp_file, attachment_data)
+            else:  # new_data['value'] should be '__df_attachment__'
+                attachment_data.to_pickle(temp_file, compression=None)
             temp_file.seek(0)
             self._db.put_attachment(
                 doc, temp_file, filename='value',
@@ -196,35 +201,6 @@ class Database(object):
     #     new_data = self._put_prep(data)
     #     _id, _rev = self._put_assume_new(_id, **new_data)
     #     return _id, _rev
-
-    @staticmethod
-    def _put_prep(data):
-        val = data.get('value')
-        if isinstance(val, np.ndarray):
-            data['value'] = '__attachment__'
-            return data, val
-        if isinstance(val, np.generic):
-            # Should catch all numpy scalars and convert them to basic types
-            val = val.item()
-        data['value'] = Database._strip_nan(val)
-        return data, None
-
-    @staticmethod
-    def _strip_nan(val):
-        """Replace NaN's.
-
-        As a side-efect, converts all iterables to lists.
-
-        """
-        if isinstance(val, float) and np.isnan(val):
-            return '__NaN__'
-        elif isinstance(val, dict):
-            return {key: Database._strip_nan(item) for key, item in val.items()}
-        elif isinstance(val, list) or isinstance(val, tuple):
-            return [Database._strip_nan(item) for item in val]
-        elif isinstance(val, set):
-            raise NotImplementedError
-        return val
 
     # @staticmethod
     # def _put_prep(data):
@@ -313,30 +289,18 @@ class Database(object):
             assert doc is None
             return doc
         if val == '__attachment__':
-            attachment = self._db.get_attachment(doc['_id'], 'value')
-            if isinstance(attachment, couchdb.http.ResponseBody):
-                doc['value'] = np.load(couchdb.util.StringIO(
-                    attachment.read()))
-            else:
-                doc['value'] = np.load(attachment)
+            doc['value'] = np.load(self._get_attachment(doc['_id']))
+        elif val == '__df_attachment__':
+            doc['value'] = pd.read_pickle(self._get_attachment(doc['_id']))
         else:
-            doc['value'] = Database._restore_nan(doc['value'])
+            doc['value'] = _restore_nan(doc['value'])
         return doc
 
-    @staticmethod
-    def _restore_nan(val):
-        """Replace NaN's.
-
-        As a side-effect, converts all iterables to lists.
-
-        """
-        if val == '__NaN__':
-            return np.nan
-        elif isinstance(val, dict):
-            return {key: Database._restore_nan(item) for key, item in val.iteritems()}
-        elif isinstance(val, list) or isinstance(val, tuple):
-            return [Database._restore_nan(item) for item in val]
-        return val
+    def _get_attachment(self, _id):
+        attachment = self._db.get_attachment(_id, 'value')
+        if isinstance(attachment, couchdb.http.ResponseBody):
+            attachment = couchdb.util.StringIO(attachment.read())
+        return attachment
 
     # @staticmethod
     # def _parse_doc(doc):
@@ -379,6 +343,59 @@ class Database(object):
     def view(self, view):
         """Run and return result from a pre-defined view."""
         return self._db.view(view)
+
+
+def _put_prep(data):
+    """Check data before storing.
+
+    Converts numpy number types to Python types.
+    Pulls out numpy arrays and pandas DataFrames for binary storage.
+
+    """
+    val = data.get('value')
+    if isinstance(val, np.ndarray):
+        data['value'] = '__attachment__'
+        return data, val
+    elif isinstance(val, pd.DataFrame):
+        data['value'] = '__df_attachment__'
+        return data, val
+    if isinstance(val, np.generic):
+        # Should catch all numpy scalars and convert them to basic types
+        val = val.item()
+    data['value'] = _strip_nan(val)
+    return data, None
+
+
+def _strip_nan(val):
+    """Replace NaN's.
+
+    As a side-efect, converts all iterables to lists.
+
+    """
+    if isinstance(val, float) and np.isnan(val):
+        return '__NaN__'
+    elif isinstance(val, dict):
+        return {key: _strip_nan(item) for key, item in val.items()}
+    elif isinstance(val, list) or isinstance(val, tuple):
+        return [_strip_nan(item) for item in val]
+    elif isinstance(val, set):
+        raise NotImplementedError
+    return val
+
+
+def _restore_nan(val):
+    """Replace NaN's.
+
+    As a side-effect, converts all iterables to lists.
+
+    """
+    if val == '__NaN__':
+        return np.nan
+    elif isinstance(val, dict):
+        return {key: _restore_nan(item) for key, item in val.iteritems()}
+    elif isinstance(val, list) or isinstance(val, tuple):
+        return [_restore_nan(item) for item in val]
+    return val
 
 
 def test_put():
@@ -475,9 +492,45 @@ def test_put_numpy():
     print("get_np_as_arr: {}".format(get_np_as_arr / n))
 
 
+def test_put_df():
+    """Compare time for storing and recalling numpy array and list."""
+    import numpy as np
+    import pandas as pd
+    import timeit
+
+    import pool.backends.couch_backend as cb
+
+    n = 100
+    key = 'df_test'
+    index = pd.MultiIndex.from_product([['foo', 'bar'], np.arange(3)])
+    data = {'value': pd.DataFrame(
+        {'a': np.random.random(6), 'b':np.random.random(6)}, index=index)}
+
+    db = cb.Database('testing', host='localhost')
+
+    db.put(_id=key, **data)
+    returned = db.get(key)
+    assert all(data['value'] == returned['value'])
+
+    put_df = timeit.timeit(
+        'db.put(_id=key, **data)', setup="import pool.backends.couch_backend as cb; import numpy, pandas;" +
+        "index = pandas.MultiIndex.from_product([['foo', 'bar'], numpy.arange(3)]); " +
+        "data = {'value': pandas.DataFrame({'a': numpy.random.random(6), 'b':numpy.random.random(6)}, index=index)};" +
+        "db = cb.Database('testing', host='localhost'); " +
+        'key = "{}"'.format(key), number=n)
+    get_df = timeit.timeit(
+        'db.get(key)', setup="import pool.backends.couch_backend as cb; " +
+        "db = cb.Database('testing', host='localhost'); " +
+        'key = "{}"'.format(key), number=n)
+
+    print("key = {}".format(key))
+    print("put_df: {}".format(put_df / n))
+    print("get_df: {}".format(get_df / n))
+
 if __name__ == '__main__':
     # test_put()
-    test_put_numpy()
+    # test_put_numpy()
+    test_put_df()
 
     # db = CouchBackend(host='localhost')
     # print(db.get('qdist-run11-0.1-minus', 'OA32', 170417, force=True))
