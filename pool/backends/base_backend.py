@@ -345,18 +345,18 @@ class BackendBase(with_metaclass(ABCMeta, object)):
 
 
 def keyname(analysis, keys):
+    """Parse the keys and analysis name in to a single keyname."""
+    keyname = '%s-%i' % (keys['mouse'], int(keys['date']))
 
-        keyname = '%s-%i' % (keys['mouse'], int(keys['date']))
+    if 'run' in keys and keys['run'] is not None:
+        keyname += '-%02i' % (keys['run'])
 
-        if 'run' in keys and keys['run'] is not None:
-            keyname += '%02i' % (keys['run'])
+    if 'classifier_word' in keys and keys['classifier_word'] is not None:
+        keyname += '-%s' % (keys['classifier_word'])
 
-        if 'classifier_word' in keys and 'classifier_word' is not None:
-            keyname += '-%s' % (keys['classifier_word'])
+    keyname += '-%s' % (analysis)
 
-        keyname += '-%s' % (analysis)
-
-        return keyname
+    return keyname
 
 
 def default_parameters(mouse, date):
