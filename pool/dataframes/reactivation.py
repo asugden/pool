@@ -1,16 +1,40 @@
+"""All functions return reactivation-related dataframes."""
+
 import numpy as np
 import pandas as pd
 
 from .. import config
+from .. import database
+from .dataframes import smart_merge
 from . import behavior as bdf
 
 
-def events_df(runs, threshold=0.1, xmask=False, use_inactivity_mask=False):
+def events_df(runs, threshold=0.1, xmask=False, inactivity_mask=False):
+    """
+    Return all event frames.
+
+    Parameters
+    ----------
+    runs : RunSorter or list of Runs
+    threshold : float
+        Classifier cutoff probability.
+    xmask : bool
+        If True, only allow one event (across types) per time bin.
+    inactivity_mask : bool
+        If True, enforce that all events are during times of inactivity.
+
+    Returns
+    -------
+    pd.DataFrame
+        Index : mouse, date, run, event_type, event_idx
+        Columns : frame
+
+    """
     events_list = [pd.DataFrame()]
     for run in runs:
         t2p = run.trace2p()
         c2p = run.classify2p()
-        if use_inactivity_mask:
+        if inactivity_mask:
             mask = t2p.inactivity()
         else:
             mask = None
@@ -26,8 +50,27 @@ def events_df(runs, threshold=0.1, xmask=False, use_inactivity_mask=False):
 
     return pd.concat(events_list, axis=0)
 
-def trial_classifier_df(runs, errortrials=-1, next_onset_pad_s=0.1,
-        prev_onset_pad_s=2.5)
+
+def trial_classifier_df_orig(
+        runs, prev_onset_pad_s=2.5, next_onset_pad_s=0.1):
+    """
+    Return classifier probability across trials.
+
+    Parameters
+    ----------
+    runs : RunSorter or list of Runs
+    prev_onset_pad_s : float
+        Pre-trial windows starts this long after last trial onset.
+    next_offset_pad_s : float
+        Post-trial ITI includes up to this long before the next trial onset.
+
+    Returns
+    -------
+    pd.DataFrame
+        Index : mouse, date, run, trial_idx, condition, time
+        Columns : [one per replay type, i.e. 'plus', 'neutral', 'minus']
+
+    """
     result = [pd.DataFrame()]
     for run in runs:
         c2p = run.classify2p()
@@ -36,94 +79,161 @@ def trial_classifier_df(runs, errortrials=-1, next_onset_pad_s=0.1,
         classifier_results = c2p.results()
         all_onsets = t2p.csonsets()
         conditions = t2p.conditions()
-        errors = t2p.errors(cs=None)
         replay_types = config.stimuli()
 
-        next_onsets = np.concatenate([all_onsets[1:], t2p.nframes], axis=None)
         prev_onsets = np.concatenate([0, all_onsets[:-1]], axis=None)
+        next_onsets = np.concatenate([all_onsets[1:], t2p.nframes], axis=None)
 
         fr = t2p.framerate
 
         next_onset_pad_fr = int(np.ceil(next_onset_pad_s * fr))
         prev_onset_pad_fr = int(np.ceil(prev_onset_pad_s * fr))
 
-        for trial_idx, (onset, next_onset, prev_onset, cond, err) in enumerate(
-                zip(all_onsets, next_onsets, prev_onsets, conditions, errors)):
-            if errortrials == 0 and err:
-                continue
-            elif errortrials == 1 and not err:
-                continue
+        for trial_idx, (onset, next_onset, prev_onset, cond) in enumerate(
+                zip(all_onsets, next_onsets, prev_onsets, conditions)):
 
             start_fr = prev_onset + prev_onset_pad_fr
             end_fr = next_onset - next_onset_pad_fr
             pre_fr = onset - start_fr
 
-            trial_result = []
+            trial_result = [pd.DataFrame()]
             for replay_type in replay_types:
                 trial_replay_result = classifier_results[replay_type][
                     start_fr:end_fr - 1]
-                time = np.arange(len(trial_replay_result)) / fr - pre_fr
+                time = (np.arange(len(trial_replay_result)) - pre_fr) / fr
 
                 index = pd.MultiIndex.from_product(
-                    [[trial_idx], [cond], time],
-                    names=['trial_idx', 'condition', 'time'])
+                    [[run.mouse], [run.date], [run.run], [trial_idx], [cond],
+                     time],
+                    names=['mouse', 'date', 'run', 'trial_idx', 'condition',
+                           'time'])
                 trial_result.append(
-                    pd.Series(trial_replay_result, index=index, name=replay_type))
+                    pd.Series(trial_replay_result, index=index,
+                              name=replay_type))
             result.append(pd.concat(trial_result, axis=1))
 
     final_result = pd.concat(result, axis=0)
 
     return final_result
 
-def trial_events_df(
-        runs, threshold=0.1, xmask=False, next_onset_pad_s=0.1,
-        prev_onset_pad_s=2.5, use_inactivity_mask=False):
 
+def trial_classifier_df(runs):
+    """
+    Return classifier probability across trials.
+
+    Parameters
+    ----------
+    runs : RunSorter or list of Runs
+
+    Returns
+    -------
+    pd.DataFrame
+        Index : mouse, date, run, trial_idx, condition, error, time
+        Columns : [one per replay type, i.e. 'plus', 'neutral', 'minus']
+
+    """
     result = [pd.DataFrame()]
+    db = database.db()
     for run in runs:
-        t2p = run.trace2p()
+        result.append(db.get(
+            'trialdf_classifier', mouse=run.mouse, date=run.date, run=run.run,
+            metadata_object=run))
+    result = pd.concat(result, axis=0)
 
-        all_onsets = t2p.csonsets()
-        conditions = t2p.conditions()
-        errors = t2p.errors(cs=None)
+    return result
 
-        next_onsets = np.concatenate([all_onsets[1:], t2p.nframes], axis=None)
-        prev_onsets = np.concatenate([0, all_onsets[:-1]], axis=None)
 
-        fr = t2p.framerate
-        next_onset_pad_fr = int(np.ceil(next_onset_pad_s * fr))
-        prev_onset_pad_fr = int(np.ceil(prev_onset_pad_s * fr))
+def trial_events_df(
+        runs, threshold=0.1, xmask=False, inactivity_mask=False):
+    """
+    Return reactivation events relative to stimuli presentations.
 
-        events = events_df(
-            [run], threshold, xmask=xmask,
-            use_inactivity_mask=use_inactivity_mask)
+    Parameters
+    ----------
+    runs : RunSorter or list of Runs
+    threshold : float
+        Classifier cutoff probability.
+    xmask : bool
+        If True, only allow one event (across types) per time bin.
+    inactivity_mask : bool
+        If True, enforce that all events are during times of inactivity.
 
-        for trial_idx, (onset, next_onset, prev_onset, cond, err) in enumerate(zip(
-                all_onsets, next_onsets, prev_onsets, conditions, errors)):
+    Note
+    ----
+    Events are included multiple times, bot before the next stim and after the
+    previous stim presentation!
 
-            trial_events = events.loc[
-                (events.frame >= (prev_onset + prev_onset_pad_fr)) &
-                (events.frame < (next_onset - next_onset_pad_fr))].copy()
-            trial_events -= onset
-            trial_events['time'] = trial_events.frame / fr
+    Returns
+    -------
+    pd.DataFrame
+        Index : mouse, date, run, trial_idx, condition, error, event_type, event_idx
+        Columns : time
 
-            # add in trial_idx, condition, error
-            trial_events = pd.concat(
-                [trial_events], keys=[trial_idx], names=['trial_idx'])
-            trial_events = pd.concat(
-                [trial_events], keys=[cond], names=['condition'])
-            trial_events = pd.concat(
-                [trial_events], keys=[err], names=['error'])
+    """
+    result = [pd.DataFrame()]
+    db = database.db()
+    analysis = 'trialdf_events_{}_{}_{}'.format(
+        threshold,
+        'xmask' if xmask else 'noxmask',
+        'inactmask' if inactivity_mask else 'noinactmask')
+    for run in runs:
+        result.append(db.get(
+            analysis, mouse=run.mouse, date=run.date, run=run.run,
+            metadata_object=run))
+    result = pd.concat(result, axis=0)
 
-            result.append(trial_events)
+    return result
 
-    result_df = pd.concat(result, axis=0)
-    result_df = result_df.reorder_levels(
-        ['mouse', 'date', 'run', 'trial_idx', 'condition', 'error',
-         'event_type', 'event_idx'])
-    result_df.drop(columns=['frame'], inplace=True)
 
-    return result_df
+# def trial_events_df_orig(
+#         runs, threshold=0.1, xmask=False, prev_onset_pad_s=2.5,
+#         next_onset_pad_s=0.1, inactivity_mask=False):
+
+#     result = [pd.DataFrame()]
+#     for run in runs:
+#         t2p = run.trace2p()
+
+#         all_onsets = t2p.csonsets()
+#         conditions = t2p.conditions()
+#         errors = t2p.errors(cs=None)
+
+#         next_onsets = np.concatenate([all_onsets[1:], t2p.nframes], axis=None)
+#         prev_onsets = np.concatenate([0, all_onsets[:-1]], axis=None)
+
+#         fr = t2p.framerate
+#         next_onset_pad_fr = int(np.ceil(next_onset_pad_s * fr))
+#         prev_onset_pad_fr = int(np.ceil(prev_onset_pad_s * fr))
+
+#         events = events_df(
+#             [run], threshold, xmask=xmask,
+#             inactivity_mask=inactivity_mask)
+
+#         for trial_idx, (onset, next_onset, prev_onset, cond, err) in enumerate(zip(
+#                 all_onsets, next_onsets, prev_onsets, conditions, errors)):
+
+#             trial_events = events.loc[
+#                 (events.frame >= (prev_onset + prev_onset_pad_fr)) &
+#                 (events.frame < (next_onset - next_onset_pad_fr))].copy()
+#             trial_events -= onset
+#             trial_events['time'] = trial_events.frame / fr
+
+#             # add in trial_idx, condition, error
+#             trial_events = pd.concat(
+#                 [trial_events], keys=[trial_idx], names=['trial_idx'])
+#             trial_events = pd.concat(
+#                 [trial_events], keys=[cond], names=['condition'])
+#             trial_events = pd.concat(
+#                 [trial_events], keys=[err], names=['error'])
+
+#             result.append(trial_events)
+
+#     result_df = pd.concat(result, axis=0)
+#     result_df = result_df.reorder_levels(
+#         ['mouse', 'date', 'run', 'trial_idx', 'condition', 'error',
+#          'event_type', 'event_idx'])
+#     result_df.drop(columns=['frame'], inplace=True)
+
+#     return result_df
 
 
 def peri_event_behavior_df(runs, threshold=0.1):

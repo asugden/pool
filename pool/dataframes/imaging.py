@@ -1,14 +1,16 @@
 import numpy as np
 import pandas as pd
 
+from .. import database
 
-def frames_df(runs, use_inactivity_mask=False):
+
+def frames_df(runs, inactivity_mask=False):
     frames_list = [pd.DataFrame()]
     for run in runs:
         t2p = run.trace2p()
         frame_period = 1. / t2p.framerate
         frames = np.arange(t2p.nframes)
-        if use_inactivity_mask:
+        if inactivity_mask:
             frames = frames[t2p.inactivity()]
         index = pd.MultiIndex.from_product(
             [[run.mouse], [run.date], [run.run] * len(frames)],
@@ -19,7 +21,7 @@ def frames_df(runs, use_inactivity_mask=False):
     return pd.concat(frames_list, axis=0)
 
 
-def trial_frames_df(runs, next_onset_pad_s=0.1, prev_onset_pad_s=2.5):
+def trial_frames_df_orig(runs, next_onset_pad_s=0.1, prev_onset_pad_s=2.5):
     result = [pd.DataFrame()]
     for run in runs:
         t2p = run.trace2p()
@@ -60,3 +62,33 @@ def trial_frames_df(runs, next_onset_pad_s=0.1, prev_onset_pad_s=2.5):
     result_df.drop(columns=['frame'], inplace=True)
 
     return result_df
+
+
+def trial_frames_df(runs, inactivity_mask=False):
+    """
+    Return acquisition frames relative to stimuli presentations.
+
+    Parameters
+    ----------
+    runs : RunSorter or list of Runs
+    inactivity_mask : bool
+        If True, enforce that all events are during times of inactivity.
+
+    Returns
+    -------
+    pd.DataFrame
+        Index : mouse, date, run, trial_idx, condition, error
+        Columns : frame, frame_period, time
+
+    """
+    result = [pd.DataFrame()]
+    db = database.db()
+    analysis = 'trialdf_frames_{}'.format(
+        'inactmask' if inactivity_mask else 'noinactmask')
+    for run in runs:
+        result.append(db.get(
+            analysis, mouse=run.mouse, date=run.date, run=run.run,
+            metadata_object=run))
+    result = pd.concat(result, axis=0)
+
+    return result
