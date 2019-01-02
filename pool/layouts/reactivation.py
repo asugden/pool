@@ -1,7 +1,6 @@
 """Reactivation figure layouts."""
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 from pandas import IndexSlice as Idx
 import seaborn as sns
 
@@ -12,7 +11,7 @@ from ..plotting import reactivation as react
 from .. import dataframes as dfs
 
 
-def classifier_throughout_trials(
+def trial_classifier_probability(
         runs, pre_s=-2, post_s=None, exclude_window=(-0.1, 2.5),
         limit_conditions=False):
     """
@@ -47,19 +46,25 @@ def classifier_throughout_trials(
         trial_types = ['plus', 'neutral', 'minus', 'pavlovian', 'blank']
     replay_types = config.stimuli()
 
+    if exclude_window is not None:
+        df = df.reset_index(['time'])
+        mask = (df.time >= exclude_window[0]) & (df.time <= exclude_window[1])
+        df.loc[mask, list(replay_types)] = np.nan
+        df = df.set_index('time', append=True)
+
     fig, axs = plt.subplots(
         len(trial_types) * 2, len(replay_types), sharex=True, sharey=True,
         figsize=(9, 16))
 
     for axs_row, trial_type in zip(axs[::2], trial_types):
         for ax, replay_type in zip(axs_row, replay_types):
-            react.reactivation_probability_throughout_trials(
+            react.trial_classifier_probability(
                 ax, df, trial_type=trial_type, replay_type=replay_type,
                 pre_s=pre_s, post_s=post_s, errortrials=0, label='correct')
 
     for axs_row, trial_type in zip(axs[1::2], trial_types):
         for ax, replay_type in zip(axs_row, replay_types):
-            react.reactivation_probability_throughout_trials(
+            react.trial_classifier_probability(
                 ax, df, trial_type=trial_type, replay_type=replay_type,
                 pre_s=pre_s, post_s=post_s, errortrials=1, label='error',
                 linestyle='--')
@@ -78,7 +83,7 @@ def classifier_throughout_trials(
     return fig
 
 
-def event_distribution_throughout_trials(
+def trial_event_distributions(
         runs, pre_s=-5, post_s=10, exclude_window=(-0.1, 2.5), threshold=0.1,
         kind='kde', limit_conditions=False, inactivity_mask=False,
         **plot_kwargs):
@@ -158,7 +163,7 @@ def event_distribution_throughout_trials(
     return g
 
 
-def binned_event_distrbituions_throughout_trials(
+def trial_event_labels(
         runs, pre_s=-5, iti_start_s=5, iti_end_s=10, threshold=0.1, kind='bar',
         limit_conditions=False, inactivity_mask=False, **plot_kwargs):
     """
@@ -243,7 +248,7 @@ def binned_event_distrbituions_throughout_trials(
     return g
 
 
-def histogram_event_distrbituions_throughout_trials(
+def trial_event_bins(
         runs, pre_s=-5, post_s=10, bin_size_s=1, exclude_window=(-0.1, 2.5),
         threshold=0.1, kind='bar', limit_conditions=False,
         inactivity_mask=False, **plot_kwargs):
@@ -323,7 +328,6 @@ def histogram_event_distrbituions_throughout_trials(
                                    'time_cat'])
                      )
 
-
     # Not really sure why this is sometimes a categorical series and sometimes
     # not.
     # events_binned.time_cat.cat.remove_unused_categories(inplace=True)
@@ -337,7 +341,11 @@ def histogram_event_distrbituions_throughout_trials(
     g.set_xlabels('')
     g.set_ylabels('Event rate (Hz)')
 
-    return g
+    return g, events_binned
+
+
+def trial_replay_bias():
+    pass
 
 # def binned_event_distrbituions_throughout_trials_orig(
 #         runs, pre_s=-5, iti_start_s=5, iti_end_s=10, stim_pad_s=0.1,

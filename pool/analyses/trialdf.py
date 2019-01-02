@@ -1,4 +1,4 @@
-"""Trial dataframes."""
+"""Trial DataFrames."""
 import numpy as np
 import pandas as pd
 
@@ -6,9 +6,12 @@ import pool
 
 from . import base
 
+PREV_ONSET_PAD_S = 2.6  # 2.3 should work for all trials, except pavlovians
+NEXT_ONSET_PAD_S = 0.2
+
 
 class TrialDf(base.AnalysisBase):
-    """Trial-aligned reactivation dataframes."""
+    """Trial-aligned reactivation DataFrames."""
 
     requires = ['classifier']
     sets = ['trialdf_classifier'] + \
@@ -16,11 +19,15 @@ class TrialDf(base.AnalysisBase):
          'trialdf_events_0.1_xmask_noinactmask',
          'trialdf_events_0.1_noxmask_inactmask',
          'trialdf_events_0.1_noxmask_noinactmask'] + \
+        ['trialdf_events_0.05_xmask_inactmask',
+         'trialdf_events_0.05_xmask_noinactmask',
+         'trialdf_events_0.05_noxmask_inactmask',
+         'trialdf_events_0.05_noxmask_noinactmask'] + \
         ['trialdf_frames_inactmask',
          'trialdf_frames_noinactmask']
 
     across = 'run'
-    updated = '1812273'
+    updated = '190102'
 
     def run(self, run):
         """Run everything."""
@@ -32,7 +39,7 @@ class TrialDf(base.AnalysisBase):
         # Events relative to stimulus time
         for xmask in [True, False]:
             for inactivity_mask in [True, False]:
-                for threshold in [0.1]:
+                for threshold in [0.1, 0.05]:
                     out.update(self.events(
                         run, threshold=threshold, xmask=xmask,
                         inactivity_mask=inactivity_mask))
@@ -50,8 +57,6 @@ class TrialDf(base.AnalysisBase):
         Should probably add arguments for prev/post padding.
 
         """
-        prev_onset_pad_s = 2.5
-        next_onset_pad_s = 0.1
         c2p = run.classify2p()
         t2p = run.trace2p()
 
@@ -65,8 +70,8 @@ class TrialDf(base.AnalysisBase):
 
         fr = t2p.framerate
 
-        next_onset_pad_fr = int(np.ceil(next_onset_pad_s * fr))
-        prev_onset_pad_fr = int(np.ceil(prev_onset_pad_s * fr))
+        next_onset_pad_fr = int(np.ceil(NEXT_ONSET_PAD_S * fr))
+        prev_onset_pad_fr = int(np.ceil(PREV_ONSET_PAD_S * fr))
 
         result = [pd.DataFrame()]
         for trial_idx, (onset, next_onset, prev_onset, cond) in enumerate(
@@ -100,6 +105,7 @@ class TrialDf(base.AnalysisBase):
                         .set_index('error', append=True)
                         .reorder_levels(['mouse', 'date', 'run', 'trial_idx',
                                          'condition', 'error', 'time'])
+                        .sort_index()
                         )
 
         out = {'trialdf_classifier': final_result}
@@ -121,16 +127,12 @@ class TrialDf(base.AnalysisBase):
 
         Note
         ----
-        Individual vents will appear in this dataframe multiple times!
+        Individual events will appear in this DataFrame multiple times!
         Events will show up both as being before after a stimulus and before
         the next one.
 
         """
         out = {}
-
-        # These MUST exactly match the frames parameters below.
-        prev_onset_pad_s = 2.5
-        next_onset_pad_s = 0.1
 
         t2p = run.trace2p()
 
@@ -141,8 +143,8 @@ class TrialDf(base.AnalysisBase):
         prev_onsets = np.concatenate([0, all_onsets[:-1]], axis=None)
 
         fr = t2p.framerate
-        next_onset_pad_fr = int(np.ceil(next_onset_pad_s * fr))
-        prev_onset_pad_fr = int(np.ceil(prev_onset_pad_s * fr))
+        next_onset_pad_fr = int(np.ceil(NEXT_ONSET_PAD_S * fr))
+        prev_onset_pad_fr = int(np.ceil(PREV_ONSET_PAD_S * fr))
 
         events = pool.dataframes.reactivation.events_df(
             [run], threshold, xmask=xmask,
@@ -167,9 +169,9 @@ class TrialDf(base.AnalysisBase):
             result.append(trial_events)
 
         result_df = pd.concat(result, axis=0)
-        result_df = result_df.reorder_levels(
-            ['mouse', 'date', 'run', 'trial_idx', 'condition',
-             'event_type', 'event_idx'])
+        # result_df = result_df.reorder_levels(
+        #     ['mouse', 'date', 'run', 'trial_idx', 'condition',
+        #      'event_type', 'event_idx'])
         result_df.drop(columns=['frame'], inplace=True)
 
         # Merge in behavior results
@@ -180,6 +182,7 @@ class TrialDf(base.AnalysisBase):
                      .reorder_levels(['mouse', 'date', 'run', 'trial_idx',
                                       'condition', 'error', 'event_type',
                                       'event_idx'])
+                     .sort_index()
                      )
 
         analysis = 'trialdf_events_{}_{}_{}'.format(
@@ -203,9 +206,6 @@ class TrialDf(base.AnalysisBase):
 
         """
         out = {}
-        # These MUST exactly match the events parameters above.
-        prev_onset_pad_s = 2.5
-        next_onset_pad_s = 0.1
 
         t2p = run.trace2p()
 
@@ -215,8 +215,8 @@ class TrialDf(base.AnalysisBase):
         prev_onsets = np.concatenate([0, all_onsets[:-1]], axis=None)
 
         fr = t2p.framerate
-        next_onset_pad_fr = int(np.ceil(next_onset_pad_s * fr))
-        prev_onset_pad_fr = int(np.ceil(prev_onset_pad_s * fr))
+        next_onset_pad_fr = int(np.ceil(NEXT_ONSET_PAD_S * fr))
+        prev_onset_pad_fr = int(np.ceil(PREV_ONSET_PAD_S * fr))
 
         frames = pool.dataframes.imaging.frames_df([run], inactivity_mask)
 
@@ -246,6 +246,7 @@ class TrialDf(base.AnalysisBase):
         result_df = (pool.dataframes.smart_merge(result_df, behav_df,
                                                  how='left')
                      .set_index(['condition', 'error'], append=True)
+                     .sort_index()
                      )
 
         analysis = 'trialdf_frames_{}'.format(

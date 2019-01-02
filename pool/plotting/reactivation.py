@@ -4,7 +4,7 @@ from pandas import IndexSlice as Idx
 from .. import config
 
 
-def reactivation_probability_throughout_trials(
+def trial_classifier_probability(
         ax, df, trial_type='plus', replay_type='plus',
         pre_s=-2, post_s=None, errortrials=-1, **kwargs):
     """Plot the classifier probability throughout the trial.
