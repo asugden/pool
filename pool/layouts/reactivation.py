@@ -12,8 +12,11 @@ from ..plotting import reactivation as react
 from .. import dataframes as dfs
 
 
-def classifier_throughout_trials(runs, pre_s=-2, post_s=None, limit_conditions=False):
-    """Layout reactivation probability trial plots.
+def classifier_throughout_trials(
+        runs, pre_s=-2, post_s=None, exclude_window=(-0.1, 2.5),
+        limit_conditions=False):
+    """
+    Layout reactivation probability trial plots.
 
     Lays out an array of 2*n_trial_types x n_replay_types array of plots
     and plots the classifier probability of each replay type through trials.
@@ -25,6 +28,11 @@ def classifier_throughout_trials(runs, pre_s=-2, post_s=None, limit_conditions=F
         Time before stim to include in PSTH.
     post_s : float, optional
         Time after stim to include. If None, include all time up to next stim.
+    exclude_window : 2-element tuple, optional
+        Start and stop times to exclude from plotting. Intended to mask out
+        stimulus time.
+    limit_conditions : bool
+        If True, only look at plus, neutral, and minus conditions.
 
     Returns
     -------
@@ -82,7 +90,7 @@ def event_distribution_throughout_trials(
     runs : RunSorter or list of Run
     pre_s, post_s : float
         Start and stop trial times to plot, relative to stim onset.
-    exclude_window : 2-element tuple
+    exclude_window : 2-element tuple, optional
         Start and stop times to exclude from plotting. Intended to mask out
         stimulus time.
     threshold : float
@@ -236,8 +244,9 @@ def binned_event_distrbituions_throughout_trials(
 
 
 def histogram_event_distrbituions_throughout_trials(
-        runs, pre_s=-5, post_s=10, bin_size_s=1, exclude_window=(-0.1, 2.5), threshold=0.1, kind='bar',
-        limit_conditions=False, inactivity_mask=False, **plot_kwargs):
+        runs, pre_s=-5, post_s=10, bin_size_s=1, exclude_window=(-0.1, 2.5),
+        threshold=0.1, kind='bar', limit_conditions=False,
+        inactivity_mask=False, **plot_kwargs):
     """
     Plot reactivation rates like a histogram (1-s bins) throughout trial.
 
@@ -248,7 +257,7 @@ def histogram_event_distrbituions_throughout_trials(
         Start and stop trial times to plot, relative to stim onset.
     bin_size_s : float
         Bin size, in seconds.
-    exclude_window : 2-element tuple
+    exclude_window : 2-element tuple, optional
         Start and stop times to exclude from plotting. Intended to mask out
         stimulus time.
     threshold : float
@@ -313,6 +322,7 @@ def histogram_event_distrbituions_throughout_trials(
                      .reset_index(['event_type', 'condition', 'error',
                                    'time_cat'])
                      )
+
 
     # Not really sure why this is sometimes a categorical series and sometimes
     # not.
