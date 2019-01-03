@@ -12,7 +12,7 @@ from .. import dataframes as dfs
 
 
 def trial_classifier_probability(
-        runs, pre_s=-2, post_s=None, exclude_window=(-0.1, 2.5),
+        runs, pre_s=-5, post_s=None, exclude_window=(-0.2, 2.3),
         limit_conditions=False):
     """
     Layout reactivation probability trial plots.
@@ -84,7 +84,7 @@ def trial_classifier_probability(
 
 
 def trial_event_distributions(
-        runs, pre_s=-5, post_s=10, exclude_window=(-0.1, 2.5), threshold=0.1,
+        runs, pre_s=-5, post_s=10, exclude_window=(-0.2, 2.3), threshold=0.1,
         kind='kde', limit_conditions=False, inactivity_mask=False,
         **plot_kwargs):
     """
@@ -165,7 +165,8 @@ def trial_event_distributions(
 
 def trial_event_labels(
         runs, pre_s=-5, iti_start_s=5, iti_end_s=10, threshold=0.1, kind='bar',
-        limit_conditions=False, inactivity_mask=False, **plot_kwargs):
+        limit_conditions=False, inactivity_mask=False, plot_bias=False,
+        **plot_kwargs):
     """
     Plot reactivation rates in different intervals of the trial.
 
@@ -200,8 +201,8 @@ def trial_event_labels(
         plot_kwargs['ci'] = 68  # Plot SEM as error bars
 
     # These should probably match pool.analyses.trialdf event paddings
-    pre_stim_pad = -0.1
-    post_stim_pad = 2.5
+    pre_stim_pad = -0.2
+    post_stim_pad = 2.6
     edges = [pre_s, pre_stim_pad, 0, 2, post_stim_pad, iti_start_s, iti_end_s]
     bin_labels = ['pre', 'pre-buffer', 'stim', 'post-buffer', 'post', 'iti']
 
@@ -211,9 +212,9 @@ def trial_event_labels(
     frames = dfs.imaging.trial_frames_df(
         runs, inactivity_mask=inactivity_mask)
 
-    row_order = ['plus', 'neutral', 'minus', 'pavlovian', 'blank']
+    condition_order = ['plus', 'neutral', 'minus', 'pavlovian', 'blank']
     if limit_conditions:
-        row_order = ['plus', 'neutral', 'minus']
+        condition_order = ['plus', 'neutral', 'minus']
         events = (events
                   .reorder_levels(['mouse', 'date', 'run', 'trial_idx',
                                    'condition', 'error', 'event_type',
@@ -236,20 +237,54 @@ def trial_event_labels(
                      )
     events_binned.time_cat.cat.remove_unused_categories(inplace=True)
 
-    g = sns.catplot(
-        x='time_cat', y='event_rate', col='event_type', row='condition',
-        hue='error', data=events_binned, kind=kind, margin_titles=True,
-        row_order=row_order, col_order=['plus', 'neutral', 'minus'],
-        **plot_kwargs)
+    if plot_bias:
+        events_pivoted = (events_binned
+                          .reset_index()
+                          .pivot_table(index=['mouse', 'date', 'condition',
+                                              'error', 'time_cat'],
+                                       columns='event_type',
+                                       values='event_rate')
+                          )
+        events_pivoted['sum'] = (events_pivoted['plus'] +
+                                 events_pivoted['neutral'] +
+                                 events_pivoted['minus'])
+        events_pivoted['plus'] /= events_pivoted['sum']
+        events_pivoted['neutral'] /= events_pivoted['sum']
+        events_pivoted['minus'] /= events_pivoted['sum']
 
-    g.set_xlabels('')
-    g.set_ylabels('Event rate (Hz)')
+        events_bias_df = (events_pivoted
+                          .reset_index()
+                          .melt(value_vars=['minus', 'neutral', 'plus'],
+                                value_name='event_rate',
+                                id_vars=['mouse', 'date', 'condition', 'error',
+                                         'time_cat'])
+                          # .set_index(['mouse', 'date', 'condition', 'error',
+                          #             'time_cat', 'event_type'])
+                          )
+
+        g = sns.catplot(
+            x='time_cat', y='event_rate', col='condition', row='error',
+            hue='event_type', data=events_bias_df, kind=kind,
+            margin_titles=True, col_order=condition_order,
+            palette=config.colors(), hue_order=config.stimuli(), **plot_kwargs)
+
+        g.set_ylabels('Fraction of events')
+    else:
+
+        g = sns.catplot(
+            x='time_cat', y='event_rate', col='event_type', row='condition',
+            hue='error', data=events_binned, kind=kind, margin_titles=True,
+            row_order=condition_order, col_order=['plus', 'neutral', 'minus'],
+            **plot_kwargs)
+
+        g.set_xlabels('')
+        g.set_ylabels('Event rate (Hz)')
 
     return g
 
 
 def trial_event_bins(
-        runs, pre_s=-5, post_s=10, bin_size_s=1, exclude_window=(-0.1, 2.5),
+        runs, pre_s=-5, post_s=10, bin_size_s=1, exclude_window=(-0.2, 2.3),
         threshold=0.1, kind='bar', limit_conditions=False,
         inactivity_mask=False, **plot_kwargs):
     """
@@ -341,40 +376,7 @@ def trial_event_bins(
     g.set_xlabels('')
     g.set_ylabels('Event rate (Hz)')
 
-    return g, events_binned
-
-
-def trial_replay_bias():
-    pass
-
-# def binned_event_distrbituions_throughout_trials_orig(
-#         runs, pre_s=-5, iti_start_s=5, iti_end_s=10, stim_pad_s=0.1,
-#         threshold=0.1, kind='bar', limit_conditions=False, **plot_kwargs):
-#     edges = [pre_s, -stim_pad_s, 0, 2, 2 + stim_pad_s, iti_start_s, iti_end_s]
-#     bin_labels = ['pre', 'pre_buffer', 'stim', 'post_buffer', 'post', 'iti']
-
-#     all_events = []
-#     for run in runs:
-#         events, times = react._events_by_trial(run, threshold, xmask=False)
-
-#         events_binned = react._bin_events(events, times, edges, bin_labels)
-#         all_events.append(events_binned)
-#     events_binned = pd.concat(all_events, axis=0)
-
-#     events_binned = events_binned[
-#         events_binned.time_cat.isin(['pre', 'post', 'iti'])]
-#     events_binned.time_cat.cat.remove_unused_categories(inplace=True)
-
-#     g = sns.catplot(
-#         x='time_cat', y='event_rate', col='event_type', row='condition',
-#         hue='error', data=events_binned, kind=kind, margin_titles=True,
-#         row_order=['plus', 'neutral', 'minus', 'pavlovian', 'blank'],
-#         col_order=['plus', 'neutral', 'minus'], **plot_kwargs)
-
-#     g.set_xlabels('')
-#     g.set_ylabels('Event rate (Hz)')
-
-#     return g
+    return g
 
 
 def peri_event_behavior(df, limit_conditions=False, **plot_kwargs):
