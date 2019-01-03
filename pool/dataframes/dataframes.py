@@ -4,6 +4,21 @@ import pandas as pd
 from .. import config
 
 
+def careful_first(series):
+    """
+    Use as a groupby aggregate function to ensure that all values are the same.
+
+    Returns the first value after making sure that they are all the same.
+
+    Parameters
+    ----------
+    series : pd.Series
+
+    """
+    assert series.unique() <= 1
+    return series[0]
+
+
 def smart_merge(df1, df2, how='left'):
     """
     Auto-merge on all shared indices/columns.
