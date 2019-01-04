@@ -47,10 +47,16 @@ def trial_classifier_probability(
     replay_types = config.stimuli()
 
     if exclude_window is not None:
-        df = df.reset_index(['time'])
-        mask = (df.time >= exclude_window[0]) & (df.time <= exclude_window[1])
+        df = df.reset_index(['time', 'condition'])
+        mask = (df.condition != 'blank') & \
+            (df.time >= exclude_window[0]) & \
+            (df.time <= exclude_window[1])
         df.loc[mask, list(replay_types)] = np.nan
-        df = df.set_index('time', append=True)
+        df = (df
+              .set_index(['time', 'condition'], append=True)
+              .reorder_levels(['mouse', 'date', 'run', 'trial_idx',
+                               'condition', 'error', 'time'])
+              )
 
     fig, axs = plt.subplots(
         len(trial_types) * 2, len(replay_types), sharex=True, sharey=True,
@@ -268,7 +274,9 @@ def trial_event_labels(
             margin_titles=True, col_order=condition_order,
             palette=config.colors(), hue_order=config.stimuli(), **plot_kwargs)
 
+        g.set_xlabels('')
         g.set_ylabels('Fraction of events')
+
     else:
 
         g = sns.catplot(
