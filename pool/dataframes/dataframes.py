@@ -19,7 +19,7 @@ def careful_first(series):
     return series[0]
 
 
-def smart_merge(df1, df2, how='left'):
+def smart_merge(df1, df2, how='left', sort=True):
     """
     Auto-merge on all shared indices/columns.
 
@@ -29,6 +29,8 @@ def smart_merge(df1, df2, how='left'):
         DataFrames to merge.
     how : {'left', 'right', 'inner', 'outer'}
         Type of merge to perform. See pd.merge for details.
+    sort : boolean
+        If True, sort the output.
 
     Returns
     -------
@@ -58,7 +60,10 @@ def smart_merge(df1, df2, how='left'):
         # Think this makes sense, change if needed.
         df_merge = df_merge.set_index(shared_keys)
 
-    return df_merge.sort_index()
+    if sort:
+        df_merge = df_merge.sort_index()
+
+    return df_merge
 
 
 def bin_events(events, frames, edges, bin_labels):
