@@ -171,8 +171,8 @@ def trial_event_distributions(
 
 def trial_event_labels(
         runs, pre_s=-5, iti_start_s=5, iti_end_s=10, threshold=0.1, kind='bar',
-        limit_conditions=False, inactivity_mask=False, plot_bias=False,
-        **plot_kwargs):
+        limit_conditions=False, xmask=False, inactivity_mask=False,
+        plot_bias=False, **plot_kwargs):
     """
     Plot reactivation rates in different intervals of the trial.
 
@@ -192,6 +192,8 @@ def trial_event_labels(
         Type of plot to plot.
     limit_conditions : bool
         If True, only look at plus, neutral, and minus conditions.
+    xmask : bool
+        If True, only allow one event (across types) per time bin.
     inactvitiy_mask : bool
         If True, limit reactivations to periods of inactivity.
     **plot_kwargs
@@ -213,7 +215,7 @@ def trial_event_labels(
     bin_labels = ['pre', 'pre-buffer', 'stim', 'post-buffer', 'post', 'iti']
 
     events = dfs.reactivation.trial_events_df(
-        runs, threshold=threshold, xmask=False,
+        runs, threshold=threshold, xmask=xmask,
         inactivity_mask=inactivity_mask)
     frames = dfs.imaging.trial_frames_df(
         runs, inactivity_mask=inactivity_mask)
