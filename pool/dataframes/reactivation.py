@@ -53,11 +53,11 @@ def events_df(runs, threshold=0.1, xmask=False, inactivity_mask=False):
             run_events, run_event_types = [], []
         index = pd.MultiIndex.from_arrays(
             [[run.mouse] * len(run_events), [run.date] * len(run_events),
-             [run.run] * len(run_events), range(len(run_events)),
-             run_event_types],
-            names=['mouse', 'date', 'run', 'event_idx', 'event_type'])
+             [run.run] * len(run_events), range(len(run_events))],
+            names=['mouse', 'date', 'run', 'event_idx'])
         events_list.append(
-            pd.DataFrame({'frame': run_events}, index=index))
+            pd.DataFrame({'frame': run_events, 'event_type': run_event_types},
+                         index=index))
 
     return pd.concat(events_list, axis=0)
 
@@ -82,7 +82,7 @@ def trial_classifier_df(runs):
     for run in runs:
         result.append(db.get(
             'trialdf_classifier', mouse=run.mouse, date=run.date, run=run.run,
-            metadata_object=run))
+            metadata_object=run, force=False))
     result = pd.concat(result, axis=0)
 
     return result
@@ -124,10 +124,32 @@ def trial_events_df(
     for run in runs:
         result.append(db.get(
             analysis, mouse=run.mouse, date=run.date, run=run.run,
+            metadata_object=run, force=False))
+    result = pd.concat(result, axis=0)
+
+    return result
+
+def aligned_events_df(
+        runs, trigger, threshold=0.1, xmask=False, inactivity_mask=False):
+    """
+    Return reactivation events aligned to various triggers.
+
+    """
+    result = [pd.DataFrame()]
+    db = database.db()
+    analysis = 'trialdf_{}_events_{}_{}_{}'.format(
+        trigger,
+        threshold,
+        'xmask' if xmask else 'noxmask',
+        'inactmask' if inactivity_mask else 'noinactmask')
+    for run in runs:
+        result.append(db.get(
+            analysis, mouse=run.mouse, date=run.date, run=run.run,
             metadata_object=run))
     result = pd.concat(result, axis=0)
 
     return result
+
 
 
 def peri_event_behavior_df(runs, threshold=0.1):

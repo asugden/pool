@@ -36,9 +36,17 @@ def trial_classifier_probability(
     Returns
     -------
     fig : matplotlib.pyplot.Figure
+    df : pd.DataFrame
 
     """
-    df = dfs.reactivation.trial_classifier_df(runs)
+    classifier_df = dfs.reactivation.trial_classifier_df(runs)
+    behav_df = dfs.behavior.behavior_df(runs)
+    df = (dfs
+          .smart_merge(classifier_df, behav_df, how='left', sort=False)
+          .set_index(['condition', 'error'], append=True)
+          .reorder_levels(['mouse', 'date', 'run', 'trial_idx', 'condition',
+                           'error', 'time'])
+          )
 
     if limit_conditions:
         trial_types = ['plus', 'neutral', 'minus']
@@ -86,7 +94,7 @@ def trial_classifier_probability(
     for ax in axs[-1, :]:
         ax.set_xlabel('Time from stim (s)')
 
-    return fig
+    return fig, df
 
 
 def trial_event_distributions(
@@ -118,25 +126,23 @@ def trial_event_distributions(
     Returns
     -------
     seaborn.GridSpec
+    pd.DataFrame
 
     """
-    df = dfs.reactivation.trial_events_df(
+    event_df = dfs.reactivation.trial_events_df(
         runs, threshold=threshold, xmask=False,
         inactivity_mask=inactivity_mask)
-
-    # Make sure Index levels are in the correct order
-    df = df.reorder_levels(
-        ['mouse', 'date', 'run', 'trial_idx', 'condition', 'error',
-         'event_type', 'event_idx'])
+    behav_df = dfs.behavior.behavior_df(runs)
+    df = dfs.smart_merge(event_df, behav_df, how='left', sort=True)
 
     # Limit to only {'plus', 'neutral', 'minus'}
     if limit_conditions:
-        df = df.loc[Idx[:, :, :, :, ['plus', 'neutral', 'minus'], :, :, :], :]
+        df = df.loc[(df.condition == 'plus') |
+                    (df.condition == 'neutral') |
+                    (df.condition == 'minus'), :]
         row_order = ['plus', 'neutral', 'minus']
     else:
         row_order = ['plus', 'neutral', 'minus', 'pavlovian', 'blank']
-
-    df = df.reset_index(['event_type', 'error', 'condition'])
 
     df = df[
         (df.time > pre_s) &
@@ -166,7 +172,7 @@ def trial_event_distributions(
     g.set_xlabels('Time from stim onset (s)')
     g.set_ylabels('Normalized density')
 
-    return g
+    return g, df
 
 
 def trial_event_labels(
