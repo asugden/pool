@@ -208,6 +208,7 @@ def trial_event_labels(
     Returns
     -------
     seaborn.GridSpec
+    pd.DataFrame
 
     """
     # Update some plot_kwargs
@@ -220,11 +221,22 @@ def trial_event_labels(
     edges = [pre_s, pre_stim_pad, 0, 2, post_stim_pad, iti_start_s, iti_end_s]
     bin_labels = ['pre', 'pre-buffer', 'stim', 'post-buffer', 'post', 'iti']
 
-    events = dfs.reactivation.trial_events_df(
+    events_df = dfs.reactivation.trial_events_df(
         runs, threshold=threshold, xmask=xmask,
         inactivity_mask=inactivity_mask)
-    frames = dfs.imaging.trial_frames_df(
+    behav_df = dfs.behavior.behavior_df(runs)
+    events = (dfs
+              .smart_merge(events_df, behav_df, how='left')
+              .set_index(['trial_idx', 'condition', 'error', 'event_type'],
+                         append=True)
+              )
+    frames_df = dfs.imaging.trial_frames_df(
         runs, inactivity_mask=inactivity_mask)
+    frames = (dfs
+              .smart_merge(frames_df, behav_df, how='left')
+              .reset_index(['frame'])
+              .set_index(['condition', 'error'], append=True)
+              )
 
     condition_order = ['plus', 'neutral', 'minus', 'pavlovian', 'blank']
     if limit_conditions:
@@ -277,13 +289,15 @@ def trial_event_labels(
                           )
 
         g = sns.catplot(
-            x='time_cat', y='event_rate', col='condition', row='error',
+            x='time_cat', y='event_rate', col='error', row='condition',
             hue='event_type', data=events_bias_df, kind=kind,
-            margin_titles=True, col_order=condition_order,
+            margin_titles=True, row_order=condition_order,
             palette=config.colors(), hue_order=config.stimuli(), **plot_kwargs)
 
         g.set_xlabels('')
         g.set_ylabels('Fraction of events')
+
+        return g, events_bias_df
 
     else:
 
@@ -296,7 +310,7 @@ def trial_event_labels(
         g.set_xlabels('')
         g.set_ylabels('Event rate (Hz)')
 
-    return g
+        return g, events_binned
 
 
 def trial_event_bins(
@@ -330,6 +344,7 @@ def trial_event_bins(
     Returns
     -------
     seaborn.GridSpec
+    pd.DataFrame
 
     """
     # Update some plot_kwargs
@@ -340,11 +355,22 @@ def trial_event_bins(
     edges = np.concatenate([left_edges, [left_edges[-1] + bin_size_s]])
     bin_labels = [str(x) for x in left_edges]
 
-    events = dfs.reactivation.trial_events_df(
+    events_df = dfs.reactivation.trial_events_df(
         runs, threshold=threshold, xmask=False,
         inactivity_mask=inactivity_mask)
-    frames = dfs.imaging.trial_frames_df(
+    behav_df = dfs.behavior.behavior_df(runs)
+    events = (dfs
+              .smart_merge(events_df, behav_df, how='left')
+              .set_index(['trial_idx', 'condition', 'error', 'event_type'],
+                         append=True)
+              )
+    frames_df = dfs.imaging.trial_frames_df(
         runs, inactivity_mask=inactivity_mask)
+    frames = (dfs
+              .smart_merge(frames_df, behav_df, how='left')
+              .reset_index(['frame'])
+              .set_index(['condition', 'error'], append=True)
+              )
 
     if exclude_window is not None:
         events = events.reset_index(['condition'])
@@ -392,7 +418,7 @@ def trial_event_bins(
     g.set_xlabels('')
     g.set_ylabels('Event rate (Hz)')
 
-    return g
+    return g, events_binned
 
 
 def peri_event_behavior(df, limit_conditions=False, **plot_kwargs):
