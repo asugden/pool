@@ -165,33 +165,34 @@ def peri_event_behavior_df(runs, threshold=0.1):
 
     result = [pd.DataFrame()]
     for event in iti_events.itertuples():
-        mouse, date, run, trial_idx, condition, error, event_type, event_idx = \
-            event.Index
+        mouse, date, run, event_idx = event.Index
 
         for condition in behavior['condition'].unique():
-            trial_errors = (behavior[behavior['condition'] == condition]
+            trial_errors = (behavior[behavior['condition'] == event.condition]
                             .loc[(mouse, date, run, slice(None)), 'error']
                             .reset_index('trial_idx'))
 
-            prev_errors = (trial_errors[trial_errors['trial_idx'] <= trial_idx]
+            prev_errors = (trial_errors[trial_errors[
+                                        'trial_idx'] <= event.trial_idx]
                            .iloc[-2:])
             # Reset trial_idx to be relative to event, handling edge cases
             prev_errors['trial_idx'] = np.arange(-prev_errors.shape[0], 0)
             # Put 'condition' and 'event_idx' back in the dataframe
             prev_errors = pd.concat(
-                [prev_errors], keys=[condition], names=['condition'])
+                [prev_errors], keys=[event.condition], names=['condition'])
             prev_errors = pd.concat(
-                [prev_errors], keys=[event_type], names=['event_type'])
+                [prev_errors], keys=[event.event_type], names=['event_type'])
             prev_errors = pd.concat(
                 [prev_errors], keys=[event_idx], names=['event_idx'])
 
-            next_errors = (trial_errors[trial_errors['trial_idx'] > trial_idx]
+            next_errors = (trial_errors[trial_errors[
+                                        'trial_idx'] > event.trial_idx]
                            .iloc[:2])
             next_errors['trial_idx'] = np.arange(1, next_errors.shape[0] + 1)
             next_errors = pd.concat(
-                [next_errors], keys=[condition], names=['condition'])
+                [next_errors], keys=[event.condition], names=['condition'])
             next_errors = pd.concat(
-                [next_errors], keys=[event_type], names=['event_type'])
+                [next_errors], keys=[event.event_type], names=['event_type'])
             next_errors = pd.concat(
                 [next_errors], keys=[event_idx], names=['event_idx'])
 
