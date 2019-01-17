@@ -342,7 +342,8 @@ class TrialDf(base.AnalysisBase):
             [run], threshold, xmask=xmask,
             inactivity_mask=inactivity_mask)
 
-        result = [pd.DataFrame()]
+        result = [pd.DataFrame({'trigger_idx': [], 'event_type': [],
+                                'frame': [], 'time': []})]
         for trigger_idx, onset in enumerate(onsets):
 
             trigger_events = events.loc[
@@ -356,7 +357,6 @@ class TrialDf(base.AnalysisBase):
 
         result_df = (pd
                      .concat(result, axis=0)
-                     .drop(columns=['frame'])
                      .loc[:, ['trigger_idx', 'event_type', 'time']]
                      .sort_index()
                      )
