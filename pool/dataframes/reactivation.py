@@ -129,7 +129,7 @@ def trial_events_df(
 
     return result
 
-def aligned_events_df(
+def trigger_events_df(
         runs, trigger, threshold=0.1, xmask=False, inactivity_mask=False):
     """
     Return reactivation events aligned to various triggers.

@@ -1,6 +1,7 @@
 """Reactivation figure layouts."""
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 from pandas import IndexSlice as Idx
 import seaborn as sns
 
@@ -202,6 +203,8 @@ def trial_event_labels(
         If True, only allow one event (across types) per time bin.
     inactvitiy_mask : bool
         If True, limit reactivations to periods of inactivity.
+    plot_bias : boolean
+        If True, convert rates to relative rates across reactivation types.
     **plot_kwargs
         Additional arguments are passed directly to the plotting functions.
 
@@ -219,98 +222,92 @@ def trial_event_labels(
     pre_stim_pad = -0.2
     post_stim_pad = 2.6
     edges = [pre_s, pre_stim_pad, 0, 2, post_stim_pad, iti_start_s, iti_end_s]
-    bin_labels = ['pre', 'pre-buffer', 'stim', 'post-buffer', 'post', 'iti']
+    labels = ['pre', 'pre-buffer', 'stim', 'post-buffer', 'post', 'iti']
 
-    events_df = dfs.reactivation.trial_events_df(
-        runs, threshold=threshold, xmask=xmask,
-        inactivity_mask=inactivity_mask)
-    behav_df = dfs.behavior.behavior_df(runs)
+    # Get events and frames dfs merged with trial info
+    behavior = dfs.behavior.behavior_df(runs)
     events = (dfs
-              .smart_merge(events_df, behav_df, how='left')
-              .set_index(['trial_idx', 'condition', 'error', 'event_type'],
-                         append=True)
+              .reactivation.trial_events_df(
+                  runs, threshold=threshold, xmask=xmask,
+                  inactivity_mask=inactivity_mask)
+              # Drop indexes which we don't want to merge bin on later
+              .reset_index(['event_idx'], drop=True)
+              .drop(columns=['trial_idx'])
               )
-    frames_df = dfs.imaging.trial_frames_df(
-        runs, inactivity_mask=inactivity_mask)
+    events = dfs.smart_merge(events, behavior, how='left')
     frames = (dfs
-              .smart_merge(frames_df, behav_df, how='left')
-              .reset_index(['frame'])
-              .set_index(['condition', 'error'], append=True)
+              .imaging.trial_frames_df(
+                  runs, inactivity_mask=inactivity_mask)
+              .reset_index(['trial_idx', 'frame'], drop=True)
               )
+    frames = dfs.smart_merge(frames, behavior, how='left')
 
+    # Trim conditions if needed
     condition_order = ['plus', 'neutral', 'minus', 'pavlovian', 'blank']
     if limit_conditions:
         condition_order = ['plus', 'neutral', 'minus']
-        events = (events
-                  .reorder_levels(['mouse', 'date', 'run', 'trial_idx',
-                                   'condition', 'error', 'event_type',
-                                   'event_idx'])
-                  .loc[Idx[:, :, :, :, ['plus', 'neutral', 'minus']], :]
-                  )
 
-        frames = (frames
-                  .reorder_levels(['mouse', 'date', 'run', 'trial_idx',
-                                   'condition', 'error'])
-                  .loc[Idx[:, :, :, :, ['plus', 'neutral', 'minus']], :]
-                  )
+        events = events.loc[
+            events.condition.isin(['plus', 'minus', 'neutral']), :]
+        frames = frames.loc[
+            frames.condition.isin(['plus', 'minus', 'neutral']), :]
 
-    events_binned = (dfs.bin_events(events, frames, edges, bin_labels)
-                     .reorder_levels(['mouse', 'date', 'run', 'event_type',
-                                      'condition', 'error', 'time_cat'])
-                     .loc[Idx[:, :, :, :, :, :, ['pre', 'post', 'iti']], :]
-                     .reset_index(['event_type', 'condition', 'error',
-                                   'time_cat'])
+    # Do binning
+    events_binned = dfs.bin_events(events, edges, labels)
+    frames_binned = dfs.bin_events(frames, edges, labels)
+
+    # Trim down to desired windows for both
+    events_binned = events_binned.reset_index('bin')
+    events_binned = (events_binned
+                     .loc[events_binned['bin'].isin(
+                         ['pre', 'post', 'iti']), :]
                      )
-    events_binned.time_cat.cat.remove_unused_categories(inplace=True)
+    events_binned.bin.cat.remove_unused_categories(inplace=True)
+    events_binned = events_binned.set_index('bin', append=True)
+
+    frames_binned = frames_binned.reset_index('bin')
+    frames_binned = (frames_binned
+                     .loc[frames_binned['bin'].isin(
+                         ['pre', 'post', 'iti']), :]
+                     )
+    frames_binned.bin.cat.remove_unused_categories(inplace=True)
+    frames_binned = frames_binned.set_index('bin', append=True)
+
+    rate_df = dfs.event_rate(
+        events_binned, frames_binned, event_label_col='event_type')
 
     if plot_bias:
-        events_pivoted = (events_binned
-                          .reset_index()
-                          .pivot_table(index=['mouse', 'date', 'condition',
-                                              'error', 'time_cat'],
-                                       columns='event_type',
-                                       values='event_rate')
-                          )
-        events_pivoted['sum'] = (events_pivoted['plus'] +
-                                 events_pivoted['neutral'] +
-                                 events_pivoted['minus'])
-        events_pivoted['plus'] /= events_pivoted['sum']
-        events_pivoted['neutral'] /= events_pivoted['sum']
-        events_pivoted['minus'] /= events_pivoted['sum']
-
-        events_bias_df = (events_pivoted
-                          .reset_index()
-                          .melt(value_vars=['minus', 'neutral', 'plus'],
-                                value_name='event_rate',
-                                id_vars=['mouse', 'date', 'condition', 'error',
-                                         'time_cat'])
-                          # .set_index(['mouse', 'date', 'condition', 'error',
-                          #             'time_cat', 'event_type'])
-                          )
+        rate_df = rate_df.unstack('event_type')
+        rate_sum = rate_df.sum(axis=1)
+        rate_bias_df = (rate_df
+                        .div(rate_sum, axis=0)
+                        .dropna()
+                        .stack()
+                        .reset_index()
+                        )
 
         g = sns.catplot(
-            x='time_cat', y='event_rate', col='error', row='condition',
-            hue='event_type', data=events_bias_df, kind=kind,
+            x='bin', y='event_rate', col='error', row='condition',
+            hue='event_type', data=rate_bias_df, kind=kind,
             margin_titles=True, row_order=condition_order,
             palette=config.colors(), hue_order=config.stimuli(), **plot_kwargs)
 
         g.set_xlabels('')
         g.set_ylabels('Fraction of events')
 
-        return g, events_bias_df
+        return g, rate_bias_df
 
     else:
-
         g = sns.catplot(
-            x='time_cat', y='event_rate', col='event_type', row='condition',
-            hue='error', data=events_binned, kind=kind, margin_titles=True,
-            row_order=condition_order, col_order=['plus', 'neutral', 'minus'],
-            **plot_kwargs)
+            x='bin', y='event_rate', col='event_type', row='condition',
+            hue='error', data=rate_df.reset_index(), kind=kind,
+            margin_titles=True, row_order=condition_order,
+            col_order=['plus', 'neutral', 'minus'], **plot_kwargs)
 
         g.set_xlabels('')
         g.set_ylabels('Event rate (Hz)')
 
-        return g, events_binned
+        return g, rate_df
 
 
 def trial_event_bins(
@@ -353,72 +350,134 @@ def trial_event_bins(
 
     left_edges = np.arange(pre_s, post_s, bin_size_s)
     edges = np.concatenate([left_edges, [left_edges[-1] + bin_size_s]])
-    bin_labels = [str(x) for x in left_edges]
+    labels = [str(x) for x in left_edges]
 
-    events_df = dfs.reactivation.trial_events_df(
-        runs, threshold=threshold, xmask=False,
-        inactivity_mask=inactivity_mask)
-    behav_df = dfs.behavior.behavior_df(runs)
+    # Get events and frames dfs merged with trial info
+    behavior = dfs.behavior.behavior_df(runs)
     events = (dfs
-              .smart_merge(events_df, behav_df, how='left')
-              .set_index(['trial_idx', 'condition', 'error', 'event_type'],
-                         append=True)
+              .reactivation.trial_events_df(
+                  runs, threshold=threshold, xmask=False,
+                  inactivity_mask=inactivity_mask)
+              # Drop indexes which we don't want to merge bin on later
+              .reset_index(['event_idx'], drop=True)
+              .drop(columns=['trial_idx'])
               )
-    frames_df = dfs.imaging.trial_frames_df(
-        runs, inactivity_mask=inactivity_mask)
+    events = dfs.smart_merge(events, behavior, how='left')
     frames = (dfs
-              .smart_merge(frames_df, behav_df, how='left')
-              .reset_index(['frame'])
-              .set_index(['condition', 'error'], append=True)
+              .imaging.trial_frames_df(
+                  runs, inactivity_mask=inactivity_mask)
+              .reset_index(['trial_idx', 'frame'], drop=True)
               )
+    frames = dfs.smart_merge(frames, behavior, how='left')
 
+    # Cut out exclude window
     if exclude_window is not None:
-        events = events.reset_index(['condition'])
         events = events[(events.condition == 'blank') |
                         ((events.time < exclude_window[0]) |
                         (events.time > exclude_window[1]))]
-        events = (events
-                  .set_index(['condition'], append=True)
-                  .reorder_levels(['mouse', 'date', 'run', 'trial_idx',
-                                   'condition', 'error', 'event_type',
-                                   'event_idx'])
-                  )
 
-    row_order = ['plus', 'neutral', 'minus', 'pavlovian', 'blank']
+    # Trim conditions if needed
+    condition_order = ['plus', 'neutral', 'minus', 'pavlovian', 'blank']
     if limit_conditions:
-        row_order = ['plus', 'neutral', 'minus']
-        events = (events
-                  .reorder_levels(['mouse', 'date', 'run', 'trial_idx',
-                                   'condition', 'error', 'event_type',
-                                   'event_idx'])
-                  .loc[Idx[:, :, :, :, ['plus', 'neutral', 'minus']], :]
-                  )
+        condition_order = ['plus', 'neutral', 'minus']
 
-        frames = (frames
-                  .reorder_levels(['mouse', 'date', 'run', 'trial_idx',
-                                   'condition', 'error'])
-                  .loc[Idx[:, :, :, :, ['plus', 'neutral', 'minus']], :]
-                  )
+        events = events.loc[
+            events.condition.isin(['plus', 'minus', 'neutral']), :]
+        frames = frames.loc[
+            frames.condition.isin(['plus', 'minus', 'neutral']), :]
 
-    events_binned = (dfs.bin_events(events, frames, edges, bin_labels)
-                     .reset_index(['event_type', 'condition', 'error',
-                                   'time_cat'])
-                     )
+    # Do binning
+    events_binned = dfs.bin_events(events, edges, labels)
+    frames_binned = dfs.bin_events(frames, edges, labels)
 
-    # Not really sure why this is sometimes a categorical series and sometimes
-    # not.
-    # events_binned.time_cat.cat.remove_unused_categories(inplace=True)
+    rate_df = dfs.event_rate(
+        events_binned, frames_binned, event_label_col='event_type')
 
     g = sns.catplot(
-        x='time_cat', y='event_rate', col='event_type', row='condition',
-        hue='error', data=events_binned, kind=kind, margin_titles=True,
-        row_order=row_order, col_order=['plus', 'neutral', 'minus'],
+        x='bin', y='event_rate', col='event_type', row='condition',
+        hue='error', data=rate_df.reset_index(), kind=kind, margin_titles=True,
+        row_order=condition_order, col_order=['plus', 'neutral', 'minus'],
         **plot_kwargs)
 
     g.set_xlabels('')
     g.set_ylabels('Event rate (Hz)')
 
-    return g, events_binned
+    return g, rate_df
+
+
+def trigger_event_bins(
+        runs, pre_s=-1, post_s=5, bin_size_s=0.5,
+        threshold=0.1, kind='bar', inactivity_mask=False, **plot_kwargs):
+    """
+    Plot reactivation rates like a histogram (1-s bins) throughout trial.
+
+    Parameters
+    ----------
+    runs : RunSorter or list of Run
+    pre_s, post_s : float
+        Start and stop trial times to plot, relative to stim onset.
+    bin_size_s : float
+        Bin size, in seconds.
+    threshold : float
+        Classifier reactivation confidence threshold.
+    kind : str
+        Type of plot to plot.
+    inactvitiy_mask : bool
+        If True, limit reactivations to periods of inactivity.
+    **plot_kwargs
+        Additional arguments are passed directly to the plotting functions.
+
+    Returns
+    -------
+    seaborn.GridSpec
+    pd.DataFrame
+
+    """
+    # Update some plot_kwargs
+    if kind == 'bar' and 'ci' not in plot_kwargs:
+        plot_kwargs['ci'] = 68  # Plot SEM as error bars
+
+    left_edges = np.arange(pre_s, post_s, bin_size_s)
+    edges = np.concatenate([left_edges, [left_edges[-1] + bin_size_s]])
+    labels = [str(x) for x in left_edges]
+
+    all_events, all_frames = [], []
+    for trigger in ['reward', 'punishment', 'lickbout']:
+        trig_events = (dfs.reactivation
+                       .trigger_events_df(
+                           runs, trigger, threshold=threshold, xmask=False,
+                           inactivity_mask=inactivity_mask)
+                       .reset_index(['event_idx'], drop=True)
+                       .drop(columns=['trigger_idx'])
+                       .pipe(dfs.bin_events, edges, labels)
+                       .assign(trigger=trigger)
+                       .set_index('trigger', append=True)
+                       )
+        trig_frames = (dfs.imaging
+                       .trigger_frames_df(
+                           runs, trigger, inactivity_mask=inactivity_mask)
+                       .reset_index(['trigger_idx', 'frame'], drop=True)
+                       .pipe(dfs.bin_events, edges, labels)
+                       .assign(trigger=trigger)
+                       .set_index('trigger', append=True)
+                       )
+
+        all_events.append(trig_events)
+        all_frames.append(trig_frames)
+    events = pd.concat(all_events, axis=0)
+    frames = pd.concat(all_frames, axis=0)
+
+    rate_df = dfs.event_rate(events, frames, event_label_col='event_type')
+
+    g = sns.catplot(
+        x='bin', y='event_rate', col='event_type', row='trigger',
+        data=rate_df.reset_index(), kind=kind, margin_titles=True,
+        **plot_kwargs)
+
+    g.set_xlabels('')
+    g.set_ylabels('Event rate (Hz)')
+
+    return g, rate_df
 
 
 def peri_event_behavior(df, limit_conditions=False, **plot_kwargs):

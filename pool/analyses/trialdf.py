@@ -13,8 +13,8 @@ PRE_ONSET_PAD_S = 0.2
 
 # For non-trial-aligned DataFrames, amount of time to include around each
 # event.
-PRE_S = 10.
-POST_S = 10.
+PRE_S = 5.
+POST_S = 5.
 
 
 class TrialDf(base.AnalysisBase):

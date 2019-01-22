@@ -3,8 +3,25 @@ import pandas as pd
 
 from .. import database
 
+PRE_S = 5
+POST_S = 5
+
 
 def frames_df(runs, inactivity_mask=False):
+    """
+    Return all frame times.
+
+    Parameters
+    ----------
+    runs : RunSorter
+    inactivity_mask : bool
+        If True, enforce that all events are during times of inactivity.
+
+    Returns
+    -------
+    pd.DataFrame
+
+    """
     frames_list = [pd.DataFrame()]
     for run in runs:
         t2p = run.trace2p()
@@ -21,56 +38,13 @@ def frames_df(runs, inactivity_mask=False):
     return pd.concat(frames_list, axis=0)
 
 
-# def trial_frames_df_orig(runs, next_onset_pad_s=0.1, prev_onset_pad_s=2.5):
-#     result = [pd.DataFrame()]
-#     for run in runs:
-#         t2p = run.trace2p()
-
-#         all_onsets = t2p.csonsets()
-#         conditions = t2p.conditions()
-#         errors = t2p.errors(cs=None)
-
-#         next_onsets = np.concatenate([all_onsets[1:], t2p.nframes], axis=None)
-#         prev_onsets = np.concatenate([0, all_onsets[:-1]], axis=None)
-
-#         fr = t2p.framerate
-#         next_onset_pad_fr = int(np.ceil(next_onset_pad_s * fr))
-#         prev_onset_pad_fr = int(np.ceil(prev_onset_pad_s * fr))
-
-#         frames = frames_df(run)
-
-#         for trial_idx, (onset, next_onset, prev_onset, cond, err) in \
-#                 enumerate(zip(all_onsets, next_onsets, prev_onsets, conditions,
-#                               errors)):
-
-#             trial_frames = frames.loc[
-#                 (frames.frame >= prev_onset + prev_onset_pad_fr) &
-#                 (frames.frame < next_onset - next_onset_pad_fr)].copy()
-#             trial_frames.frame -= onset
-#             trial_frames['time'] = \
-#                 trial_frames.frame * trial_frames.frame_period
-
-#             # add in trial_idx
-#             trial_frames = pd.concat(
-#                 [trial_frames], keys=[trial_idx], names=['trial_idx'])
-
-#             result.append(trial_frames)
-
-#     result_df = pd.concat(result, axis=0)
-#     result_df = result_df.reorder_levels(
-#         ['mouse', 'date', 'run', 'trial_idx'])
-#     result_df.drop(columns=['frame'], inplace=True)
-
-#     return result_df
-
-
 def trial_frames_df(runs, inactivity_mask=False):
     """
     Return acquisition frames relative to stimuli presentations.
 
     Parameters
     ----------
-    runs : RunSorter or list of Runs
+    runs : RunSorter
     inactivity_mask : bool
         If True, enforce that all events are during times of inactivity.
 
@@ -92,3 +66,63 @@ def trial_frames_df(runs, inactivity_mask=False):
     result = pd.concat(result, axis=0)
 
     return result
+
+
+def trigger_frames_df(runs, trigger, inactivity_mask=False):
+    """
+    Calculate a trigger-aligned imaging DataFrame.
+
+    Similar to trial_frames_df, but with non-trial triggers.
+
+    Parameters
+    ----------
+    runs : RunSorter
+    trigger : {'reward', 'punishment', 'lickbout'}
+    inactivity_mask : bool
+        If True, enforce that all events are during times of inactivity.
+
+    Returns
+    -------
+    pd.DataFrame
+
+    """
+    result = [pd.DataFrame()]
+    for run in runs:
+        t2p = run.trace2p()
+
+        if trigger == 'reward':
+            onsets = t2p.reward()
+            # There are 0s in place of un-rewarded trials.
+            onsets = onsets[onsets > 0]
+        elif trigger == 'punishment':
+            onsets = t2p.punishment()
+            # There are 0s in place of un-punished trials.
+            onsets = onsets[onsets > 0]
+        elif trigger == 'lickbout':
+            onsets = t2p.lickbout()
+
+        fr = t2p.framerate
+        pre_fr = int(np.ceil(PRE_S * fr))
+        post_fr = int(np.ceil(POST_S * fr))
+
+        frames = (frames_df([run], inactivity_mask)
+                  .reset_index(['frame'])
+                  )
+
+        result = [pd.DataFrame()]
+        for trigger_idx, onset in enumerate(onsets):
+
+            trigger_frames = frames.loc[
+                (frames.frame >= (onset - pre_fr)) &
+                (frames.frame < (onset + post_fr))].copy()
+            trigger_frames['frame'] -= onset
+            trigger_frames['time'] = trigger_frames.frame / fr
+            trigger_frames['trigger_idx'] = trigger_idx
+
+            result.append(trigger_frames)
+
+        result_df = (pd
+                     .concat(result, axis=0)
+                     .set_index(['trigger_idx', 'frame'], append=True)
+                     )
+    return result_df
