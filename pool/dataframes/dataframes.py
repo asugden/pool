@@ -66,83 +66,88 @@ def smart_merge(df1, df2, how='left', sort=True):
     return df_merge
 
 
-def bin_events(events, frames, edges, bin_labels):
+def bin_events(events, edges, labels=None, time_col='time'):
     """
-    Bin events and imaging frames, returning a merged DataFrame.
+    Bin event times into categories and converted to counts per bin.
 
     Parameters
     ----------
     events : pd.DataFrame
-    frames : pd.DataFrame
-    edges : sequence of float
-        Edges of bins, left-inclusive.
-    bin_labels : sequence of str
-        Names for bins.
+        Should have at least one column of event times. All other columns will
+        be used for grouping.
+    edges : sequence
+        Edges of bins. Left-inclusive.
+    labels : sequence of str, optional
+        Names for the bins. len(labels) == len(edges) - 1
+    time_col : str
+        The name of the column containing the times to bin.
+
+    Returns
+    -------
+    pd.DataFrame
+        Binned and counted DataFrame. All previous indices and columns are now
+        in the index, plus 'bin' which contains the bin label, and the previous
+        'time_col' column is now named 'counts'.
 
     """
-    events_gb = (events
-                 .assign(time_cat=pd.cut(events.time, edges, labels=bin_labels,
-                                         right=False))
-                 .groupby(['mouse', 'date', 'run', 'condition', 'error',
-                           'event_type', 'time_cat'])
-                 .count()
-                 .dropna()
-                 .rename(columns={'time': 'events'})
-                 )
+    if labels is None:
+        labels = [str(x) for x in edges[:-1]]
 
-    frames_gb = (frames
-                 .drop(columns=['frame'])
-                 .assign(time_cat=pd.cut(frames.time, edges, labels=bin_labels,
-                                         right=False))
-                 .groupby(['mouse', 'date', 'run', 'condition', 'error',
-                           'time_cat', 'frame_period'])
-                 .count()
-                 .dropna()
-                 .reset_index('frame_period')
-                 .rename(columns={'time': 'frames'})
-                 )
+    all_columns = events.index.names + list(events.columns)
+    all_columns = [col for col in all_columns if col not in [None, time_col]]
 
-    # There has to be a better way to do this (merge?)
-    #  There is: pivot on event_type, to add 3 columns with number of events
-    #     per trial then merge with frame df and pivot back.
-    # Expand across event types so that the merge will add in empty values
-    all_times = []
-    for event_type in config.stimuli():
-        all_times.append(frames_gb
-                         .assign(event_type=event_type)
-                         .set_index('event_type', append=True))
-    frames_gb = pd.concat(all_times, axis=0)
-
-    result = (pd
-              .merge(events_gb, frames_gb, how='right',
-                     on=['mouse', 'date', 'run', 'time_cat', 'event_type',
-                         'condition', 'error'])
-              .reset_index(['time_cat', 'event_type', 'condition', 'error'])
-              )
-
-    # Add in 0's
-    def fill_values(df):
-        df['condition'] = \
-            df['condition'].fillna(method='ffill').fillna(method='bfill')
-        df['error'] = df['error'].fillna(method='ffill').fillna(method='bfill')
-        df['events'] = df['events'].fillna(0)
-        return df
-
-    result = (result
-              .groupby(['mouse', 'date', 'run'])
-              .apply(fill_values))
-
-    # Reset error to a boolean
-    result['error'] = result['error'].astype('bool')
-
-    result['event_rate'] = \
-        result.events / (result.frame_period * result.frames)
-
-    result = (result
-              .reset_index()
-              .set_index(['mouse', 'date', 'run', 'event_type', 'condition',
-                          'error', 'time_cat'])
-              .sort_index()
+    result = (events
+              .assign(bin=pd.cut(events[time_col], edges, labels=labels,
+                                 right=False))
+              .groupby(all_columns + ['bin'])
+              .count()
+              .dropna()
+              .rename(columns={time_col: 'count'})
               )
 
     return result
+
+
+def event_rate(events, frames, event_label_col=None):
+    """Calculate event rates from a DataFrame of events and frame times.
+
+    All columns in events and frames should match and will be used to
+    calculate the rates. DataFrame should already be binned, such that there
+    is a column labeled 'count' that is the number of events/frames in each
+    bin.
+
+    Parameters
+    ----------
+    events : pd.DataFrame
+    frames :pd.DataFrame
+    event_label_col : str, optional
+        Optionally, calculate event rate for each "flavor" or event
+        independently. If not None, pivot events on this column to calculate
+        a rate for each type.
+
+    Returns
+    -------
+    pd.DataFrame
+
+    """
+    if event_label_col is not None:
+        # Convert to wide form if there multiple 'flavors' of events
+        # Allows us to can add in 0's where necessary
+        events = events.unstack(event_label_col)
+        events.columns = events.columns.droplevel()
+
+    # Convert frame counts to time
+    tmp_df = frames.reset_index('frame_period')
+    frames_series = (tmp_df['count'] * tmp_df['frame_period'])
+
+    # Expand back out to correctly add 0's
+    events = events.reindex(frames_series.index).fillna(0)
+
+    # Calc rate
+    rate_df = events.div(frames_series, axis=0)
+
+    if event_label_col is not None:
+        # Convert back to long form
+        rate_df = rate_df.stack().to_frame('event_rate')
+
+    return rate_df
