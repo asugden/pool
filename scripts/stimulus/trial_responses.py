@@ -1,4 +1,5 @@
 """Look at individual trial stimulus responses from example cells."""
+from __future__ import print_function
 import matplotlib as mpl
 import os
 if 'DISPLAY' not in os.environ:

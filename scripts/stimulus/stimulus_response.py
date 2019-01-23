@@ -1,4 +1,5 @@
 """Look at stimulus responses."""
+from __future__ import print_function
 import matplotlib as mpl
 import os
 if 'DISPLAY' not in os.environ:

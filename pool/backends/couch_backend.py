@@ -5,6 +5,7 @@ Requires:
 - CouchDB >= 2.0
 
 """
+from __future__ import print_function
 
 import couchdb
 from couchdb.mapping import DateTimeField

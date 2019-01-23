@@ -1,4 +1,5 @@
 """Originally copied from https://stackoverflow.com/a/13731150"""
+from __future__ import print_function
 from pylab import *
 import time
 
@@ -53,7 +54,7 @@ for b in backends_valid:
             line.set_ydata(sin(x+i/10.0))  # update the data
             draw()                         # redraw the canvas
 
-        print(b + ' FPS: \t', 200/(time.time()-tstart))
+        print((b + ' FPS: \t', 200/(time.time()-tstart)))
         ioff()
 
     except:

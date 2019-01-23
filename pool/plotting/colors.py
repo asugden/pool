@@ -1,3 +1,4 @@
+from __future__ import print_function
 from re import match as rematch
 import matplotlib.colors as mplcolors
 
@@ -49,7 +50,7 @@ def hex2tuple(clr):
     elif clr[0] == '#' and len(clr) == 7:
         return tuple(int(clr[i:i + 2], 16) for i in (1, 3, 5))
     else:
-        print 'WARNING: Color format not recognized.'
+        print('WARNING: Color format not recognized.')
 
 
 def tuple2hex(clr):

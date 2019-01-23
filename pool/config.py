@@ -1,4 +1,5 @@
 """Configurable defaults for pool."""
+from __future__ import print_function
 import copy
 import json
 import os
