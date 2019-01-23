@@ -39,7 +39,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         """Store a value from running an analysis in the data store."""
         raise NotImplementedError
 
-    def store_all(self, data_dict, keys, dependencies=None):
+    def store_all(self, data_dict, keys, updated, dependencies=None):
         """Store a set of key, value pairs at once.
 
         This can potentially be implemented more efficiently by individual
@@ -49,15 +49,15 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         if dependencies is None:
             dependencies = {}
         for key, val in data_dict.iteritems():
-            self.store(key, val, keys, dependencies.get(key, {}))
+            self.store(key, val, keys, updated, dependencies.get(key, {}))
 
     @abstractmethod
-    def recall(self, analysis_name, keys):
+    def recall(self, analysis_name, keys, updated):
         """Return the value from the data store for a given analysis."""
         raise NotImplementedError
 
     @abstractmethod
-    def is_analysis_old(self, analysis_name, keys):
+    def is_analysis_old(self, analysis_name, keys, updated):
         """Determine if the analysis needs to be re-run."""
         return True
 
@@ -152,11 +152,10 @@ class BackendBase(with_metaclass(ABCMeta, object)):
             'run': run,
             'classifier_word': paths.classifierword(pars)
             if 'classifier' in an['requires'] else None,
-            'updated': an['updated'],
         }
 
         # Get the analysis, or calculate if necessary
-        out, doupdate = self.recall(analysis, keys)
+        out, doupdate = self.recall(analysis, keys, an['updated'])
         if force or doupdate:
             c = object.__new__(an['class'])
             print('\tupdating analysis... {} {} {} {}'.format(
@@ -170,7 +169,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
             for key in out:
                 if key not in self.ans:
                     raise ValueError('%s analysis was not declared in sets.' % key)
-            self.store_all(out, keys, self.deps)
+            self.store_all(out, keys, an['updated'], self.deps)
             out, _ = self.recall(analysis, keys)
 
         if isinstance(out, float) and np.isnan(out):
@@ -181,91 +180,92 @@ class BackendBase(with_metaclass(ABCMeta, object)):
             return None
         return out
 
-    def update(self, mouse, dates=None, force=False, falsepositives=False):
-        """Update and run all analyses for mouse.
+    # Needs to be updated
+    # def update(self, mouse, dates=None, force=False, falsepositives=False):
+    #     """Update and run all analyses for mouse.
 
-        :param mouse:
-        :return:
+    #     :param mouse:
+    #     :return:
 
-        """
+    #     """
 
-        # TODO: Add DateSorter/RunSorter
-        raise NotImplementedError('Update needs to be fixed to include DateSorter or RunSorter')
+    #     # TODO: Add DateSorter/RunSorter
+    #     raise NotImplementedError('Update needs to be fixed to include DateSorter or RunSorter')
 
-        # if len(mouse) > 0:
-        #     self.m = mouse
-        # if self.m not in self.dbrs:
-        #     self._open(self.m)
-        if dates is None:
-            dates = metadata.dates(mouse)
-        if isinstance(dates, str) or isinstance(dates, int):
-            dates = [dates]
+    #     # if len(mouse) > 0:
+    #     #     self.m = mouse
+    #     # if self.m not in self.dbrs:
+    #     #     self._open(self.m)
+    #     if dates is None:
+    #         dates = metadata.dates(mouse)
+    #     if isinstance(dates, str) or isinstance(dates, int):
+    #         dates = [dates]
 
-        for date in dates:
-            if isinstance(date, str):
-                date = int(date)
+    #     for date in dates:
+    #         if isinstance(date, str):
+    #             date = int(date)
 
-            self._indmouse, self._inddate = mouse, date
+    #         self._indmouse, self._inddate = mouse, date
 
-            ga = GetAnalysis(self, mouse, date, -1)
+    #         ga = GetAnalysis(self, mouse, date, -1)
 
-            for c in self.clans:
-                if (c.__name__ != 'FalsePositives' and
-                    c.__name__ != 'ReplayFP' and
-                    c.__name__ != 'ReplayFPEvents' and
-                    c.__name__ != 'FalsePositivesCorr') or \
-                        falsepositives:
+    #         for c in self.clans:
+    #             if (c.__name__ != 'FalsePositives' and
+    #                 c.__name__ != 'ReplayFP' and
+    #                 c.__name__ != 'ReplayFPEvents' and
+    #                 c.__name__ != 'FalsePositivesCorr') or \
+    #                     falsepositives:
 
-                    keys = {}
-                    keys['mouse'] = mouse
+    #                 keys = {}
+    #                 keys['mouse'] = mouse
 
-                    keys['date'] = date
-                    if getattr(c, 'across') == 'day':
-                        pass
-                    elif getattr(c, 'across') == 'run':
-                        print('ERROR, have not implemented days.')
-                        exit(0)
+    #                 keys['date'] = date
+    #                 if getattr(c, 'across') == 'day':
+    #                     pass
+    #                 elif getattr(c, 'across') == 'run':
+    #                     print('ERROR, have not implemented days.')
+    #                     exit(0)
 
-                    if 'classifier' in getattr(c, 'requires'):
-                        keys['classifier_word'] = \
-                            paths.classifierword(pars)
-                    keys['updated'] = deepcopy(getattr(c, 'updated'))
+    #                 if 'classifier' in getattr(c, 'requires'):
+    #                     keys['classifier_word'] = \
+    #                         paths.classifierword(pars)
+    #                 keys['updated'] = deepcopy(getattr(c, 'updated'))
 
-                    fnd = True
-                    for an in self._flatten(getattr(c, 'sets')):
-                        if self.is_analysis_old(an, keys):
-                            fnd = False
-                            break
-                        # if '%s-%s' % (key, an) not in self.dbus[mouse]:
-                        #     fnd = False
-                        # elif self.dbus[mouse]['%s-%s' % (key, an)] != andate:
-                        #     fnd = False
+    #                 fnd = True
+    #                 for an in self._flatten(getattr(c, 'sets')):
+    #                     if self.is_analysis_old(an, keys):
+    #                         fnd = False
+    #                         break
+    #                     # if '%s-%s' % (key, an) not in self.dbus[mouse]:
+    #                     #     fnd = False
+    #                     # elif self.dbus[mouse]['%s-%s' % (key, an)] != andate:
+    #                     #     fnd = False
 
-                    if not fnd or force:
-                        print('\tupdating analysis...', c)
-                        # md = metadata.md(mouse, date)
-                        # mdr = metadata.mdr(mouse, date, md[0])
-                        # mdr['spontaneous'], mdr['run'] = md, -1
-                        # mdr['hungry'], mdr['sated'] = \
-                        #     metadata.hungrysated(mouse, date)
-                        mdr = metadata.data(mouse, date)
-                        mdr['run'] = -1
+    #                 if not fnd or force:
+    #                     print('\tupdating analysis...', c)
+    #                     # md = metadata.md(mouse, date)
+    #                     # mdr = metadata.mdr(mouse, date, md[0])
+    #                     # mdr['spontaneous'], mdr['run'] = md, -1
+    #                     # mdr['hungry'], mdr['sated'] = \
+    #                     #     metadata.hungrysated(mouse, date)
+    #                     mdr = metadata.data(mouse, date)
+    #                     mdr['run'] = -1
 
-                        co = object.__new__(c)
-                        # Inject methods
-                        setattr(co, 'pars', pars)
-                        setattr(co, 'analysis', ga.analyze)
-                        setattr(co, 'andb', self)
-                        co.__init__(mdr)
+    #                     co = object.__new__(c)
+    #                     # Inject methods
+    #                     setattr(co, 'pars', pars)
+    #                     setattr(co, 'analysis', ga.analyze)
+    #                     setattr(co, 'andb', self)
+    #                     co.__init__(mdr)
 
-                        out = co._get()
-                        self.store_all(out, keys, self.deps)
-                        # for name in out:
-                        #     self.dbrs[mouse]['%s-%s' % (key, name)] = out[name]
-                        # for name in out:
-                        #     self.dbus[mouse][key + '-%s' % (name)] = deepcopy(andate)
-                        # for name in out:
-                        #     self.updated_analyses[mouse].append('%s-%s' % (key, name))
+    #                     out = co._get()
+    #                     self.store_all(out, keys, self.deps)
+    #                     # for name in out:
+    #                     #     self.dbrs[mouse]['%s-%s' % (key, name)] = out[name]
+    #                     # for name in out:
+    #                     #     self.dbus[mouse][key + '-%s' % (name)] = deepcopy(andate)
+    #                     # for name in out:
+    #                     #     self.updated_analyses[mouse].append('%s-%s' % (key, name))
 
     def _loadanalyzers(self):
         """Load analysis modules.
@@ -333,7 +333,6 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         cutclasses = [c for c in classes if hasattr(c, 'requires')]
         return cutclasses
 
-
     def _determine_dependents(self):
         dependents = {}
         for an, an_dict in self.ans.iteritems():
@@ -345,17 +344,38 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         return dependents
 
 
-def keyname(analysis, keys):
-    """Parse the keys and analysis name in to a single keyname."""
-    keyname = '%s-%i' % (keys['mouse'], int(keys['date']))
+def keyname(analysis, mouse, date, run=None, classifier_word=None, **kwargs):
+    """Parse the keys and analysis name in to a single keyname.
 
-    if 'run' in keys and keys['run'] is not None:
-        keyname += '-%02i' % (keys['run'])
+    Parameters
+    ----------
+    analysis : str
+        Name of analysis.
+    mouse : str
+        Mouse name.
+    date : int or str
+        Date as int (or string).
+    run : int, optional
+        If a run-based analysis, the run number.
+    classifier_word : str, optional
+        If the analysis requires the classifier, the current word hash of the
+        classifier settings.
+    **kwargs
+        Any additional parameters to the analysis.
 
-    if 'classifier_word' in keys and keys['classifier_word'] is not None:
-        keyname += '-%s' % (keys['classifier_word'])
+    """
+    keyname = '%s-%i' % (mouse, int(date))
+
+    if run is not None:
+        keyname += '-%02i' % (run)
+
+    if classifier_word is not None:
+        keyname += '-%s' % (classifier_word)
 
     keyname += '-%s' % (analysis)
+
+    for key in sorted(kwargs):
+        keyname += '-{}:{}'.format(key, kwargs[key])
 
     return keyname
 

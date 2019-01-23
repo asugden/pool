@@ -14,18 +14,17 @@ class ShelveBackend(BackendBase):
         self.dbrs = {}
         self.dbus = {}
 
-    def store(self, analysis_name, data, keys, dependents=None):
+    def store(self, analysis_name, data, keys, updated, dependents=None):
         """Store a value from running an analysis in the data store."""
         mouse = keys['mouse']
-        andate = deepcopy(keys['updated'])
         self._open(mouse)
-        key = keyname(analysis_name, keys)
+        key = keyname(analysis_name, **keys)
         self.dbrs[mouse][key] = data
-        self.dbus[mouse][key] = andate
+        self.dbus[mouse][key] = deepcopy(updated)
         self.updated_analyses[mouse].append(key)
 
         for dependent in dependents:
-            dependent_id = keyname(dependent, keys)
+            dependent_id = keyname(dependent, **keys)
             try:
                 del self.dbrs[mouse][dependent_id]
                 del self.dbus[mouse][dependent_id]
@@ -34,11 +33,10 @@ class ShelveBackend(BackendBase):
             else:
                 self.updated_analyses[mouse].append(dependent_id)
 
-    def recall(self, analysis_name, keys):
+    def recall(self, analysis_name, keys, updated):
         """Return the value from the data store for a given analysis."""
-        andate = keys.get('updated', -1)
         mouse = keys.get('mouse')
-        key = keyname(analysis_name, keys)
+        key = keyname(analysis_name, **keys)
         self._open(mouse)
         try:
             out = deepcopy(self.dbrs[mouse][key])
@@ -48,24 +46,23 @@ class ShelveBackend(BackendBase):
             sleep(10)
             out = deepcopy(self.dbrs[mouse][key])
 
-        updated = self.dbus.get(mouse, {}).get(key, 0)
-        return out, int(andate) != int(updated) and andate > 0
+        stored_updated = self.dbus.get(mouse, {}).get(key, 0)
+        return out, int(updated) != int(stored_updated)
 
-    def is_analysis_old(self, analysis_name, keys):
+    def is_analysis_old(self, analysis_name, keys, updated):
         """Determine if the analysis needs to be re-run.
 
         Checks to see if analysis is already stored in shelve and the
         update key matches.
 
         """
-        andate = keys['updated']
         mouse = keys['mouse']
-        key = keyname(analysis_name, keys)
+        key = keyname(analysis_name, **keys)
         self._open(mouse)
         return \
             key not in self.dbrs[mouse] or \
-            (len(andate) > 0 and key not in self.dbus[mouse]) or \
-            (len(andate) > 0 and self.dbus[mouse][key] != andate)
+            key not in self.dbus[mouse] or \
+            self.dbus[mouse][key] != updated
 
     def save(self, closedb=True):
         """Save all updated databases."""

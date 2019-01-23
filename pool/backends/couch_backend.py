@@ -39,23 +39,25 @@ class CouchBackend(BackendBase):
         return "CouchBackend(host={}, port={}, database={})".format(
             self.database.host, self.database.port, self.database.name)
 
-    def store(self, analysis_name, data, keys, dependents=None):
+    def store(self, analysis_name, data, keys, updated, dependents=None):
         """Store a value from running an analysis in the data store."""
         if dependents is None:
             dependents = {}
 
-        _id = keyname(analysis_name, keys)
+        _id = keyname(analysis_name, **keys)
+        print("Storing: {}".format(_id))
         doc = dict(
             analysis=analysis_name,
             value=data,
             timestamp=timestamp(),
             user=getuser(),
+            updated=updated,
             **keys)
 
         self.database.put(_id=_id, **doc)
 
         for dependent in dependents:
-            dependent_id = keyname(dependent, keys)
+            dependent_id = keyname(dependent, **keys)
             try:
                 self.database.delete(dependent_id)
             except couchdb.http.ResourceNotFound:
@@ -65,20 +67,20 @@ class CouchBackend(BackendBase):
     # def store_all(self, data_dict, keys):
     #     pass
 
-    def recall(self, analysis_name, keys):
+    def recall(self, analysis_name, keys, updated):
         """Return the value from the data store for a given analysis."""
-
-        dbentry = self.database.get(keyname(analysis_name, keys))
+        print("Recalling: {}".format(keyname(analysis_name, **keys)))
+        dbentry = self.database.get(keyname(analysis_name, **keys))
         if dbentry is None:
             return None, True
 
         out = dbentry.get('value', None)
-        updated = dbentry.get('updated')
-        return out, int(updated) != int(keys['updated'])
+        stored_updated = dbentry.get('updated')
+        return out, int(stored_updated) != int(updated)
 
-    def is_analysis_old(self, analysis_name, keys):
+    def is_analysis_old(self, analysis_name, keys, updated):
         """Determine if the analysis needs to be re-run."""
-        key = keyname(analysis_name, keys)
+        key = keyname(analysis_name, **keys)
         return key not in self.database
 
     #
