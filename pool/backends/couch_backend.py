@@ -48,7 +48,6 @@ class CouchBackend(BackendBase):
             dependents = {}
 
         _id = keyname(analysis_name, **keys)
-        print("Storing: {}".format(_id))
         doc = dict(
             analysis=analysis_name,
             value=data,
@@ -72,7 +71,6 @@ class CouchBackend(BackendBase):
 
     def recall(self, analysis_name, keys, updated):
         """Return the value from the data store for a given analysis."""
-        print("Recalling: {}".format(keyname(analysis_name, **keys)))
         dbentry = self.database.get(keyname(analysis_name, **keys))
         if dbentry is None:
             return None, True

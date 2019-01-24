@@ -1,1 +1,1 @@
-from . import imaging, stimulus
+from . import behavior, imaging, stimulus
