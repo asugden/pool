@@ -1,4 +1,7 @@
 """Look at stimulus responses."""
+from __future__ import division, print_function
+from builtins import range
+
 import matplotlib.gridspec as grd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -211,7 +214,7 @@ def main():
             activity2, outcomes2 = stimuli(day2.runs('training'), cell, 'plus', args.trange_s)
 
             gr = grapher.graph(save_dir, 'full')
-            print cell
+            print(cell)
             import pdb;pdb.set_trace()
             ax = heatmap(gr.axis(), activity1, outcomes1, activity2, outcomes2, args.trange_s)
             gr.graph(ax, **{

@@ -1,4 +1,6 @@
 """Script to sync CouchDB analysis database."""
+from __future__ import print_function
+from builtins import filter
 import argparse
 
 import couchdb

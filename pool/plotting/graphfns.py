@@ -1,3 +1,5 @@
+from builtins import range
+from builtins import object
 import math
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -81,7 +83,7 @@ def axheatmap(fig, ax, data, borders, tracetype='dff', cmax='auto'):
             vrange = (0, cmax)
         cmap = plt.get_cmap('Greys')
 
-    im = ax.pcolormesh(range(nframes), range(ncells), data, vmin=vrange[0], vmax=vrange[1], cmap=cmap)
+    im = ax.pcolormesh(list(range(nframes)), list(range(ncells)), data, vmin=vrange[0], vmax=vrange[1], cmap=cmap)
     im.set_rasterized(True)
     # fig.colorbar(im)
 

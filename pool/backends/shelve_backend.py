@@ -1,3 +1,4 @@
+from __future__ import print_function
 import shelve
 from copy import deepcopy
 from time import sleep

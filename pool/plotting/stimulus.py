@@ -1,4 +1,7 @@
 """Stimulus plotting functions."""
+from __future__ import division
+from builtins import str
+
 import numpy as np
 try:
     from bottleneck import nanmean, nanmedian
@@ -72,7 +75,7 @@ def stimulus_mean_response(
 
     for cs in cses:
         start_idx = sort_borders[cs]
-        borders = np.array(sort_borders.values())
+        borders = np.array(list(sort_borders.values()))
         try:
             end_idx = borders[borders > start_idx].min()
         except ValueError:

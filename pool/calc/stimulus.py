@@ -1,4 +1,5 @@
 """Analyses directly related to stimulus presentation."""
+from builtins import range
 import numpy as np
 from scipy import stats
 

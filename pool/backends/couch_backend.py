@@ -5,6 +5,9 @@ Requires:
 - CouchDB >= 2.0
 
 """
+from __future__ import division, print_function
+
+from builtins import object, str, zip
 
 import couchdb
 from couchdb.mapping import DateTimeField
@@ -394,7 +397,7 @@ def _restore_nan(val):
     if val == '__NaN__':
         return np.nan
     elif isinstance(val, dict):
-        return {key: _restore_nan(item) for key, item in val.iteritems()}
+        return {key: _restore_nan(item) for key, item in val.items()}
     elif isinstance(val, list) or isinstance(val, tuple):
         return [_restore_nan(item) for item in val]
     return val

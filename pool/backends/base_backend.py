@@ -1,4 +1,5 @@
 from __future__ import print_function
+from builtins import str
 from six import with_metaclass
 
 from abc import ABCMeta, abstractmethod
@@ -48,7 +49,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         """
         if dependencies is None:
             dependencies = {}
-        for key, val in data_dict.iteritems():
+        for key, val in data_dict.items():
             self.store(key, val, keys, updated, dependencies.get(key, {}))
 
     @abstractmethod
@@ -335,7 +336,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
 
     def _determine_dependents(self):
         dependents = {}
-        for an, an_dict in self.ans.iteritems():
+        for an, an_dict in self.ans.items():
             for dep_an in an_dict.get('depends_on', {}):
                 if dep_an in dependents:
                     dependents[dep_an].append(an)

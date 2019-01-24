@@ -1,3 +1,4 @@
+from builtins import object
 from numpy.testing import run_module_suite, assert_equal
 import numpy as np
 

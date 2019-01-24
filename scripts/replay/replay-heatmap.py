@@ -1,4 +1,9 @@
-from commands import getoutput
+from __future__ import division, print_function
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object, range, str
+from subprocess import getoutput
+
 from copy import copy
 import matplotlib.gridspec as grd
 import matplotlib.pyplot as plt
@@ -12,7 +17,7 @@ from flow.classifier import classify
 import pool
 from pool.plotting import colors, graphfns
 
-class ClassifierHeatmap:
+class ClassifierHeatmap(object):
     def __init__(self, path, ts, trs, cls={}, beh={}, bord={}, top={}, clrs={}, zoom=-1, tracetype='deconvolved'):
         """
         Instantiates a Classifier Graph. Takes pars information directly
@@ -247,7 +252,7 @@ class ClassifierHeatmap:
         return ax
 
 
-class ReplayGraphInputs:
+class ReplayGraphInputs(object):
     """
     Create the inputs that go into a replay graph. A class rather than separate function because time ranges are reused.
     """
@@ -569,9 +574,8 @@ class ReplayGraphInputs:
                     self._toptraces['ripple'] = ripple
             elif lpars['top-trace'][:3] == 'tem':
                 self._toptraces['pop-activity'] = classifier['priors']['plus']/plusprob
-                print np.nanmax(classifier['priors']['plus'][10000:]/plusprob), plusprob, np.nanmax(classifier[
-                                                                                                        'priors'][
-                                                                                                        'plus'][10000:])
+                print(np.nanmax(classifier['priors']['plus'][10000:]/plusprob),
+                      plusprob, np.nanmax(classifier['priors']['plus'][10000:]))
             # 	popact = timeclassify.flat_population_activity(t2p.trace('deconvolved'))
             # 	self._toptraces['pop-activity'] = popact
 
@@ -632,7 +636,7 @@ def grevents(classifier, t2p, md, gri, lpars, basepath):
 
         results = 'time-results' if lpars['display-classifier'] == 'time' else 'results'
         for cs in classifier[results]:
-            print cs
+            print(cs)
             if 'other' not in cs and 'run' not in cs and 'rand' not in cs:
                 evs = classify2p.peaks(classifier[results][cs], t2p, lpars['threshold'])
                 for frame in evs:
@@ -643,7 +647,7 @@ def grevents(classifier, t2p, md, gri, lpars, basepath):
         path = opath.join(basepath, '%s-%s-%02i-heat-classifier.png'%(md[0], md[1], md[2]))
         graph(path, -1, lpars['display-type'], gri)
 
-    print path
+    print(path)
     return path
 
 def deleteclassifier(pars, randomize=''):
@@ -738,7 +742,7 @@ def old_main():
     andb = pool.database.db()
     while runs.next():
         md, args, gm, t2p = runs.get()
-        print md
+        print(md)
 
         if lpars['realtime']:
             from lib import train_classifier

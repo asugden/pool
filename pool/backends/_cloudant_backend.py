@@ -3,6 +3,8 @@
 Incomplete.
 
 """
+from builtins import str
+from builtins import object
 from cloudant.client import CouchDB
 from io import BytesIO
 import numpy as np
@@ -135,7 +137,7 @@ class Database(object):
         if isinstance(val, float) and np.isnan(val):
             return '__NaN__'
         elif isinstance(val, dict):
-            return {key: Database._strip_nan(item) for key, item in val.items()}
+            return {key: Database._strip_nan(item) for key, item in list(val.items())}
         elif isinstance(val, list) or isinstance(val, tuple):
             return [Database._strip_nan(item) for item in val]
         elif isinstance(val, set):
@@ -200,7 +202,7 @@ class Database(object):
         if val == '__NaN__':
             return np.nan
         elif isinstance(val, dict):
-            return {key: Database._restore_nan(item) for key, item in val.iteritems()}
+            return {key: Database._restore_nan(item) for key, item in val.items()}
         elif isinstance(val, list) or isinstance(val, tuple):
             return [Database._restore_nan(item) for item in val]
         return val

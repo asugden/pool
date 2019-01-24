@@ -1,14 +1,15 @@
 """Look at individual trial stimulus responses from example cells."""
-import matplotlib as mpl
-import os
-if 'DISPLAY' not in os.environ:
-    mpl.use('Agg')
+from __future__ import print_function
+from builtins import range
 
 import itertools as it
-from operator import itemgetter
+import matplotlib as mpl
 import numpy as np
+from operator import itemgetter
 import os
 import pandas as pd
+if 'DISPLAY' not in os.environ:
+    mpl.use('Agg')
 
 import flow
 from flow import misc
@@ -52,7 +53,7 @@ def parse_args():
 
 
 def roi_df(date, flip_inhibited=False):
-    """Return a dataframe of all ROIs with sorting order and labels added.
+    """Return a DataFrame of all ROIs with sorting order and labels added.
 
     Would eventually like to pull this out, but not exactly sure where it
     should go.
@@ -64,8 +65,8 @@ def roi_df(date, flip_inhibited=False):
     # Flip sort order so that it is descending
     sort_order = sort_order[::-1]
     df = pd.DataFrame(
-        {'sort_idx': range(len(sort_order)), 'roi_idx': sort_order})
-    for group, first_idx in sorted(sort_borders.items(), key=itemgetter(1)):
+        {'sort_idx': list(range(len(sort_order))), 'roi_idx': sort_order})
+    for group, first_idx in sorted(list(sort_borders.items()), key=itemgetter(1)):
         df.loc[df.index[first_idx:], 'sort_label'] = group
     if flip_inhibited:
         inhib_idxs = np.array(df.loc[df.sort_label == 'inhibited', 'sort_idx'])

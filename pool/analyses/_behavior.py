@@ -1,5 +1,4 @@
-# Moved to pool: 180817
-# Updated: 170330
+from __future__ import division
 # Data will be passed in a dict with the list of days for training, spontaneous, running, and for across='run', run
 # Two methods are automatically injected: trace2p and classifier.
 # It is required to return via the function get

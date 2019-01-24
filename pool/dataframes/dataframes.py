@@ -1,4 +1,5 @@
 """Helper functions for working with DataFrames."""
+from builtins import str
 import pandas as pd
 
 from .. import config

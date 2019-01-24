@@ -1,10 +1,12 @@
+from builtins import object, range
+
 from copy import deepcopy
 import math
 import numpy as np
 
 from flow import paths
 
-class StimulusDFF:
+class StimulusDFF(object):
     _pars = {
         'trange-ms': (-1000, 8000),
         'baseline-ms': (-1000, 0),
