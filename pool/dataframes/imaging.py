@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+from .. import config
 from .. import database
 
 PRE_S = 5
@@ -126,3 +127,28 @@ def trigger_frames_df(runs, trigger, inactivity_mask=False):
                      .set_index(['trigger_idx', 'frame'], append=True)
                      )
     return result_df
+
+
+def trial_stimulus_response_df(dates):
+    """
+    Calculate the response to stimuli for each cell per trial.
+
+    Parameters
+    ----------
+    dates : DateSorter
+
+    Returns
+    -------
+    pd.DataFrame
+
+    """
+    result = [pd.DataFrame()]
+    db = database.db()
+    analysis = 'stim_dff_alltrials_pertrial'
+    for date in dates:
+        result.append(db.get(
+            analysis, mouse=date.mouse, date=date.date,
+            metadata_object=date, force=False))
+    result = pd.concat(result, axis=0)
+
+    return result
