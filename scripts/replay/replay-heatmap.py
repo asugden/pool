@@ -1,5 +1,9 @@
-from __future__ import print_function
-from commands import getoutput
+from __future__ import division, print_function
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object, range, str
+from subprocess import getoutput
+
 from copy import copy
 import matplotlib.gridspec as grd
 import matplotlib.pyplot as plt
@@ -13,7 +17,7 @@ from flow.classifier import classify
 import pool
 from pool.plotting import colors, graphfns
 
-class ClassifierHeatmap:
+class ClassifierHeatmap(object):
     def __init__(self, path, ts, trs, cls={}, beh={}, bord={}, top={}, clrs={}, zoom=-1, tracetype='deconvolved'):
         """
         Instantiates a Classifier Graph. Takes pars information directly
@@ -248,7 +252,7 @@ class ClassifierHeatmap:
         return ax
 
 
-class ReplayGraphInputs:
+class ReplayGraphInputs(object):
     """
     Create the inputs that go into a replay graph. A class rather than separate function because time ranges are reused.
     """
@@ -570,9 +574,8 @@ class ReplayGraphInputs:
                     self._toptraces['ripple'] = ripple
             elif lpars['top-trace'][:3] == 'tem':
                 self._toptraces['pop-activity'] = classifier['priors']['plus']/plusprob
-                print(np.nanmax(classifier['priors']['plus'][10000:]/plusprob), plusprob, np.nanmax(classifier[
-                                                                                                        'priors'][
-                                                                                                        'plus'][10000:]))
+                print(np.nanmax(classifier['priors']['plus'][10000:]/plusprob),
+                      plusprob, np.nanmax(classifier['priors']['plus'][10000:]))
             # 	popact = timeclassify.flat_population_activity(t2p.trace('deconvolved'))
             # 	self._toptraces['pop-activity'] = popact
 

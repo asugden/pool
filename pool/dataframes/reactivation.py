@@ -1,4 +1,5 @@
 """All functions return reactivation-related dataframes."""
+from builtins import range, zip
 
 import numpy as np
 import pandas as pd
@@ -48,7 +49,7 @@ def events_df(runs, threshold=0.1, xmask=False, inactivity_mask=False):
         sorted_frame_event_tuples = sorted(frame_event_tuples)
         if len(sorted_frame_event_tuples):
             # Un-zip the (frame, event_type) tuples
-            run_events, run_event_types = zip(*sorted_frame_event_tuples)
+            run_events, run_event_types = list(zip(*sorted_frame_event_tuples))
         else:
             run_events, run_event_types = [], []
         index = pd.MultiIndex.from_arrays(

@@ -1,5 +1,6 @@
 """Configurable defaults for pool."""
 from __future__ import print_function
+from builtins import input
 import copy
 import json
 import os
@@ -98,7 +99,7 @@ def reconfigure():
 
     backend = None
     while backend not in config['backends']['supported_backends']:
-        backend = raw_input(
+        backend = input(
             'Enter backend type: [{}] '.format(
                 config['backends']['backend']))
         if not len(backend):
@@ -108,23 +109,23 @@ def reconfigure():
     if backend == 'couch':
         if 'couch_options' not in config['backends']:
             config['backends']['couch_options'] = {}
-        host = raw_input("Enter ip or hostname of CouchDB: [{}] ".format(
+        host = input("Enter ip or hostname of CouchDB: [{}] ".format(
             config['backends']['couch_options'].get('host', None)))
         if len(host):
             config['backends']['couch_options']['host'] = host
-        port = raw_input("Enter port for CouchDB: [{}] ".format(
+        port = input("Enter port for CouchDB: [{}] ".format(
             config['backends']['couch_options'].get('port', None)))
         if len(port):
             config['backends']['couch_options']['port'] = port
-        database = raw_input("Enter name of analysis database: [{}] ".format(
+        database = input("Enter name of analysis database: [{}] ".format(
             config['backends']['couch_options'].get('database', None)))
         if len(database):
             config['backends']['couch_options']['database'] = database
-        user = raw_input("Enter username to authenticate with CouchDB (optional): [{}] ".format(
+        user = input("Enter username to authenticate with CouchDB (optional): [{}] ".format(
             config['backends']['couch_options'].get('user', None)))
         if len(user):
             config['backends']['couch_options']['user'] = user
-        password = raw_input("Enter password to authenticate with CouchDB (optional): [{}] ".format(
+        password = input("Enter password to authenticate with CouchDB (optional): [{}] ".format(
             config['backends']['couch_options'].get('password', None)))
         if len(password):
             config['backends']['couch_options']['password'] = password

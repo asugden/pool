@@ -1,4 +1,5 @@
 """Figure layouts for analyzing stimulus responses."""
+from builtins import zip
 import matplotlib.pyplot as plt
 
 import flow

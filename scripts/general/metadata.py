@@ -1,5 +1,6 @@
 """Script to add mice/dates/runs to the metadata record."""
 from __future__ import print_function
+from builtins import str
 import argparse
 import glob
 import os

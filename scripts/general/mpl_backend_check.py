@@ -1,5 +1,7 @@
 """Originally copied from https://stackoverflow.com/a/13731150"""
-from __future__ import print_function
+from __future__ import division, print_function
+from builtins import filter, str
+
 from pylab import *
 import time
 
@@ -21,7 +23,7 @@ def backend_fname_formatter(fname):
 backends_dir = os.path.dirname(matplotlib.backends.__file__)
 
 # filter all files in that directory to identify all files which provide a backend
-backend_fnames = filter(is_backend_module, os.listdir(backends_dir))
+backend_fnames = list(filter(is_backend_module, os.listdir(backends_dir)))
 
 backends = [backend_fname_formatter(fname) for fname in backend_fnames]
 

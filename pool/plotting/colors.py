@@ -1,4 +1,5 @@
 from __future__ import print_function
+from builtins import range
 from re import match as rematch
 import matplotlib.colors as mplcolors
 

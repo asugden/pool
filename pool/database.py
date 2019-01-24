@@ -1,4 +1,6 @@
-from __future__ import print_function
+from __future__ import division, print_function
+from builtins import object
+
 import functools
 import inspect
 

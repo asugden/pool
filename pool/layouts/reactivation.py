@@ -1,8 +1,9 @@
 """Reactivation figure layouts."""
+from builtins import str, zip
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from pandas import IndexSlice as Idx
 import seaborn as sns
 
 from flow.misc.plotting import right_label

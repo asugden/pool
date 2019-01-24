@@ -1,5 +1,6 @@
 """This abstract class lays out the structure of an analysis class."""
 
+from builtins import str
 from six import with_metaclass
 from abc import ABCMeta, abstractmethod
 import numpy as np
