@@ -142,11 +142,15 @@ class BackendBase(with_metaclass(ABCMeta, object)):
 
         # Format input correctly
         date = date if not isinstance(date, str) else int(date)
-        pars = pars if pars is not None else default_parameters(mouse, date)
+
         self._indmouse, self._inddate, self._indrun = mouse, date, run
 
         # Get the keyword of the analysis
         an = self.ans[analysis]
+        if 'classifier' in an['requires']:
+            pars = pars if pars is not None else default_parameters(mouse, date)
+        else:
+            pars = None
         keys = {
             'mouse': mouse,
             'date': date,
