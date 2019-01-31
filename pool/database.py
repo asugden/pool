@@ -63,6 +63,10 @@ class memoize(object):
     requires : {'classifier'}, optional
         If the analysis requires special data (currently just the classifier
         output), specify here.
+    returns : {'value', 'cell array', 'cell matrix', 'trial matrix'}, optional
+        If the analysis returns either an array of cells or a matrix of cells
+        and the trace2p is subset, then it will return the subset of the analysis
+        results.
 
     Returns
     -------
@@ -108,14 +112,16 @@ class memoize(object):
 
             # Extract mouse/date/run
             if self.across == 'date':
-                date = parsed_kwargs['date']
-                keys = {'mouse': date.mouse,
-                        'date': date.date}
+                date_or_run = parsed_kwargs['date']
+                keys = {'mouse': date_or_run.mouse,
+                        'date': date_or_run.date}
             elif self.across == 'run':
-                run = parsed_kwargs['run']
-                keys = {'mouse': run.mouse,
-                        'date': run.date,
-                        'run': run.run}
+                date_or_run = parsed_kwargs['run']
+                keys = {'mouse': date_or_run.mouse,
+                        'date': date_or_run.date,
+                        'run': date_or_run.run}
+
+            subset = date_or_run.cells
 
             # Get default parameters for the classifier if needed.
             if 'classifier' in self.requires:
@@ -135,9 +141,19 @@ class memoize(object):
             out, doupdate = self.db.recall(analysis_name, keys, self.updated)
             if force or doupdate:
                 print('Recalcing {}'.format(analysis_name))
+                if subset is not None:
+                    date_or_run.set_subset(None)
                 out = fn(**parsed_kwargs)
                 self.db.store(analysis_name, out, keys, self.updated)
-            return out
+                if subset is not None:
+                    date_or_run.set_subset(subset)
+
+            if subset is not None and returns == 'cell array':
+                return out[subset]
+            elif subset is not None and returns == 'cell matrix':
+                return out[subset, subset]
+            else:
+                return out
         return memoizer
 
 
