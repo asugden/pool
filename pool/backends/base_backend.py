@@ -211,7 +211,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         else:
             return None
 
-    def md(self, mouse, date=-1):
+    def md(self, mouse, date=-1, run=None):
         """Set the mouse and date for indexing as a dict.
 
         :param mouse: mouse name, str or list of inputs
@@ -224,6 +224,8 @@ class BackendBase(with_metaclass(ABCMeta, object)):
                 len(mouse) > 1:
             date = mouse[1]
             mouse = mouse[0]
+            if len(mouse) > 2:
+                run = mouse[2]
 
         # Format correctly in case people forget
         if isinstance(date, str):
@@ -231,6 +233,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
 
         self._indmouse = mouse
         self._inddate = date
+        self._indrun = run
 
     def __getitem__(self, analysis):
         """
@@ -242,7 +245,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         if len(self._indmouse) == 0 or self._inddate < 0:
             raise ValueError('Mouse and date not set via md()')
 
-        return self.get(analysis, self._indmouse, self._inddate)
+        return self.get(analysis, self._indmouse, self._inddate, self._indrun)
 
     def get(self, analysis, mouse, date, run=None, force=False, pars=None, metadata_object=None):
         """Get an analysis.

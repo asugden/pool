@@ -21,6 +21,11 @@ from uuid import uuid4
 
 from .base_backend import BackendBase, keyname
 
+try:
+    from couchdb.util import StringIO
+except ImportError:
+    from io import BytesIO as StringIO
+
 
 class CouchBackend(BackendBase):
     """Analysis backend that stores data in a CouchDB database.

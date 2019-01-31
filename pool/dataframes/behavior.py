@@ -22,7 +22,7 @@ def behavior_df(runs):
     for run in runs:
         t2p = run.trace2p()
 
-        conditions = t2p.conditions()
+        conditions = t2p.conditions(return_as_strings=True)
         # Generalize outcomes to it works for all stims?
         # outcomes = t2p.outcomes()
         errors = t2p.errors()

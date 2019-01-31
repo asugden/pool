@@ -4,6 +4,8 @@ from setuptools import setup
 import os
 import platform
 
+# Run with python setup.py develop --user
+
 # Specify specific compiler on Mac
 if platform.system() == 'Darwin':
     os.environ["CC"] = "gcc-mp-5"

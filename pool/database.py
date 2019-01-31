@@ -62,6 +62,10 @@ class memoize(object):
         stored value and recalculates.
     requires_classifier : bool
         If True, notes that the analysis requires the AODE classifier.
+    returns : {'value', 'cell array', 'cell matrix', 'trial matrix'}, optional
+        If the analysis returns either an array of cells or a matrix of cells
+        and the trace2p is subset, then it will return the subset of the analysis
+        results.
 
     Returns
     -------
@@ -79,12 +83,13 @@ class memoize(object):
 
     """
 
-    def __init__(self, across, updated, requires_classifier=False):
+    def __init__(self, across, updated, requires_classifier=False, returns='value'):
         """Init."""
         self.across = across
         assert across in ['date', 'run']
         self.updated = int(updated)
         self.requires_classifier = requires_classifier
+        self.returns = returns
 
         self.db = db()
 
@@ -107,14 +112,16 @@ class memoize(object):
 
             # Extract mouse/date/run
             if self.across == 'date':
-                date = parsed_kwargs['date']
-                keys = {'mouse': date.mouse,
-                        'date': date.date}
+                date_or_run = parsed_kwargs['date']
+                keys = {'mouse': date_or_run.mouse,
+                        'date': date_or_run.date}
             elif self.across == 'run':
-                run = parsed_kwargs['run']
-                keys = {'mouse': run.mouse,
-                        'date': run.date,
-                        'run': run.run}
+                date_or_run = parsed_kwargs['run']
+                keys = {'mouse': date_or_run.mouse,
+                        'date': date_or_run.date,
+                        'run': date_or_run.run}
+
+            subset = date_or_run.cells
 
             # Get default parameters for the classifier if needed.
             if self.requires_classifier:
@@ -135,7 +142,10 @@ class memoize(object):
                 out, doupdate = self.db.recall(
                     analysis_name, keys, self.updated)
             if force or doupdate:
-                print('Re-calcing {}'.format(analysis_name))
+                print('Recalcing {}'.format(analysis_name))
+                if subset is not None:
+                    date_or_run.set_subset(None)
+
                 self.db.pre_calc(analysis_name)
                 out = fn(**parsed_kwargs)
                 depends_on = self.db.post_calc(
@@ -143,7 +153,17 @@ class memoize(object):
                 self.db.store(
                     analysis_name, out, keys, self.updated,
                     depends_on=depends_on)
-            return out
+
+                if subset is not None:
+                    date_or_run.set_subset(subset)
+
+            if subset is not None and self.returns == 'cell array':
+                return out[subset]
+            elif subset is not None and self.returns == 'cell matrix':
+                return out[subset, subset]
+            else:
+                return out
+
         return memoizer
 
 
