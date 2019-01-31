@@ -127,7 +127,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
             dependencies = {}
         # If update date has changed or is missing from the 'updated_dates'
         # dict for this analysis or any of it's dependencies, trigger re-calc.
-        if updated != stored_updated:
+        if int(updated) != int(stored_updated):
             return True
         # Note, this currently requires the memoization decorator to work, but
         # could be abstracted out by passing another parameter with current
