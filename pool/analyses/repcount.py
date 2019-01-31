@@ -38,13 +38,13 @@ class Repcount(base.AnalysisBase):
         for cs in config.stimuli():
             if self.analysis('good_%s'%cs):
                 out['repcount_%s'%cs], out['repcount_pair_%s'%cs] = \
-                    self.event_counts(date.runs('spontaneous', 'sated'), cs, 0.1)
+                    self.event_counts(date.runs(['spontaneous', 'sated']), cs, 0.1)
 
                 out['repcount_hungry_%s'%cs], out['repcount_pair_hungry_%s'%cs] = \
-                    self.event_counts(date.runs('spontaneous', 'hungry'), cs, 0.1)
+                    self.event_counts(date.runs(['spontaneous', 'hungry']), cs, 0.1)
 
                 out['repcount_iti_%s'%cs], out['repcount_pair_iti_%s'%cs] = \
-                    self.event_counts(date.runs('training'), cs, 0.1)
+                    self.event_counts(date.runs(['training']), cs, 0.1)
 
                 out['repcount_comb_%s'%cs], out['repcount_pair_comb_%s'%cs] = \
                     self.event_counts(date.runs(), cs, 0.1)
