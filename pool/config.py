@@ -56,6 +56,19 @@ _colors = {
 
     'reward-cluster-1': '#5E5AE6',  # indigo
     'reward-cluster-exclusive-1': '#C880D1',  # purple
+    'reward': '#C880D1',  # purple
+    'non': '#E86E0A',  # orange
+
+    'orange': '#E86E0A',
+    'red': '#D61E21',
+    'gray': '#7C7C7C',
+    'black': '#000000',
+    'green': '#75D977',
+    'mint': '#47D1A8',
+    'purple': '#C880D1',
+    'indigo': '#5E5AE6',
+    'blue': '#47AEED',  # previously 4087DD
+    'yellow': '#F2E205',
 }
 
 _params = None
@@ -136,7 +149,7 @@ def reconfigure():
     params(reload_=True)
 
 
-def colors(clr=None):
+def color(clr=None):
     """Return default color pairings.
 
     Parameters
