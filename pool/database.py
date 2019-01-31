@@ -60,9 +60,8 @@ class memoize(object):
         Date of last update. Used to force a re-calculation if needed. If the
         stored date is different (doesn't check for older/newer), ignores
         stored value and recalculates.
-    requires : {'classifier'}, optional
-        If the analysis requires special data (currently just the classifier
-        output), specify here.
+    requires_classifier : bool
+        If True, notes that the analysis requires the AODE classifier.
     returns : {'value', 'cell array', 'cell matrix', 'trial matrix'}, optional
         If the analysis returns either an array of cells or a matrix of cells
         and the trace2p is subset, then it will return the subset of the analysis
@@ -84,21 +83,22 @@ class memoize(object):
 
     """
 
-    def __init__(self, across, updated, requires=None):
+    def __init__(self, across, updated, requires_classifier=False, returns='value'):
         """Init."""
         self.across = across
         assert across in ['date', 'run']
-        self.updated = updated
-        if requires is None:
-            self.requires = []
-        else:
-            self.requires = requires
-        assert all(req in ['classifier', None] for req in self.requires)
+        self.updated = int(updated)
+        self.requires_classifier = requires_classifier
+        self.returns = returns
 
         self.db = db()
 
     def __call__(self, fn):
         """Make the class behave like a function."""
+
+        # Collect all updated dates for memoized functions.
+        self.db.update_dates['{}.{}'.format(fn.__module__, fn.__name__)] = \
+            self.updated
 
         # Make the memoized function look like the original function upon
         # inspection.
@@ -124,7 +124,7 @@ class memoize(object):
             subset = date_or_run.cells
 
             # Get default parameters for the classifier if needed.
-            if 'classifier' in self.requires:
+            if self.requires_classifier:
                 pars = parsed_kwargs.get('pars', None)
                 if pars is None:
                     pars = default_parameters(
@@ -138,22 +138,32 @@ class memoize(object):
 
             analysis_name = '{}.{}'.format(fn.__module__, fn.__name__)
 
-            out, doupdate = self.db.recall(analysis_name, keys, self.updated)
+            if not force:
+                out, doupdate = self.db.recall(
+                    analysis_name, keys, self.updated)
             if force or doupdate:
                 print('Recalcing {}'.format(analysis_name))
                 if subset is not None:
                     date_or_run.set_subset(None)
+
+                self.db.pre_calc(analysis_name)
                 out = fn(**parsed_kwargs)
-                self.db.store(analysis_name, out, keys, self.updated)
+                depends_on = self.db.post_calc(
+                    analysis_name, self.updated)
+                self.db.store(
+                    analysis_name, out, keys, self.updated,
+                    depends_on=depends_on)
+
                 if subset is not None:
                     date_or_run.set_subset(subset)
 
-            if subset is not None and returns == 'cell array':
+            if subset is not None and self.returns == 'cell array':
                 return out[subset]
-            elif subset is not None and returns == 'cell matrix':
+            elif subset is not None and self.returns == 'cell matrix':
                 return out[subset, subset]
             else:
                 return out
+
         return memoizer
 
 
@@ -214,6 +224,6 @@ def _test_db_read():
 
 if __name__ == '__main__':
     temp = db()
-    print(temp.get('rwa-plus', 'CB173', '160519'))
+    print(temp.get('behavior_plus_orig', 'CB173', '160519'))
     # temp.save()
     # temp.close()

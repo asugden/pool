@@ -47,29 +47,23 @@ class CouchBackend(BackendBase):
         return "CouchBackend(host={}, port={}, database={})".format(
             self.database.host, self.database.port, self.database.name)
 
-    def store(self, analysis_name, data, keys, updated, dependents=None):
+    def store(self, analysis_name, data, keys, updated, depends_on=None):
         """Store a value from running an analysis in the data store."""
-        if dependents is None:
-            dependents = {}
+        if depends_on is None:
+            depends_on = {}
 
         _id = keyname(analysis_name, **keys)
-        print("Storing: {}".format(_id))
+        # print('Storing: {}'.format(_id))
         doc = dict(
             analysis=analysis_name,
             value=data,
             timestamp=timestamp(),
             user=getuser(),
-            updated=updated,
+            updated=int(updated),
+            depends_on=depends_on,
             **keys)
 
         self.database.put(_id=_id, **doc)
-
-        for dependent in dependents:
-            dependent_id = keyname(dependent, **keys)
-            try:
-                self.database.delete(dependent_id)
-            except couchdb.http.ResourceNotFound:
-                pass
 
     # implement db.update() eventually
     # def store_all(self, data_dict, keys):
@@ -77,14 +71,19 @@ class CouchBackend(BackendBase):
 
     def recall(self, analysis_name, keys, updated):
         """Return the value from the data store for a given analysis."""
-        print("Recalling: {}".format(keyname(analysis_name, **keys)))
-        dbentry = self.database.get(keyname(analysis_name, **keys))
+        _id = keyname(analysis_name, **keys)
+        dbentry = self.database.get(_id)
         if dbentry is None:
             return None, True
 
         out = dbentry.get('value', None)
-        stored_updated = dbentry.get('updated')
-        return out, int(stored_updated) != int(updated)
+
+        stored_updated = int(dbentry.get('updated'))
+        dependencies = dbentry.get('depends_on', {})
+
+        # return out, int(stored_updated) != int(updated)
+        return out, self.needs_update(
+            analysis_name, updated, stored_updated, dependencies)
 
     def is_analysis_old(self, analysis_name, keys, updated):
         """Determine if the analysis needs to be re-run."""

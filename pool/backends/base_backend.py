@@ -6,23 +6,27 @@ from abc import ABCMeta, abstractmethod
 import os
 from importlib import import_module
 import numpy as np
-from copy import deepcopy
 
 from flow import paths
 import flow.config
 import flow.metadata as metadata
 
-class BackendBase(with_metaclass(ABCMeta, object)):
-    def __init__(self, **kwargs):
-        """
-        Organized in three ways:
-        'day' First, a list of days and the resulting cell-ids
-        'id-day-run' a list of cell-id-day-days for run specific analyses
-        'id-day' Second, a list of cell-id-days for day-specific analyses
-        'id' Third, a database of cell-ids and the resulting analyses
-        'imported-days' Fourth, a list of imported days
 
-        """
+class BackendBase(with_metaclass(ABCMeta, object)):
+    """
+    Base backend class to inherit from.
+
+    Attributes
+    ----------
+    update_dates : dict
+        Dictionary of update dates for all analyses.
+
+    """
+
+    update_dates = {}
+
+    def __init__(self, **kwargs):
+        """Backend init."""
         self._loadanalyzers()
         self._initialize(**kwargs)
 
@@ -30,31 +34,149 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         self._inddate = -1
         self._indrun = None
 
+        self._dependencies = {}
+
+    def pre_calc(self, analysis_name):
+        """
+        Begin logging all database calls for a specific analysis.
+
+        Parameters
+        ----------
+        analysis_name : str
+            Assign all database calls (store and recall) to this analysis.
+
+        """
+        self._dependencies[analysis_name] = {}
+
+    def post_calc(self, analysis_name, update_date):
+        """
+        Return dependencies for an analysis and log to other analyses.
+
+        Pulls out all the calculated dependencies and returns them so that they
+        can be stored with the analysis. Also, logs all of these dependencies
+        to any other analyses that depends on it.
+
+        Parameters
+        ----------
+        analysis_name : str
+            Name of analysis that should already have logged calls.
+        update_date : int
+            The current update date of the analysis.
+
+        Returns
+        -------
+        dict
+            Dictionary with analysis names of dependencies as keys and updated
+            dates as values.
+
+        """
+        # Get all analyses that were logged for this analysis
+        if analysis_name in self._dependencies:
+            dependencies = self._dependencies.pop(analysis_name)
+            # Make sure the current analysis isn't in it's own dependency list
+            if analysis_name in dependencies:
+                dependencies.pop(analysis_name)
+        else:
+            dependencies = {}
+
+        # Log this analysis and it's dependencies with other analyses
+        self.log_dependency(analysis_name, update_date)
+        for dependency, date in dependencies.items():
+            self.log_dependency(dependency, date)
+        return dependencies
+
+    def log_dependency(self, analysis_name, updated):
+        """
+        Log a call (store or recall) to the database.
+
+        Parameters
+        ----------
+        analysis_name : str
+            Analysis being called.
+        updated : int
+            Update date of analysis.
+
+        """
+        for logging_analysis in self._dependencies:
+            self._dependencies[logging_analysis][analysis_name] = updated
+
+    def needs_update(
+            self, analysis_name, updated, stored_updated, dependencies=None):
+        """
+        Check to see if an analysis needs to be re-calc'd.
+
+        Parameters
+        ----------
+        analysis_name : str
+            Name of analysis.
+        updated : int
+            Current update date of analysis.
+        stored_updated : int
+            Update date of analysis when it was originally stored in db.
+        dependencies : dict, optional
+            Dictionary of analyses with update dates for analysis when it was
+            originally stored in db. Make sure none of them have been updated.
+
+        Returns
+        -------
+        bool
+            True if updated needed, False otherwise.
+
+        """
+        if dependencies is None:
+            dependencies = {}
+        # If update date has changed or is missing from the 'updated_dates'
+        # dict for this analysis or any of it's dependencies, trigger re-calc.
+        if updated != stored_updated:
+            return True
+        # Note, this currently requires the memoization decorator to work, but
+        # could be abstracted out by passing another parameter with current
+        # analysis update dates.
+        for dependency, date in dependencies.items():
+            if self.update_dates.get(dependency, None) != date:
+                return True
+
+        # At this point, the analysis doesn't need an update, so log it and
+        # it's dependencies, so that other analyses know their dependencies.
+        self.log_dependency(analysis_name, updated)
+        for dependency, date in dependencies.items():
+            self.log_dependency(dependency, date)
+        return False
+
     @abstractmethod
     def _initialize(self, **kwargs):
         """Initialization steps customizable by subclasses."""
         raise NotImplementedError
 
     @abstractmethod
-    def store(self, analysis_name, data, keys, dependents=None):
+    def store(self, analysis_name, data, keys, updated, depends_on=None):
         """Store a value from running an analysis in the data store."""
         raise NotImplementedError
 
-    def store_all(self, data_dict, keys, updated, dependencies=None):
+    def store_all(self, data_dict, keys, updated, depends_on_dict=None):
         """Store a set of key, value pairs at once.
 
         This can potentially be implemented more efficiently by individual
         database backends.
 
         """
-        if dependencies is None:
-            dependencies = {}
-        for key, val in data_dict.items():
-            self.store(key, val, keys, updated, dependencies.get(key, {}))
+        if depends_on_dict is None:
+            depends_on_dict = {}
+
+        for analysis_name, data in data_dict.items():
+            self.store(
+                analysis_name, data, keys, updated,
+                depends_on_dict.get(analysis_name, {}))
 
     @abstractmethod
     def recall(self, analysis_name, keys, updated):
-        """Return the value from the data store for a given analysis."""
+        """Return the value from the data store for a given analysis.
+
+        Note
+        ----
+        Must call needs_update within any implementation.
+
+        """
         raise NotImplementedError
 
     @abstractmethod
@@ -145,11 +267,15 @@ class BackendBase(with_metaclass(ABCMeta, object)):
 
         # Format input correctly
         date = date if not isinstance(date, str) else int(date)
-        pars = pars if pars is not None else default_parameters(mouse, date)
+
         self._indmouse, self._inddate, self._indrun = mouse, date, run
 
         # Get the keyword of the analysis
         an = self.ans[analysis]
+        if 'classifier' in an['requires']:
+            pars = pars if pars is not None else default_parameters(mouse, date)
+        else:
+            pars = None
         keys = {
             'mouse': mouse,
             'date': date,
@@ -174,7 +300,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
                 if key not in self.ans:
                     raise ValueError('%s analysis was not declared in sets.' % key)
             self.store_all(out, keys, an['updated'], self.deps)
-            out, _ = self.recall(analysis, keys)
+            out, _ = self.recall(analysis, keys, an['updated'])
 
         if isinstance(out, float) and np.isnan(out):
             return None
