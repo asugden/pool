@@ -116,6 +116,7 @@ def merge(clr, val, mergeto=(255, 255, 255)):
     # Find out how much of value comes from mergeto
     # if not isinstance(vals, list): vals = [vals, vals, vals]
     out = [0, 0, 0]
+    val = val if 0 < val < 1 else 1 if val > 0 else 0
     mergetoval = 1.0 - val
 
     # Iterate over R, G, and B
