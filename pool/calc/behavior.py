@@ -1,25 +1,256 @@
 """Behavior analyses."""
+from __future__ import division
 import numpy as np
-# from scipy.stats import norm
+from scipy.stats import norm
 
+from .. import config
 from ..database import memoize
 
 
-@memoize(across='date', updated=190124)
-def engaged(date):
+@memoize(across='run', updated=190124)
+def engaged(run):
+    """
+    Return result of engagement HMM.
+
+    Parameters
+    ----------
+    run : Run
+
+    Returns
+    -------
+    array of bool
+        Boolean trial mask of engaged trials. True == engaged.
+
+    """
     hmm = HMM()
-    hmm.getseqs([run.trace2p() for run in date.runs('training')])
+    hmm.getseqs([run.trace2p()])
     hmm.run()
 
     return hmm.engaged()
 
-class HMM:
-    def __init__(self):
-        """
-        Initialize by iterating through all training runs and getting a sequence for attention
-        """
 
-        self.cses = ['plus', 'neutral', 'minus']
+@memoize(across='run', updated=190125)
+def correct_count(run, cs=None, hmm_engaged=True, combine_pavlovian=False):
+    """
+    Number of correct trials of a specific cs type.
+
+    Parameters
+    ----------
+    run : Run
+    cs : str or None
+        If None, all cses, else pass a string name for a specific stimuli type.
+    hmm_engaged : bool
+        If True, only include engaged trials.
+    combine_pavlovian : bool
+        If True, combine pavlovian trials with plus trials.
+
+    Returns
+    -------
+    int
+
+    """
+    errs = _trial_errors(
+        run, cs=cs, hmm_engaged=hmm_engaged,
+        combine_pavlovian=combine_pavlovian)
+    return int(np.sum(errs == 0))
+
+
+@memoize(across='run', updated=190124)
+def incorrect_count(run, cs=None, hmm_engaged=True, combine_pavlovian=False):
+    """
+    Number of incorrect trials of a specific cs type.
+
+    Parameters
+    ----------
+    run : Run
+    cs : str or None
+        If None, all cses, else pass a string name for a specific stimuli type.
+    hmm_engaged : bool
+        If True, only include engaged trials.
+    combine_pavlovian : bool
+        If True, combine pavlovian trials with plus trials.
+
+    Returns
+    -------
+    int
+
+    """
+    errs = _trial_errors(
+        run, cs=cs, hmm_engaged=hmm_engaged,
+        combine_pavlovian=combine_pavlovian)
+    return int(np.sum(errs == 1))
+
+
+@memoize(across='run', updated=190124)
+def trial_count(run, cs=None, hmm_engaged=True, combine_pavlovian=False):
+    """
+    Number of trials of a specific cs type.
+
+    Parameters
+    ----------
+    run : Run
+    cs : str or None
+        If None, all cses, else pass a string name for a specific stimuli type.
+    hmm_engaged : bool
+        If True, only include engaged trials.
+    combine_pavlovian : bool
+        If True, combine pavlovian trials with plus trials.
+
+    Returns
+    -------
+    int
+
+    """
+    errs = _trial_errors(
+        run, cs=cs, hmm_engaged=hmm_engaged,
+        combine_pavlovian=combine_pavlovian)
+    return len(errs)
+
+
+@memoize(across='date', updated=190130)
+def dprime(
+        date, hmm_engaged=True, combine_pavlovian=False,
+        combine_passives=True):
+    """
+    Return d-prime calculated for a specific date.
+
+    Parameters
+    ----------
+    date : Date
+    hmm_engaged : bool
+        If True, only include engaged trials.
+    combine_pavlovian : bool
+        If True, combine pavlovian trials with plus trials.
+    combine_passives : bool
+        If True, combine minus and neutral trials.
+
+    Returns
+    -------
+    float
+
+    """
+    nhits, nplus, nfas, npassives = 0, 0, 0, 0
+    for run in date.runs(run_types=['training']):
+        nhits += correct_count(
+            run, cs='plus', hmm_engaged=hmm_engaged,
+            combine_pavlovian=combine_pavlovian)
+        nplus += trial_count(
+            run, cs='plus', hmm_engaged=hmm_engaged,
+            combine_pavlovian=combine_pavlovian)
+
+        nfas += incorrect_count(
+            run, cs='minus', hmm_engaged=hmm_engaged,
+            combine_pavlovian=combine_pavlovian)
+        npassives += trial_count(
+            run, cs='minus', hmm_engaged=hmm_engaged,
+            combine_pavlovian=combine_pavlovian)
+
+        if combine_passives:
+            nfas += incorrect_count(
+                run, cs='neutral', hmm_engaged=hmm_engaged,
+                combine_pavlovian=combine_pavlovian)
+            npassives += trial_count(
+                run, cs='neutral', hmm_engaged=hmm_engaged,
+                combine_pavlovian=combine_pavlovian)
+
+    return norm.ppf((nhits + 0.5) / (nplus + 1.0)) - \
+        norm.ppf((nfas + 0.5) / (npassives + 1.0))
+
+
+@memoize(across='date', updated=190130)
+def dprimez(date, hmm_engaged=True, combine_pavlovian=False, combine_passives=True):
+    """
+    Return d-prime score converted to a cdf value for a specific date.
+
+    Parameters
+    ----------
+    date : Date
+    hmm_engaged : bool
+        If True, only include engaged trials.
+    combine_pavlovian : bool
+        If True, combine pavlovian trials with plus trials.
+    combine_passives : bool
+        If True, combine minus and neutral trials.
+
+    Returns
+    -------
+    float
+
+    """
+    return norm.cdf(dprime(
+        date, hmm_engaged=hmm_engaged, combine_pavlovian=combine_pavlovian,
+        combine_passives=combine_passives))
+
+
+@memoize(across='run', updated=190124)
+def correct_fraction(run, cs=None, hmm_engaged=True, combine_pavlovian=False):
+    """
+    Fraction of correct trials of a specific cs type.
+
+    Parameters
+    ----------
+    run : Run
+    cs : str or None
+        If None, all cses, else pass a string name for a specific stimuli type.
+    hmm_engaged : bool
+        If True, only include engaged trials.
+    combine_pavlovian : bool
+        If True, combine pavlovian trials with plus trials.
+
+    Returns
+    -------
+    float
+
+    """
+    ncorrect = correct_count(
+        run, cs=cs, hmm_engaged=hmm_engaged,
+        combine_pavlovian=combine_pavlovian)
+    ntrials = trial_count(
+        run, cs=cs, hmm_engaged=hmm_engaged,
+        combine_pavlovian=combine_pavlovian)
+    return ncorrect / ntrials
+
+
+def _trial_errors(run, cs=None, hmm_engaged=True, combine_pavlovian=False):
+    """
+    Return a boolean mask of incorrect trials of a specific type.
+
+    Parameters
+    ----------
+    run : Run
+    cs : str or None
+        If None, all cses, else pass a string name for a specific stimuli type.
+    hmm_engaged : bool
+        If True, only include engaged trials.
+    combine_pavlovian : bool
+        If True, combine pavlovian trials with plus trials.
+
+    Returns
+    -------
+    array of bool
+        True == incorrect trial
+
+    """
+    t2p = run.trace2p()
+    conds, errs, codes = t2p.conderrs()
+    if hmm_engaged:
+        engage = engaged(run)
+        conds = conds[engage]
+        errs = errs[engage]
+    if cs is not None:
+        if combine_pavlovian and cs == 'plus':
+            conds[conds == codes['pavlovian']] = codes['plus']
+        errs = errs[conds == codes[cs]]
+    return errs
+
+
+class HMM:
+    """The engagement HMM."""
+
+    def __init__(self):
+        """Initalize the HMM."""
+
+        self.cses = config.stimuli()
 
         self.attention = None
         self.emissions = None
@@ -30,10 +261,11 @@ class HMM:
 
     def run(self):
         """
-        Run HMM
-        :return: vals
-        """
+        Run HMM.
 
+        :return: vals
+
+        """
         # Initialize HMM
         self.attention = np.zeros(len(self.licks))
         self.init_tprobs()
@@ -44,10 +276,11 @@ class HMM:
 
     def viterbi(self):
         """
-        Run the viterbi algorithm on the sequence
-        :return:
-        """
+        Run the viterbi algorithm on the sequence.
 
+        :return:
+
+        """
         sev = np.ones(2)  # max probabilities for start and end
         sep = np.zeros(2)  # pointers
 
@@ -89,12 +322,13 @@ class HMM:
 
     def backtrace(self, p, sep):
         """
-        Follow the backtrace through the viterbi path
+        Follow the backtrace through the viterbi path.
+
         :param p: pointers to the previous state
         :param sep: pointers from start and end
         :return: vector of states
-        """
 
+        """
         out = np.zeros(np.shape(p)[1], dtype=np.int8)
         out[-1] = sep[1]
 
@@ -105,10 +339,11 @@ class HMM:
 
     def init_tprobs(self):
         """
-        Initialize the transition probabilities
-        :return: None
-        """
+        Initialize the transition probabilities.
 
+        :return: None
+
+        """
         # start, engaged, disengaged, end
         self.tprobs = np.array([
             [0.00, 0.90, 0.10, 0.00],
@@ -119,7 +354,10 @@ class HMM:
 
     def init_emissions(self):
         """
-        Initialize the emissions probability that a mouse performs correctly for each stimulus
+        Initialize the emissions probabilities.
+
+        The probability that a mouse performs correctly for each stimulus.
+
         :return: None
 
         """
@@ -131,11 +369,12 @@ class HMM:
     # Local functions
     def getseqs(self, t2ps):
         """
-        Get sequence of stimulus types
+        Get sequence of stimulus types.
+
         :param t2ps: list of trace2p instances
         :return: None
-        """
 
+        """
         self.cond = []
         self.licks = []
         self.testlicks = []
@@ -168,37 +407,6 @@ class HMM:
         self.cond = np.array(self.cond)
         self.licks = np.array(self.licks)
         self.testlicks = np.array(self.testlicks)
-
-    # def setruns(self):
-    #     """
-    #     Using "breaks", set individual runs
-    #     :return:
-    #     """
-
-    #     dprimes = [np.nan, np.nan, np.nan]
-    #     criteria = [np.nan, np.nan, np.nan]
-
-    #     for r in range(min(3, len(self.breaks) - 1)):
-    #         lick = self.licks[self.breaks[r]:self.breaks[r+1]]
-    #         condition = self.cond[self.breaks[r]:self.breaks[r+1]]
-    #         att = self.attention[self.breaks[r]:self.breaks[r+1]]
-    #         dprimes[r], criteria[r], _ = self.calc_sdt_metrics(lick, condition, att)
-
-    #     return np.concatenate([dprimes, criteria])
-
-    # def setrunengagement(self):
-    #     """
-    #     Using "breaks", set individual runs.
-
-    #     :return:
-
-    #     """
-    #     eng = [[], [], []]
-
-    #     for r in range(min(3, len(self.breaks) - 1)):
-    #         eng[r] = self.attention[self.breaks[r]:self.breaks[r+1]] < 1
-
-    #     return eng
 
     def engaged(self):
         """
