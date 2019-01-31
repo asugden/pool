@@ -2,7 +2,7 @@ import flow.metadata.sorters
 import pool.config
 
 def trials(runs, cs, start_s=0, end_s=None, trace_type='dff', cutoff_before_lick_ms=-1,
-              error_trials=-1, baseline=None, pavlovian=True):
+              error_trials=-1, baseline=None, pavlovian=True, end_relative=0):
     """
     Get all training trials.
 
@@ -17,7 +17,7 @@ def trials(runs, cs, start_s=0, end_s=None, trace_type='dff', cutoff_before_lick
         For backward compatibility, can also be arg dict.
     end_s : float
         Time after stim to include, in seconds. If None, will be set to the
-        stimulus length.
+        stimulus length + end_relative.
     trace_type : {'deconvolved', 'raw', 'dff'}
         Type of trace to return.
     cutoff_before_lick_ms : int
@@ -30,6 +30,8 @@ def trials(runs, cs, start_s=0, end_s=None, trace_type='dff', cutoff_before_lick
         all traces each trial.
     pavlovian : bool
         If true, include pavlovian trials with cs plus trials.
+    end_relative : float
+        The time relative to the stimulus length in seconds
 
     Returns
     -------
@@ -53,6 +55,9 @@ def trials(runs, cs, start_s=0, end_s=None, trace_type='dff', cutoff_before_lick
     alltrs = []
     for run in runs:
         t2p = run.trace2p()
+
+        if end_s is None:
+            end_s = t2p.stimulus_length + end_relative
 
         for cs in cses:
             # ncells, frames, nstimuli/onsets
