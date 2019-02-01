@@ -153,14 +153,122 @@ def dprime(
                 run, cs='neutral', hmm_engaged=hmm_engaged,
                 combine_pavlovian=combine_pavlovian)
 
-    return norm.ppf((nhits + 0.5) / (nplus + 1.0)) - \
-        norm.ppf((nfas + 0.5) / (npassives + 1.0))
+    z_hit_rate = norm.ppf((nhits + 0.5) / (nplus + 1.0))
+    z_fa_rate = norm.ppf((nfas + 0.5) / (npassives + 1.0))
+
+    return z_hit_rate - z_fa_rate
+
+
+@memoize(across='date', updated=190131)
+def criterion(
+        date, hmm_engaged=True, combine_pavlovian=False,
+        combine_passives=True):
+    """
+    Return criterion calculated for a specific date.
+
+    Parameters
+    ----------
+    date : Date
+    hmm_engaged : bool
+        If True, only include engaged trials.
+    combine_pavlovian : bool
+        If True, combine pavlovian trials with plus trials.
+    combine_passives : bool
+        If True, combine minus and neutral trials.
+
+    Returns
+    -------
+    float
+
+    """
+    nhits, nplus, nfas, npassives = 0, 0, 0, 0
+    for run in date.runs(run_types=['training']):
+        nhits += correct_count(
+            run, cs='plus', hmm_engaged=hmm_engaged,
+            combine_pavlovian=combine_pavlovian)
+        nplus += trial_count(
+            run, cs='plus', hmm_engaged=hmm_engaged,
+            combine_pavlovian=combine_pavlovian)
+
+        nfas += incorrect_count(
+            run, cs='minus', hmm_engaged=hmm_engaged,
+            combine_pavlovian=combine_pavlovian)
+        npassives += trial_count(
+            run, cs='minus', hmm_engaged=hmm_engaged,
+            combine_pavlovian=combine_pavlovian)
+
+        if combine_passives:
+            nfas += incorrect_count(
+                run, cs='neutral', hmm_engaged=hmm_engaged,
+                combine_pavlovian=combine_pavlovian)
+            npassives += trial_count(
+                run, cs='neutral', hmm_engaged=hmm_engaged,
+                combine_pavlovian=combine_pavlovian)
+
+    z_hit_rate = norm.ppf((nhits + 0.5) / (nplus + 1.0))
+    z_fa_rate = norm.ppf((nfas + 0.5) / (npassives + 1.0))
+
+    return -1 * (z_hit_rate + z_fa_rate) / 2.
+
+
+@memoize(across='date', updated=190131)
+def likelihood_ratio(
+        date, hmm_engaged=True, combine_pavlovian=False,
+        combine_passives=True):
+    """
+    Return sdt likelihood-ratio calculated for a specific date.
+
+    Parameters
+    ----------
+    date : Date
+    hmm_engaged : bool
+        If True, only include engaged trials.
+    combine_pavlovian : bool
+        If True, combine pavlovian trials with plus trials.
+    combine_passives : bool
+        If True, combine minus and neutral trials.
+
+    Returns
+    -------
+    float
+
+    """
+    nhits, nplus, nfas, npassives = 0, 0, 0, 0
+    for run in date.runs(run_types=['training']):
+        nhits += correct_count(
+            run, cs='plus', hmm_engaged=hmm_engaged,
+            combine_pavlovian=combine_pavlovian)
+        nplus += trial_count(
+            run, cs='plus', hmm_engaged=hmm_engaged,
+            combine_pavlovian=combine_pavlovian)
+
+        nfas += incorrect_count(
+            run, cs='minus', hmm_engaged=hmm_engaged,
+            combine_pavlovian=combine_pavlovian)
+        npassives += trial_count(
+            run, cs='minus', hmm_engaged=hmm_engaged,
+            combine_pavlovian=combine_pavlovian)
+
+        if combine_passives:
+            nfas += incorrect_count(
+                run, cs='neutral', hmm_engaged=hmm_engaged,
+                combine_pavlovian=combine_pavlovian)
+            npassives += trial_count(
+                run, cs='neutral', hmm_engaged=hmm_engaged,
+                combine_pavlovian=combine_pavlovian)
+
+    z_hit_rate = norm.ppf((nhits + 0.5) / (nplus + 1.0))
+    z_fa_rate = norm.ppf((nfas + 0.5) / (npassives + 1.0))
+
+    return np.exp((z_fa_rate**2 - z_hit_rate**2) / 2.)
 
 
 @memoize(across='date', updated=190130)
-def dprimez(date, hmm_engaged=True, combine_pavlovian=False, combine_passives=True):
+def dprime_percentile(
+        date, hmm_engaged=True, combine_pavlovian=False,
+        combine_passives=True):
     """
-    Return d-prime score converted to a cdf value for a specific date.
+    Return d-prime percentile for a specific date.
 
     Parameters
     ----------
@@ -182,8 +290,39 @@ def dprimez(date, hmm_engaged=True, combine_pavlovian=False, combine_passives=Tr
         combine_passives=combine_passives))
 
 
+@memoize(across='date', updated=190124)
+def correct_fraction(date, cs=None, hmm_engaged=True, combine_pavlovian=False):
+    """
+    Fraction of correct trials of a specific cs type.
+
+    Parameters
+    ----------
+    run : Run
+    cs : str or None
+        If None, all cses, else pass a string name for a specific stimuli type.
+    hmm_engaged : bool
+        If True, only include engaged trials.
+    combine_pavlovian : bool
+        If True, combine pavlovian trials with plus trials.
+
+    Returns
+    -------
+    float
+
+    """
+    ncorrect, ntrials = 0, 0
+    for run in date.runs(run_types=['training']):
+        ncorrect += correct_count(
+            run, cs=cs, hmm_engaged=hmm_engaged,
+            combine_pavlovian=combine_pavlovian)
+        ntrials += trial_count(
+            run, cs=cs, hmm_engaged=hmm_engaged,
+            combine_pavlovian=combine_pavlovian)
+    return ncorrect / ntrials
+
+
 @memoize(across='run', updated=190124)
-def correct_fraction(run, cs=None, hmm_engaged=True, combine_pavlovian=False):
+def correct_fraction_run(run, cs=None, hmm_engaged=True, combine_pavlovian=False):
     """
     Fraction of correct trials of a specific cs type.
 
@@ -232,7 +371,8 @@ def _trial_errors(run, cs=None, hmm_engaged=True, combine_pavlovian=False):
 
     """
     t2p = run.trace2p()
-    conds, errs, codes = t2p.conderrs()
+    conds, codes = t2p.conditions()
+    errs = t2p.errors()
     if hmm_engaged:
         engage = engaged(run)
         conds = conds[engage]
