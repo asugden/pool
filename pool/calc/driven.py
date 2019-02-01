@@ -6,7 +6,7 @@ from ..database import memoize
 from .. import stimulus
 
 
-@memoize(across='date', updated=190118, returns='cell array')
+@memoize(across='date', updated=190130, returns='cell array')
 def visually(date, cs, integrate_bins=6, ncses=3):
     """
     Calculate the probability of being visually driven for each cell.

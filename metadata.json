@@ -6026,6 +6026,462 @@
     {
       "dates": [
         {
+          "date": 180606,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            }
+          ],
+          "tags": [
+            "naive"
+          ]
+        },
+        {
+          "date": 180607,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "other",
+              "tags": [
+                "naive",
+                "retinotopy"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "other",
+              "tags": [
+                "naive",
+                "orientation_mapping"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            }
+          ],
+          "tags": [
+            "naive"
+          ]
+        },
+        {
+          "date": 180608,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            }
+          ],
+          "tags": [
+            "naive"
+          ]
+        },
+        {
+          "date": 180609,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            }
+          ],
+          "tags": [
+            "naive"
+          ]
+        },
+        {
+          "date": 180611,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            }
+          ],
+          "tags": [
+            "naive"
+          ]
+        },
+        {
+          "date": 180612,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            }
+          ],
+          "tags": [
+            "naive"
+          ]
+        },
+        {
+          "date": 180613,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "other",
+              "tags": [
+                "naive",
+                "orientation_mapping"
+              ]
+            }
+          ],
+          "tags": [
+            "naive"
+          ]
+        },
+        {
+          "date": 180614,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            }
+          ],
+          "tags": [
+            "naive"
+          ]
+        },
+        {
+          "date": 180618,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning_start"
+          ]
+        },
+        {
+          "date": 180619,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180621,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180622,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        }
+      ],
+      "name": "CC175",
+      "tags": [
+        "kelly"
+      ]
+    },
+    {
+      "dates": [
+        {
           "date": 180601,
           "photometry": [],
           "runs": [
@@ -9077,6 +9533,3566 @@
       "name": "OA205",
       "tags": [
         "jeff"
+      ]
+    },
+    {
+      "dates": [
+        {
+          "date": 170208,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            }
+          ],
+          "tags": [
+            "naive"
+          ]
+        },
+        {
+          "date": 170209,
+          "runs": [
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning_start"
+          ]
+        },
+        {
+          "date": 170210,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170211,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170212,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170213,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170214,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170215,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170217,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170219,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170220,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170221,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170223,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170224,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170302,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170308,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170309,
+          "runs": [
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170313,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "other",
+              "tags": [
+                "disengaged",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "other",
+              "tags": [
+                "disengaged",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "other",
+              "tags": [
+                "contrast",
+                "learning"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "other",
+              "tags": [
+                "contrast",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170314,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "learning",
+                "sated"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "other",
+              "tags": [
+                "learning",
+                "sated"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170317,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "learning",
+                "sated"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "other",
+              "tags": [
+                "learning",
+                "sated"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "other",
+              "tags": [
+                "learning",
+                "sated"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170319,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1_start"
+          ]
+        },
+        {
+          "date": 170320,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 170321,
+          "runs": [
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 170322,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 170324,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 170325,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 170327,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 170328,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 170330,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 170401,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 170402,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 170403,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 170404,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "other",
+              "tags": [
+                "disengaged",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "other",
+              "tags": [
+                "disengaged",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 170405,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "contrast",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "other",
+              "tags": [
+                "contrast",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "other",
+              "tags": [
+                "disengaged",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 170412,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 170424,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "contrast",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "other",
+              "tags": [
+                "contrast",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "other",
+              "tags": [
+                "disengaged",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "other",
+              "tags": [
+                "disengaged",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 170425,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal2_start"
+          ]
+        },
+        {
+          "date": 170426,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal2"
+          ]
+        },
+        {
+          "date": 170427,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal2"
+          ]
+        },
+        {
+          "date": 170428,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal2"
+          ]
+        },
+        {
+          "date": 170501,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal2"
+          ]
+        },
+        {
+          "date": 170502,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal2"
+          ]
+        },
+        {
+          "date": 170503,
+          "runs": [
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal2"
+          ]
+        },
+        {
+          "date": 170505,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal2"
+          ]
+        },
+        {
+          "date": 170506,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal2"
+          ]
+        },
+        {
+          "date": 170507,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal2"
+          ]
+        },
+        {
+          "date": 170508,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal2"
+          ]
+        },
+        {
+          "date": 170510,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal2"
+          ]
+        },
+        {
+          "date": 170511,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal2"
+          ]
+        },
+        {
+          "date": 170512,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "other",
+              "tags": [
+                "disengaged",
+                "reversal2"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal2"
+          ]
+        },
+        {
+          "date": 170514,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal2"
+          ]
+        },
+        {
+          "date": 170518,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "other",
+              "tags": [
+                "reversal2",
+                "sated"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "other",
+              "tags": [
+                "reversal2",
+                "sated"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal2"
+          ]
+        },
+        {
+          "date": 170525,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "contrast",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "other",
+              "tags": [
+                "contrast",
+                "reversal2"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "other",
+              "tags": [
+                "disengaged",
+                "reversal2"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal2"
+          ]
+        }
+      ],
+      "name": "OA26",
+      "tags": [
+        "kelly"
+      ]
+    },
+    {
+      "dates": [
+        {
+          "date": 170116,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "other",
+              "tags": [
+                "kelly",
+                "naive",
+                "orientation_mapping"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "kelly",
+                "naive"
+              ]
+            }
+          ],
+          "tags": [
+            "naive"
+          ]
+        },
+        {
+          "date": 170118,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "other",
+              "tags": [
+                "kelly",
+                "naive",
+                "orientation_mapping"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "kelly",
+                "naive"
+              ]
+            }
+          ],
+          "tags": [
+            "naive"
+          ]
+        },
+        {
+          "date": 170119,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "kelly",
+                "naive"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "other",
+              "tags": [
+                "contrast",
+                "kelly",
+                "naive"
+              ]
+            }
+          ],
+          "tags": [
+            "naive"
+          ]
+        },
+        {
+          "date": 170125,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "other",
+              "tags": [
+                "kelly",
+                "learning_start",
+                "naive",
+                "orientation_mapping"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning_start",
+                "naive"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning",
+                "learning_start"
+              ]
+            }
+          ],
+          "tags": [
+            "learning_start"
+          ]
+        },
+        {
+          "date": 170127,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170128,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170129,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170131,
+          "runs": [
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170201,
+          "runs": [
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 7,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170202,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170204,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170206,
+          "runs": [
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170207,
+          "runs": [
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170208,
+          "runs": [
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170209,
+          "runs": [
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170210,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170211,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170214,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170215,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170216,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170217,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170220,
+          "runs": [
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170223,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170224,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170303,
+          "runs": [
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "other",
+              "tags": [
+                "contrast",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "other",
+              "tags": [
+                "contrast",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "other",
+              "tags": [
+                "contrast",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 7,
+              "run_type": "other",
+              "tags": [
+                "disengaged",
+                "kelly",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170308,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "other",
+              "tags": [
+                "contrast",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "other",
+              "tags": [
+                "contrast",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "other",
+              "tags": [
+                "disengaged",
+                "kelly",
+                "learning"
+              ]
+            },
+            {
+              "run": 7,
+              "run_type": "other",
+              "tags": [
+                "kelly",
+                "learning",
+                "orientation_mapping"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 170318,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning",
+                "reversal1_start"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning",
+                "reversal1_start"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "learning",
+                "reversal1_start"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1",
+                "reversal1_start"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "hungry",
+                "kelly",
+                "kelly",
+                "reversal1",
+                "reversal1",
+                "reversal1_start",
+                "reversal1_start"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1_start"
+          ]
+        },
+        {
+          "date": 170320,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 170321,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 170322,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 170323,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 7,
+              "run_type": "other",
+              "tags": [
+                "disengaged",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 8,
+              "run_type": "other",
+              "tags": [
+                "kelly",
+                "orientation_mapping",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 170326,
+          "runs": [
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 170328,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "other",
+              "tags": [
+                "contrast",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "other",
+              "tags": [
+                "disengaged",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 7,
+              "run_type": "other",
+              "tags": [
+                "kelly",
+                "orientation_mapping",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 170403,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "other",
+              "tags": [
+                "contrast",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "other",
+              "tags": [
+                "contrast",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "other",
+              "tags": [
+                "disengaged",
+                "kelly",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 170404,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "other",
+              "tags": [
+                "contrast",
+                "kelly",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 7,
+              "run_type": "other",
+              "tags": [
+                "disengaged",
+                "kelly",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        }
+      ],
+      "name": "OA27",
+      "tags": [
+        "kelly"
       ]
     },
     {
@@ -15582,6 +19598,2318 @@
       ],
       "name": "OA39",
       "tags": []
+    },
+    {
+      "dates": [
+        {
+          "date": 171125,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            }
+          ],
+          "tags": [
+            "naive"
+          ]
+        },
+        {
+          "date": 171126,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "other",
+              "tags": [
+                "naive",
+                "orientation_mapping"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            }
+          ],
+          "tags": [
+            "naive"
+          ]
+        },
+        {
+          "date": 171127,
+          "runs": [
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "naive",
+                "orientation_mapping"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            }
+          ],
+          "tags": [
+            "naive"
+          ]
+        },
+        {
+          "date": 171128,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "other",
+              "tags": [
+                "naive",
+                "orientation_mapping"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            }
+          ],
+          "tags": [
+            "naive"
+          ]
+        },
+        {
+          "date": 171202,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "blank_reward",
+                "naive"
+              ]
+            }
+          ],
+          "tags": [
+            "naive"
+          ]
+        },
+        {
+          "date": 171203,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning_start"
+          ]
+        },
+        {
+          "date": 171204,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 171211,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 171212,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 171213,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 171220,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 171222,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 171223,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 171229,
+          "runs": [
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 171230,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180101,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180102,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180113,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180115,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180116,
+          "runs": [
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180117,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180118,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180126,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1_start"
+          ]
+        },
+        {
+          "date": 180127,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 180128,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 180130,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 180201,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 180206,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 180212,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "reversal1",
+                "sated"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "other",
+              "tags": [
+                "reversal1",
+                "sated"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 180214,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "reversal1",
+                "sated"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "other",
+              "tags": [
+                "reversal1",
+                "sated"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        }
+      ],
+      "name": "OA67",
+      "tags": [
+        "kelly"
+      ]
+    },
+    {
+      "dates": [
+        {
+          "date": 180117,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "other",
+              "tags": [
+                "naive",
+                "retinotopy"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "other",
+              "tags": [
+                "naive",
+                "orientation_mapping"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            }
+          ],
+          "tags": [
+            "naive"
+          ]
+        },
+        {
+          "date": 180118,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "other",
+              "tags": [
+                "naive",
+                "orientation_mapping"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            }
+          ],
+          "tags": [
+            "naive"
+          ]
+        },
+        {
+          "date": 180121,
+          "runs": [
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            }
+          ],
+          "tags": [
+            "naive"
+          ]
+        },
+        {
+          "date": 180122,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "other",
+              "tags": [
+                "naive",
+                "orientation_mapping"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            }
+          ],
+          "tags": [
+            "naive"
+          ]
+        },
+        {
+          "date": 180123,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "other",
+              "tags": [
+                "naive",
+                "orientation_mapping"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            }
+          ],
+          "tags": [
+            "naive"
+          ]
+        },
+        {
+          "date": 180213,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "other",
+              "tags": [
+                "hungry",
+                "naive"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning_start"
+          ]
+        },
+        {
+          "date": 180215,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180219,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180220,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180221,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180222,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180226,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180227,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180308,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180309,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180310,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180312,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180313,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180323,
+          "runs": [
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180324,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180326,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "other",
+              "tags": [
+                "learning",
+                "sated"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "other",
+              "tags": [
+                "learning",
+                "sated"
+              ]
+            },
+            {
+              "run": 7,
+              "run_type": "other",
+              "tags": [
+                "learning",
+                "sated"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180327,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "other",
+              "tags": [
+                "learning",
+                "sated"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "other",
+              "tags": [
+                "learning",
+                "sated"
+              ]
+            }
+          ],
+          "tags": [
+            "learning"
+          ]
+        },
+        {
+          "date": 180330,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "learning"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1_start"
+          ]
+        },
+        {
+          "date": 180331,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 180402,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 180403,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 180410,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 180412,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 180413,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        },
+        {
+          "date": 180415,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry",
+                "reversal1"
+              ]
+            }
+          ],
+          "tags": [
+            "reversal1"
+          ]
+        }
+      ],
+      "name": "VF226",
+      "tags": [
+        "kelly"
+      ]
     }
   ],
   "version": "v1"
