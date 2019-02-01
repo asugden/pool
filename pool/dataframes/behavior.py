@@ -3,6 +3,7 @@ import pandas as pd
 
 from .. import config
 from .. import database
+from ..calc import behavior
 
 
 def behavior_df(runs):
@@ -39,7 +40,7 @@ def behavior_df(runs):
     return result
 
 
-def behavior_metric_df(dates, engaged=True):
+def behavior_metric_df(dates, hmm_engaged=True):
     """
     Build a DataFrame of performance per-day.
 
@@ -54,31 +55,25 @@ def behavior_metric_df(dates, engaged=True):
     pd.DataFrame
 
     """
-    if engaged:
-        raise NotImplementedError
     result_list = [pd.DataFrame()]
-    db = database.db()
     for date in dates:
         data = {}
-        if engaged:
-            pass
-        else:
-            data['dprime'] = db.get(
-                'behavior_dprime_orig', mouse=date.mouse, date=date.date,
-                metadata_object=date)
-            data['behavior'] = db.get(
-                'behavior_orig', mouse=date.mouse, date=date.date,
-                metadata_object=date)
-            data['LR'] = db.get(
-                'behavior_LR_orig', mouse=date.mouse, date=date.date,
-                metadata_object=date)
-            data['criterion'] = db.get(
-                'behavior_criterion_orig', mouse=date.mouse, date=date.date,
-                metadata_object=date)
-            for stim in config.stimuli():
-                data['behavior_{}'.format(stim)] = db.get(
-                    'behavior_{}_orig'.format(stim), mouse=date.mouse,
-                    date=date.date, metadata_object=date)
+        data['dprime'] = behavior.dprime(
+            date, hmm_engaged=hmm_engaged, combine_pavlovian=False,
+            combine_passives=True)
+        data['correct_fraction'] = behavior.correct_fraction(
+            date, cs=None, hmm_engaged=hmm_engaged, combine_pavlovian=False)
+        for stim in config.stimuli():
+            data['correct_fraction_{}'.format(stim)] = \
+                behavior.correct_fraction(
+                    date, cs=stim, hmm_engaged=hmm_engaged,
+                    combine_pavlovian=False)
+        data['criterion'] = behavior.criterion(
+            date, hmm_engaged=hmm_engaged, combine_pavlovian=False,
+            combine_passives=True)
+        data['likelihood_ratio'] = behavior.likelihood_ratio(
+            date, hmm_engaged=hmm_engaged, combine_pavlovian=False,
+            combine_passives=True)
 
         index = pd.MultiIndex.from_tuples(
             [(date.mouse, date.date)], names=['mouse', 'date'])
