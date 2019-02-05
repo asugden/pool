@@ -124,10 +124,11 @@ def trigger_frames_df(runs, trigger, inactivity_mask=False):
 
             result.append(trigger_frames)
 
-        result_df = (pd
-                     .concat(result, axis=0)
-                     .set_index(['trigger_idx', 'frame'], append=True)
-                     )
+    result_df = (pd
+                 .concat(result, axis=0)
+                 .set_index(['trigger_idx', 'frame'], append=True)
+                 )
+
     return result_df
 
 
