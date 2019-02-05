@@ -166,6 +166,10 @@ def color(clr=None):
         return p['colors'].get(clr, '#7C7C7C')
 
 
+def colors():
+    return color()
+
+
 def stimuli():
     """Return the default stimuli."""
 
