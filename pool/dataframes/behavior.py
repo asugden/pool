@@ -40,7 +40,7 @@ def behavior_df(runs):
     return result
 
 
-def behavior_metric_df(dates, hmm_engaged=True):
+def performance_df(dates, hmm_engaged=True):
     """
     Build a DataFrame of performance per-day.
 

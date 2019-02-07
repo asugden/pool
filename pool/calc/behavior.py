@@ -297,7 +297,7 @@ def correct_fraction(date, cs=None, hmm_engaged=True, combine_pavlovian=False):
 
     Parameters
     ----------
-    run : Run
+    date : Date
     cs : str or None
         If None, all cses, else pass a string name for a specific stimuli type.
     hmm_engaged : bool
@@ -318,11 +318,16 @@ def correct_fraction(date, cs=None, hmm_engaged=True, combine_pavlovian=False):
         ntrials += trial_count(
             run, cs=cs, hmm_engaged=hmm_engaged,
             combine_pavlovian=combine_pavlovian)
+
+    if ntrials == 0:
+        return np.nan
+
     return ncorrect / ntrials
 
 
 @memoize(across='run', updated=190124)
-def correct_fraction_run(run, cs=None, hmm_engaged=True, combine_pavlovian=False):
+def correct_fraction_run(
+        run, cs=None, hmm_engaged=True, combine_pavlovian=False):
     """
     Fraction of correct trials of a specific cs type.
 
@@ -520,8 +525,8 @@ class HMM:
         self.testlicks = []
         self.breaks = [0]
         for t2p in t2ps:
-            condd, errd, coded = t2p.conderrs()
-
+            condd, coded = t2p.conditions()
+            errd = t2p.errors()
             # Correct
             condd = condd.astype(np.int16)
             rewlicks = t2p.stimlicks('', 2, 4)
