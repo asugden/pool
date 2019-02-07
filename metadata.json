@@ -6030,7 +6030,7 @@
           "runs": [
             {
               "run": 1,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -6038,7 +6038,7 @@
             },
             {
               "run": 2,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -6046,7 +6046,7 @@
             },
             {
               "run": 3,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -6078,7 +6078,7 @@
             },
             {
               "run": 3,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -6086,7 +6086,7 @@
             },
             {
               "run": 4,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -6094,7 +6094,7 @@
             },
             {
               "run": 5,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -6110,7 +6110,7 @@
           "runs": [
             {
               "run": 2,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -6118,7 +6118,7 @@
             },
             {
               "run": 3,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -6134,7 +6134,7 @@
           "runs": [
             {
               "run": 1,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -6142,7 +6142,7 @@
             },
             {
               "run": 2,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -6150,7 +6150,7 @@
             },
             {
               "run": 3,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -6166,7 +6166,7 @@
           "runs": [
             {
               "run": 1,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -6174,7 +6174,7 @@
             },
             {
               "run": 2,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -6182,7 +6182,7 @@
             },
             {
               "run": 3,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -6198,7 +6198,7 @@
           "runs": [
             {
               "run": 1,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -6206,7 +6206,7 @@
             },
             {
               "run": 2,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -6214,7 +6214,7 @@
             },
             {
               "run": 3,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -6230,7 +6230,7 @@
           "runs": [
             {
               "run": 2,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -6238,7 +6238,7 @@
             },
             {
               "run": 3,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -6262,7 +6262,7 @@
           "runs": [
             {
               "run": 1,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -6270,7 +6270,7 @@
             },
             {
               "run": 2,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -6278,7 +6278,7 @@
             },
             {
               "run": 3,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -6294,7 +6294,7 @@
           "runs": [
             {
               "run": 1,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -6302,7 +6302,7 @@
             },
             {
               "run": 2,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -6310,7 +6310,7 @@
             },
             {
               "run": 3,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -9542,7 +9542,7 @@
           "runs": [
             {
               "run": 1,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -9550,7 +9550,7 @@
             },
             {
               "run": 2,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -9558,7 +9558,7 @@
             },
             {
               "run": 3,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -9574,7 +9574,7 @@
           "runs": [
             {
               "run": 3,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -11623,7 +11623,7 @@
             },
             {
               "run": 3,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "kelly",
@@ -11649,7 +11649,7 @@
             },
             {
               "run": 3,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "kelly",
@@ -11666,7 +11666,7 @@
           "runs": [
             {
               "run": 1,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "kelly",
@@ -11702,7 +11702,7 @@
             },
             {
               "run": 3,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "kelly",
@@ -19606,7 +19606,7 @@
           "runs": [
             {
               "run": 1,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -19614,7 +19614,7 @@
             },
             {
               "run": 2,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -19638,7 +19638,7 @@
             },
             {
               "run": 2,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -19662,7 +19662,7 @@
             },
             {
               "run": 4,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -19686,7 +19686,7 @@
             },
             {
               "run": 2,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -19702,7 +19702,7 @@
           "runs": [
             {
               "run": 1,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -19710,7 +19710,7 @@
             },
             {
               "run": 2,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -19718,7 +19718,7 @@
             },
             {
               "run": 3,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "blank_reward",
                 "naive"
@@ -19734,7 +19734,7 @@
           "runs": [
             {
               "run": 1,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -20582,7 +20582,7 @@
             },
             {
               "run": 3,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -20590,7 +20590,7 @@
             },
             {
               "run": 4,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -20614,7 +20614,7 @@
             },
             {
               "run": 2,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -20622,7 +20622,7 @@
             },
             {
               "run": 3,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -20630,7 +20630,7 @@
             },
             {
               "run": 4,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -20638,7 +20638,7 @@
             },
             {
               "run": 5,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -20654,7 +20654,7 @@
           "runs": [
             {
               "run": 3,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -20662,7 +20662,7 @@
             },
             {
               "run": 4,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -20686,7 +20686,7 @@
             },
             {
               "run": 2,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -20694,7 +20694,7 @@
             },
             {
               "run": 3,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -20702,7 +20702,7 @@
             },
             {
               "run": 4,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -20710,7 +20710,7 @@
             },
             {
               "run": 5,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -20734,7 +20734,7 @@
             },
             {
               "run": 2,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -20742,7 +20742,7 @@
             },
             {
               "run": 3,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -20750,7 +20750,7 @@
             },
             {
               "run": 4,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -20758,7 +20758,7 @@
             },
             {
               "run": 5,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -20774,7 +20774,7 @@
           "runs": [
             {
               "run": 1,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
@@ -20782,7 +20782,7 @@
             },
             {
               "run": 2,
-              "run_type": "other",
+              "run_type": "training",
               "tags": [
                 "hungry",
                 "naive"
