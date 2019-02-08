@@ -1,3 +1,4 @@
+import numpy as np
 import flow.metadata.sorters
 import pool.config
 
