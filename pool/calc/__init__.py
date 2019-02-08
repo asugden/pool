@@ -1,1 +1,1 @@
-from . import behavior, driven
+from . import behavior, distance, driven
