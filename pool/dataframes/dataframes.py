@@ -5,6 +5,33 @@ import pandas as pd
 from .. import config
 
 
+def agg_across(df, across, agg_fn='sum'):
+    """
+    Aggregate across a level of the index, reducing the number of levels by 1.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+    across : list of str
+        Names of index levels to aggregate over and remove.
+    agg_fn : str or fn
+        Function used to aggregate data.
+
+    """
+    idxs = list(df.index.names)
+    for level in across:
+        idxs.remove(level)
+
+    gb = df.groupby(idxs)
+
+    if agg_fn == 'sum':
+        agg_df = gb.sum()
+    else:
+        agg_df = gb.agg(agg_fn)
+
+    return agg_df
+
+
 def careful_first(series):
     """
     Use as a groupby aggregate function to ensure that all values are the same.
@@ -109,7 +136,7 @@ def bin_events(events, edges, labels=None, time_col='time'):
     return result
 
 
-def event_rate(events, frames, event_label_col=None):
+def event_rate(events, frames, event_label_col=None, return_counts=False):
     """Calculate event rates from a DataFrame of events and frame times.
 
     All columns in events and frames should match and will be used to
@@ -125,6 +152,8 @@ def event_rate(events, frames, event_label_col=None):
         Optionally, calculate event rate for each "flavor" or event
         independently. If not None, pivot events on this column to calculate
         a rate for each type.
+    return_counts : bool
+        If True, return counts and frames instead of rate.
 
     Returns
     -------
@@ -144,11 +173,24 @@ def event_rate(events, frames, event_label_col=None):
     # Expand back out to correctly add 0's
     events = events.reindex(frames_series.index).fillna(0)
 
-    # Calc rate
-    rate_df = events.div(frames_series, axis=0)
+    if not return_counts:
+        # Calc rate
+        rate_df = events.div(frames_series, axis=0)
+        if event_label_col is not None:
+            # Convert back to long form
+            rate_df = rate_df.stack().to_frame('event_rate')
+        return rate_df
+    else:
+        if event_label_col is not None:
+            # Convert back to long form
+            events = (events
+                      .stack()
+                      .to_frame('event_counts')
+                      .reset_index(event_label_col)
+                      )
+        frames_df = frames_series.to_frame('time_s')
+        count_df = smart_merge(events, frames_df)
+        if event_label_col is not None:
+            count_df = count_df.set_index(event_label_col, append=True)
 
-    if event_label_col is not None:
-        # Convert back to long form
-        rate_df = rate_df.stack().to_frame('event_rate')
-
-    return rate_df
+        return count_df

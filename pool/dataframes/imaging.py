@@ -9,8 +9,12 @@ from .. import database
 PRE_S = 5
 POST_S = 5
 
+POST_PAD_S = 2.3
+POST_PAVLOVIAN_PAD_S = 2.6
+PRE_PAD_S = 0.2
 
-def frames_df(runs, inactivity_mask=False):
+
+def frames_df(runs, inactivity_mask=False, stimulus_mask=False):
     """
     Return all frame times.
 
@@ -30,8 +34,24 @@ def frames_df(runs, inactivity_mask=False):
         t2p = run.trace2p()
         frame_period = 1. / t2p.framerate
         frames = np.arange(t2p.nframes)
+
         if inactivity_mask:
-            frames = frames[t2p.inactivity()]
+            inact_mask = t2p.inactivity()
+        if stimulus_mask:
+            all_stim_mask = t2p.trialmask(
+                cs='', errortrials=-1, fulltrial=False, padpre=PRE_PAD_S,
+                padpost=POST_PAD_S)
+            pav_stim_mask = t2p.trialmask(
+                cs='pavlovian', errortrials=-1, fulltrial=False,
+                padpre=PRE_PAD_S, padpost=POST_PAVLOVIAN_PAD_S)
+            stim_mask = np.invert(all_stim_mask | pav_stim_mask)
+        if inactivity_mask and stimulus_mask:
+            frames = frames[inact_mask & stim_mask]
+        elif inactivity_mask:
+            frames = frames[inact_mask]
+        elif stimulus_mask:
+            frames = frames[stim_mask]
+
         index = pd.MultiIndex.from_product(
             [[run.mouse], [run.date], [run.run], frames],
             names=['mouse', 'date', 'run', 'frame'])
@@ -108,7 +128,7 @@ def trigger_frames_df(runs, trigger, inactivity_mask=False):
         pre_fr = int(np.ceil(PRE_S * fr))
         post_fr = int(np.ceil(POST_S * fr))
 
-        frames = (frames_df([run], inactivity_mask)
+        frames = (frames_df([run], inactivity_mask, stimulus_mask=True)
                   .reset_index(['frame'])
                   )
 
@@ -124,10 +144,11 @@ def trigger_frames_df(runs, trigger, inactivity_mask=False):
 
             result.append(trigger_frames)
 
-        result_df = (pd
-                     .concat(result, axis=0)
-                     .set_index(['trigger_idx', 'frame'], append=True)
-                     )
+    result_df = (pd
+                 .concat(result, axis=0)
+                 .set_index(['trigger_idx', 'frame'], append=True)
+                 )
+
     return result_df
 
 

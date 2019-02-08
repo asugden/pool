@@ -322,6 +322,7 @@ class TrialDf(base.AnalysisBase):
         the next one.
 
         """
+        # TODO: remove? only called by trigger_events_df_orig
         out = {}
 
         t2p = run.trace2p()

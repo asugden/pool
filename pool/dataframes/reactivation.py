@@ -1,4 +1,4 @@
-"""All functions return reactivation-related dataframes."""
+"""All functions return reactivation-related DataFrames."""
 from builtins import range, zip
 
 import numpy as np
@@ -8,8 +8,14 @@ from .. import config
 from .. import database
 from . import behavior as bdf
 
+POST_PAD_S = 2.3
+POST_PAVLOVIAN_PAD_S = 2.6
+PRE_PAD_S = 0.2
 
-def events_df(runs, threshold=0.1, xmask=False, inactivity_mask=False):
+
+def events_df(
+        runs, threshold=0.1, xmask=False, inactivity_mask=False,
+        stimulus_mask=False):
     """
     Return all event frames.
 
@@ -22,6 +28,8 @@ def events_df(runs, threshold=0.1, xmask=False, inactivity_mask=False):
         If True, only allow one event (across types) per time bin.
     inactivity_mask : bool
         If True, enforce that all events are during times of inactivity.
+    stimulus_mask : bool
+        If True, remove all events during stimulus presentation.
 
     Returns
     -------
@@ -34,10 +42,26 @@ def events_df(runs, threshold=0.1, xmask=False, inactivity_mask=False):
     for run in runs:
         t2p = run.trace2p()
         c2p = run.classify2p()
+
         if inactivity_mask:
-            mask = t2p.inactivity()
+            inact_mask = t2p.inactivity()
+        if stimulus_mask:
+            all_stim_mask = t2p.trialmask(
+                cs='', errortrials=-1, fulltrial=False, padpre=PRE_PAD_S,
+                padpost=POST_PAD_S)
+            pav_stim_mask = t2p.trialmask(
+                cs='pavlovian', errortrials=-1, fulltrial=False,
+                padpre=PRE_PAD_S, padpost=POST_PAVLOVIAN_PAD_S)
+            stim_mask = np.invert(all_stim_mask | pav_stim_mask)
+        if inactivity_mask and stimulus_mask:
+            mask = inact_mask & stim_mask
+        elif inactivity_mask:
+            mask = inact_mask
+        elif stimulus_mask:
+            mask = stim_mask
         else:
             mask = None
+
         # Keep track of frames/events so that we can give them an overall idx
         frame_event_tuples = []
         for event_type in config.stimuli():
@@ -130,12 +154,10 @@ def trial_events_df(
 
     return result
 
-def trigger_events_df(
-        runs, trigger, threshold=0.1, xmask=False, inactivity_mask=False):
-    """
-    Return reactivation events aligned to various triggers.
 
-    """
+def trigger_events_df_orig(
+        runs, trigger, threshold=0.1, xmask=False, inactivity_mask=False):
+    """Return reactivation events aligned to various triggers."""
     result = [pd.DataFrame()]
     db = database.db()
     analysis = 'trialdf_{}_events_{}_{}_{}'.format(
@@ -151,6 +173,80 @@ def trigger_events_df(
 
     return result
 
+
+def trigger_events_df(
+        runs, trigger, threshold=0.1, xmask=False, inactivity_mask=False,
+        pre_s=-1., post_s=5.):
+    """
+    Determine event times aligned to other (other than stimulus) events.
+
+    Parameters
+    ----------
+    runs : RunSorter
+    trigger : {'punishment', 'reward', 'lickbout'}
+        Event to trigger PSTH on.
+    threshold : float
+        Classifier cutoff probability.
+    xmask : bool
+        If True, only allow one event (across types) per time bin.
+    inactivity_mask : bool
+        If True, enforce that all events are during times of inactivity.
+    pre_s, post_s : float
+        Time around each event to look.
+
+    Note
+    ----
+    Individual events will appear in this DataFrame multiple times!
+    Events may show up both as being after a triggering event and before
+    the next one.
+
+    """
+    # Initialize with an empty DataFrame that will match same format as output
+    result = [pd.DataFrame({'trigger_idx': [], 'event_type': [],
+                            'frame': [], 'time': []},
+                           index=pd.MultiIndex(
+                               levels=[[], [], [], []],
+                               labels=[[], [], [], []],
+                               names=['mouse', 'date', 'run', 'event_idx']))]
+    for run in runs:
+        t2p = run.trace2p()
+
+        if trigger == 'reward':
+            onsets = t2p.reward()
+            # There are 0s in place of un-rewarded trials.
+            onsets = onsets[onsets > 0]
+        elif trigger == 'punishment':
+            onsets = t2p.punishment()
+            # There are 0s in place of un-punished trials.
+            onsets = onsets[onsets > 0]
+        elif trigger == 'lickbout':
+            onsets = t2p.lickbout()
+
+        fr = t2p.framerate
+        pre_fr = int(np.ceil(-pre_s * fr))
+        post_fr = int(np.ceil(post_s * fr))
+
+        events = events_df(
+            [run], threshold, xmask=xmask,
+            inactivity_mask=inactivity_mask,
+            stimulus_mask=True)
+
+        for trigger_idx, onset in enumerate(onsets):
+
+            trigger_events = events.loc[
+                (events.frame >= (onset - pre_fr)) &
+                (events.frame < (onset + post_fr))].copy()
+            trigger_events['frame'] -= onset
+            trigger_events['time'] = trigger_events.frame / fr
+            trigger_events['trigger_idx'] = trigger_idx
+
+            result.append(trigger_events)
+    result_df = (pd
+                 .concat(result, axis=0)
+                 .loc[:, ['trigger_idx', 'event_type', 'time']]
+                 .sort_index()
+                 )
+    return result_df
 
 
 def peri_event_behavior_df(runs, threshold=0.1):
