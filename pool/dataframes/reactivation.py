@@ -175,8 +175,8 @@ def trigger_events_df_orig(
 
 
 def trigger_events_df(
-        runs, trigger, threshold=0.1, xmask=False, inactivity_mask=False,
-        pre_s=-1., post_s=5.):
+        runs, trigger, pre_s=-1., post_s=5., threshold=0.1, xmask=False,
+        inactivity_mask=False, stimulus_mask=True):
     """
     Determine event times aligned to other (other than stimulus) events.
 
@@ -185,29 +185,26 @@ def trigger_events_df(
     runs : RunSorter
     trigger : {'punishment', 'reward', 'lickbout'}
         Event to trigger PSTH on.
+    pre_s, post_s : float
+        Time around each event to look.
     threshold : float
         Classifier cutoff probability.
     xmask : bool
         If True, only allow one event (across types) per time bin.
     inactivity_mask : bool
         If True, enforce that all events are during times of inactivity.
-    pre_s, post_s : float
-        Time around each event to look.
+    stimulus_mask : bool
+        If True, remove all events during stimulus presentation.
 
     Note
     ----
-    Individual events will appear in this DataFrame multiple times!
+    Individual events may appear in this DataFrame multiple times!
     Events may show up both as being after a triggering event and before
     the next one.
 
     """
     # Initialize with an empty DataFrame that will match same format as output
-    result = [pd.DataFrame({'trigger_idx': [], 'event_type': [],
-                            'frame': [], 'time': []},
-                           index=pd.MultiIndex(
-                               levels=[[], [], [], []],
-                               labels=[[], [], [], []],
-                               names=['mouse', 'date', 'run', 'event_idx']))]
+    result = []
     for run in runs:
         t2p = run.trace2p()
 
@@ -221,6 +218,8 @@ def trigger_events_df(
             onsets = onsets[onsets > 0]
         elif trigger == 'lickbout':
             onsets = t2p.lickbout()
+        else:
+            raise ValueError("Unrecognized 'trigger' value.")
 
         fr = t2p.framerate
         pre_fr = int(np.ceil(-pre_s * fr))
@@ -229,23 +228,32 @@ def trigger_events_df(
         events = events_df(
             [run], threshold, xmask=xmask,
             inactivity_mask=inactivity_mask,
-            stimulus_mask=True)
+            stimulus_mask=stimulus_mask)
 
         for trigger_idx, onset in enumerate(onsets):
 
             trigger_events = events.loc[
                 (events.frame >= (onset - pre_fr)) &
                 (events.frame < (onset + post_fr))].copy()
-            trigger_events['frame'] -= onset
-            trigger_events['time'] = trigger_events.frame / fr
+            trigger_events['time'] = (trigger_events.frame - onset) / fr
             trigger_events['trigger_idx'] = trigger_idx
 
             result.append(trigger_events)
-    result_df = (pd
-                 .concat(result, axis=0)
-                 .loc[:, ['trigger_idx', 'event_type', 'time']]
-                 .sort_index()
-                 )
+
+    if len(result):
+        result_df = (pd
+                     .concat(result, axis=0)
+                     .rename(columns={'frame': 'abs_frame'})
+                     .sort_index()
+                     )
+    else:
+        result_df = pd.DataFrame(
+            {'trigger_idx': [], 'event_type': [], 'abs_frame': [], 'time': []},
+            index=pd.MultiIndex(
+                levels=[[], [], [], []],
+                labels=[[], [], [], []],
+                names=['mouse', 'date', 'run', 'event_idx']))
+
     return result_df
 
 
