@@ -233,7 +233,7 @@ def trial_event_labels(
                   inactivity_mask=inactivity_mask)
               # Drop indexes which we don't want to merge bin on later
               .reset_index(['event_idx'], drop=True)
-              .drop(columns=['trial_idx'])
+              .drop(columns=['trial_idx', 'abs_frame'])
               )
     events = dfs.smart_merge(events, behavior, how='left')
     frames = (dfs
@@ -361,7 +361,7 @@ def trial_event_bins(
                   inactivity_mask=inactivity_mask)
               # Drop indexes which we don't want to merge bin on later
               .reset_index(['event_idx'], drop=True)
-              .drop(columns=['trial_idx'])
+              .drop(columns=['trial_idx', 'abs_frame'])
               )
     events = dfs.smart_merge(events, behavior, how='left')
     frames = (dfs
@@ -449,7 +449,7 @@ def trigger_event_bins(
                            runs, trigger, threshold=threshold, xmask=False,
                            inactivity_mask=inactivity_mask)
                        .reset_index(['event_idx'], drop=True)
-                       .drop(columns=['trigger_idx'])
+                       .drop(columns=['trigger_idx', 'abs_frame'])
                        .pipe(dfs.bin_events, edges, labels)
                        .assign(trigger=trigger)
                        .set_index('trigger', append=True)
@@ -512,3 +512,106 @@ def peri_event_behavior(df, limit_conditions=False, **plot_kwargs):
         **plot_kwargs)
 
     return g
+
+# def trial_event_behavior(
+#         runs, pre_s=-5, iti_start_s=5, iti_end_s=10, threshold=0.1, kind='bar',
+#         limit_conditions=False, xmask=False, inactivity_mask=False,
+#         plot_bias=False, **plot_kwargs):
+#     """
+#     Plot reactivation rates in different intervals of the trial.
+
+#     By default plots pre-stimulus baseline, post-stimulus response window, and
+#     ITI period.
+
+#     Parameters
+#     ----------
+#     runs : RunSorter or list of Run
+#     pre_s : float
+#         Start of first interval, relative to stim onset.
+#     iti_start_s, iti_end_s : float
+#         Start and stop times (relative to stim onset) for the ITI period.
+#     threshold : float
+#         Classifier reactivation confidence threshold.
+#     kind : str
+#         Type of plot to plot.
+#     limit_conditions : bool
+#         If True, only look at plus, neutral, and minus conditions.
+#     xmask : bool
+#         If True, only allow one event (across types) per time bin.
+#     inactvitiy_mask : bool
+#         If True, limit reactivations to periods of inactivity.
+#     plot_bias : boolean
+#         If True, convert rates to relative rates across reactivation types.
+#     **plot_kwargs
+#         Additional arguments are passed directly to the plotting functions.
+
+#     Returns
+#     -------
+#     seaborn.GridSpec
+#     pd.DataFrame
+
+#     """
+#     # Update some plot_kwargs
+#     if kind == 'bar' and 'ci' not in plot_kwargs:
+#         plot_kwargs['ci'] = 68  # Plot SEM as error bars
+
+#     # These should probably match pool.analyses.trialdf event paddings
+#     pre_stim_pad = -0.2
+#     post_stim_pad = 2.6
+#     edges = [pre_s, pre_stim_pad, 0, 2, post_stim_pad, iti_start_s, iti_end_s]
+#     labels = ['pre', 'pre-buffer', 'stim', 'post-buffer', 'post', 'iti']
+
+#     # Get events and frames dfs merged with trial info
+#     behavior = dfs.behavior.behavior_df(runs)
+#     events = (dfs
+#               .reactivation.trial_events_df(
+#                   runs, threshold=threshold, xmask=xmask,
+#                   inactivity_mask=inactivity_mask)
+#               # Drop indexes which we don't want to merge bin on later
+#               .reset_index(['event_idx'], drop=True)
+#               .drop(columns=['trial_idx'])
+#               )
+#     events = dfs.smart_merge(events, behavior, how='left')
+#     frames = (dfs
+#               .imaging.trial_frames_df(
+#                   runs, inactivity_mask=inactivity_mask)
+#               .reset_index(['trial_idx', 'frame'], drop=True)
+#               )
+#     frames = dfs.smart_merge(frames, behavior, how='left')
+
+#     # Trim conditions if needed
+#     condition_order = ['plus', 'neutral', 'minus', 'pavlovian', 'blank']
+#     if limit_conditions:
+#         condition_order = ['plus', 'neutral', 'minus']
+
+#         events = events.loc[
+#             events.condition.isin(['plus', 'minus', 'neutral']), :]
+#         frames = frames.loc[
+#             frames.condition.isin(['plus', 'minus', 'neutral']), :]
+
+#     # Do binning
+#     events_binned = dfs.bin_events(events, edges, labels)
+#     frames_binned = dfs.bin_events(frames, edges, labels)
+
+#     # Trim down to desired windows for both
+#     events_binned = events_binned.reset_index('bin')
+#     events_binned = (events_binned
+#                      .loc[events_binned['bin'].isin(
+#                          ['pre', 'post', 'iti']), :]
+#                      )
+#     events_binned.bin.cat.remove_unused_categories(inplace=True)
+#     events_binned = events_binned.set_index('bin', append=True)
+
+#     frames_binned = frames_binned.reset_index('bin')
+#     frames_binned = (frames_binned
+#                      .loc[frames_binned['bin'].isin(
+#                          ['pre', 'post', 'iti']), :]
+#                      )
+#     frames_binned.bin.cat.remove_unused_categories(inplace=True)
+#     frames_binned = frames_binned.set_index('bin', append=True)
+
+#     counts_df = dfs.event_rate(
+#         events_binned, frames_binned, event_label_col='event_type',
+#         return_counts=True)
+
+#     return counts_df
