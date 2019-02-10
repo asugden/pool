@@ -1,8 +1,8 @@
+"""Generate DataFrames of behavior data."""
 import numpy as np
 import pandas as pd
 
 from .. import config
-from .. import database
 from ..calc import behavior
 
 
@@ -27,13 +27,15 @@ def behavior_df(runs):
         # Generalize outcomes to it works for all stims?
         # outcomes = t2p.outcomes()
         errors = t2p.errors()
+        engaged = behavior.engaged(run)
 
         index = pd.MultiIndex.from_product([
             [run.mouse], [run.date], [run.run], np.arange(len(conditions))],
             names=['mouse', 'date', 'run', 'trial_idx'])
 
         result_list.append(pd.DataFrame(
-            {'condition': conditions, 'error': errors}, index=index))
+            {'condition': conditions, 'error': errors, 'engaged': engaged},
+            index=index))
 
     result = pd.concat(result_list, axis=0)
 
