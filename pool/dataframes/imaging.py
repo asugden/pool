@@ -132,7 +132,6 @@ def trigger_frames_df(runs, trigger, inactivity_mask=False):
                   .reset_index(['frame'])
                   )
 
-        result = [pd.DataFrame()]
         for trigger_idx, onset in enumerate(onsets):
 
             trigger_frames = frames.loc[
