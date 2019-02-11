@@ -28,16 +28,16 @@ def iti_mu(date, window=4):
 
     """
 
-    # create window for convolution
-    win = np.concatenate((np.ones(int(t2p.framerate*window)),
-                         np.zeros(int(t2p.framerate*window))))
-
     # get traces for whole day and a mask vector for pre-stim period
     runs = date.runs()
     traces, masks = [], []
     for run in runs:
 
         t2p = run.trace2p()
+
+        # create window for convolution
+        win = np.concatenate((np.ones(int(t2p.framerate*window)),
+                             np.zeros(int(t2p.framerate*window))))
 
         # create onsets vector and convolve onsets with window
         mask = np.zeros(t2p.nframes)
@@ -77,16 +77,16 @@ def iti_sigma(date, window=4):
 
     """
 
-    # create window for convolution
-    win = np.concatenate((np.ones(int(t2p.framerate*window)),
-                         np.zeros(int(t2p.framerate*window))))
-
     # get traces for whole day and a mask vector for pre-stim period
     runs = date.runs()
     traces, masks = [], []
     for run in runs:
 
         t2p = run.trace2p()
+
+        # create window for convolution
+        win = np.concatenate((np.ones(int(t2p.framerate*window)),
+                             np.zeros(int(t2p.framerate*window))))
 
         # create onsets vector and convolve onsets with window
         mask = np.zeros(t2p.nframes)
