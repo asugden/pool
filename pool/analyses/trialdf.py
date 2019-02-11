@@ -61,7 +61,7 @@ class TrialDf(base.AnalysisBase):
          'trialdf_lickbout_events_0.05_noxmask_noinactmask']
 
     across = 'run'
-    updated = '190111'
+    updated = '190208'
 
     def run(self, run):
         """Run everything."""
@@ -100,7 +100,6 @@ class TrialDf(base.AnalysisBase):
 
         classifier_results = c2p.results()
         all_onsets = t2p.csonsets()
-        # conditions = t2p.conditions()
         replay_types = pool.config.stimuli()
 
         prev_onsets = np.concatenate([0, all_onsets[:-1]], axis=None)
@@ -134,16 +133,6 @@ class TrialDf(base.AnalysisBase):
             result.append(pd.concat(trial_result, axis=1))
         final_result = pd.concat(result, axis=0)
 
-        # Merge in behavior results
-        # behav_df = pool.dataframes.behavior.behavior_df([run])
-        # final_result = (pool.dataframes.smart_merge(final_result, behav_df,
-        #                                             how='left')
-        #                 .set_index('error', append=True)
-        #                 .reorder_levels(['mouse', 'date', 'run', 'trial_idx',
-        #                                  'condition', 'error', 'time'])
-        #                 .sort_index()
-        #                 )
-
         out = {'trialdf_classifier': final_result}
         return out
 
@@ -173,7 +162,6 @@ class TrialDf(base.AnalysisBase):
         t2p = run.trace2p()
 
         all_onsets = t2p.csonsets()
-        # conditions = t2p.conditions()
 
         next_onsets = np.concatenate([all_onsets[1:], t2p.nframes], axis=None)
         prev_onsets = np.concatenate([0, all_onsets[:-1]], axis=None)
@@ -193,34 +181,16 @@ class TrialDf(base.AnalysisBase):
             trial_events = events.loc[
                 (events.frame >= (prev_onset + prev_onset_pad_fr)) &
                 (events.frame < (next_onset - next_onset_pad_fr))].copy()
-            trial_events['frame'] -= onset
-            trial_events['time'] = trial_events.frame / fr
+            trial_events['time'] = (trial_events.frame - onset) / fr
             trial_events['trial_idx'] = trial_idx
-
-            # add in trial_idx, condition
-            # trial_events = pd.concat(
-            #     [trial_events], keys=[trial_idx], names=['trial_idx'])
-            # trial_events = pd.concat(
-            #     [trial_events], keys=[cond], names=['condition'])
 
             result.append(trial_events)
 
-        result_df = pd.concat(result, axis=0)
-        # result_df = result_df.reorder_levels(
-        #     ['mouse', 'date', 'run', 'trial_idx', 'condition',
-        #      'event_type', 'event_idx'])
-        result_df.drop(columns=['frame'], inplace=True)
-
-        # Merge in behavior results
-        # behav_df = pool.dataframes.behavior.behavior_df([run])
-        # result_df = (pool.dataframes.smart_merge(result_df, behav_df,
-        #                                          how='left')
-        #              .set_index('error', append=True)
-        #              .reorder_levels(['mouse', 'date', 'run', 'trial_idx',
-        #                               'condition', 'error', 'event_type',
-        #                               'event_idx'])
-        #              .sort_index()
-        #              )
+        result_df = (pd
+                     .concat(result, axis=0)
+                     .rename(columns={'frame': 'abs_frame'})
+                     .sort_index()
+                     )
 
         analysis = 'trialdf_events_{}_{}_{}'.format(
             threshold,
@@ -282,14 +252,6 @@ class TrialDf(base.AnalysisBase):
                      .concat(result, axis=0)
                      .set_index(['trial_idx', 'frame'], append=True)
                      )
-
-        # Merge in behavior results
-        # behav_df = pool.dataframes.behavior.behavior_df([run])
-        # result_df = (pool.dataframes.smart_merge(result_df, behav_df,
-        #                                          how='left')
-        #              .set_index(['condition', 'error'], append=True)
-        #              .sort_index()
-        #              )
 
         analysis = 'trialdf_frames_{}'.format(
             'inactmask' if inactivity_mask else 'noinactmask')
