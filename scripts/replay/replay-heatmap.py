@@ -17,6 +17,11 @@ from flow.classifier import classify
 import pool
 from pool.plotting import colors, graphfns
 
+POST_PAD_S = 2.3
+POST_PAVLOVIAN_PAD_S = 2.6
+PRE_PAD_S = 0.2
+
+
 class ClassifierHeatmap(object):
     def __init__(self, path, ts, trs, cls={}, beh={}, bord={}, top={}, clrs={}, zoom=-1, tracetype='deconvolved'):
         """
@@ -471,7 +476,7 @@ class ReplayGraphInputs(object):
 
         # Get the sorting order for display
         sorting, self._dborders = graphfns.sortorder(andb, mouse, date, lpars['sort'])
-
+        # from pudb import set_trace; set_trace()
         if 'traces' in classifier:
             self.tr = np.copy(classifier['traces'][sorting, :]).astype(np.float64)
         else:
@@ -483,6 +488,17 @@ class ReplayGraphInputs(object):
 
             for i in range(np.shape(self.tr)[0]):
                 self.tr[i, :] = tprior['out']*self.tr[i, :]
+
+        if lpars['mask-stimuli']:
+            # move before normalization
+            all_stim_mask = t2p.trialmask(
+                cs='', errortrials=-1, fulltrial=False, padpre=PRE_PAD_S,
+                padpost=POST_PAD_S)
+            pav_stim_mask = t2p.trialmask(
+                cs='pavlovian', errortrials=-1, fulltrial=False,
+                padpre=PRE_PAD_S, padpost=POST_PAVLOVIAN_PAD_S)
+            stim_mask = all_stim_mask | pav_stim_mask
+            self.tr[:, stim_mask] = np.nan
 
         # Add a boxcar filter to make it easier to see, if desired
         if not lpars['skip-boxcar']:
@@ -498,7 +514,8 @@ class ReplayGraphInputs(object):
 
         # And offset the data to account for the boxcar
         if not lpars['skip-boxcar']:
-            self.tr = self.tr[:, boxcar/3:]
+            # This changes the shape, maybe just NaN out instead?
+            self.tr = self.tr[:, boxcar//3:]
 
         self._maxframe = np.shape(self.tr)[1]
         self._maxtimem = self._maxframe/t2p.framerate/60.0
@@ -777,6 +794,9 @@ def parse_args():
     arg_parser.add_argument(
         "-D", "--display_training", action="store_true",
         help="Also plot stimulus responses, otherwise just plots spontaneous time.")
+    arg_parser.add_argument(
+        "-M", "--mask_stimuli", action="store_true",
+        help="Mask out stimulus times from traces and classifier probability.")
 
     args = arg_parser.parse_args()
 
@@ -815,6 +835,7 @@ def main():
     lpars['display-type'] = args.trace_type
     lpars['trange-m'] = args.t_range_m
     lpars['display-training'] = args.display_training
+    lpars['mask-stimuli'] = args.mask_stimuli
 
     defaults = flow.config.default()
 
