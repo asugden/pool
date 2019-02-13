@@ -1,103 +1,12 @@
 """Reactivation figure layouts."""
-from builtins import str, zip
+from builtins import str
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
-from pandas import IndexSlice as Idx
 import seaborn as sns
 
-from flow.misc.plotting import right_label
-
 from .. import config
-from ..plotting import reactivation as react
 from .. import dataframes as dfs
-
-
-def trial_classifier_probability(
-        runs, pre_s=-5, post_s=None, exclude_window=(-0.2, 2.3),
-        limit_conditions=False):
-    """
-    Layout reactivation probability trial plots.
-
-    Lays out an array of 2*n_trial_types x n_replay_types array of plots
-    and plots the classifier probability of each replay type through trials.
-
-    Parameters
-    ----------
-    runs : RunSorter or list of Runs
-    pre_s : float
-        Time before stim to include in PSTH.
-    post_s : float, optional
-        Time after stim to include. If None, include all time up to next stim.
-    exclude_window : 2-element tuple, optional
-        Start and stop times to exclude from plotting. Intended to mask out
-        stimulus time.
-    limit_conditions : bool
-        If True, only look at plus, neutral, and minus conditions.
-
-    Returns
-    -------
-    fig : matplotlib.pyplot.Figure
-    df : pd.DataFrame
-
-    """
-    classifier_df = dfs.reactivation.trial_classifier_df(runs)
-    behav_df = dfs.behavior.behavior_df(runs)
-    df = (dfs
-          .smart_merge(classifier_df, behav_df, how='left', sort=False)
-          .set_index(['condition', 'error'], append=True)
-          .reorder_levels(['mouse', 'date', 'run', 'trial_idx', 'condition',
-                           'error', 'time'])
-          )
-
-    if limit_conditions:
-        trial_types = ['plus', 'neutral', 'minus']
-    else:
-        trial_types = ['plus', 'neutral', 'minus', 'pavlovian', 'blank']
-    replay_types = config.stimuli()
-
-    if exclude_window is not None:
-        df = df.reset_index(['time', 'condition'])
-        mask = (df.condition != 'blank') & \
-            (df.time >= exclude_window[0]) & \
-            (df.time <= exclude_window[1])
-        df.loc[mask, list(replay_types)] = np.nan
-        df = (df
-              .set_index(['time', 'condition'], append=True)
-              .reorder_levels(['mouse', 'date', 'run', 'trial_idx',
-                               'condition', 'error', 'time'])
-              )
-
-    fig, axs = plt.subplots(
-        len(trial_types) * 2, len(replay_types), sharex=True, sharey=True,
-        figsize=(9, 16))
-
-    for axs_row, trial_type in zip(axs[::2], trial_types):
-        for ax, replay_type in zip(axs_row, replay_types):
-            react.trial_classifier_probability(
-                ax, df, trial_type=trial_type, replay_type=replay_type,
-                pre_s=pre_s, post_s=post_s, errortrials=0, label='correct')
-
-    for axs_row, trial_type in zip(axs[1::2], trial_types):
-        for ax, replay_type in zip(axs_row, replay_types):
-            react.trial_classifier_probability(
-                ax, df, trial_type=trial_type, replay_type=replay_type,
-                pre_s=pre_s, post_s=post_s, errortrials=1, label='error',
-                linestyle='--')
-
-    for ax, replay_type in zip(axs[0, :], replay_types):
-        ax.set_title('{} replays'.format(replay_type))
-    for ax, trial_type in zip(axs[::2, -1], trial_types):
-        right_label(ax, '{}\ntrials'.format(trial_type))
-    for ax in axs[::2, 0]:
-        ax.set_ylabel('correct\nreplay probability')
-    for ax in axs[1::2, 0]:
-        ax.set_ylabel('error\n')
-    for ax in axs[-1, :]:
-        ax.set_xlabel('Time from stim (s)')
-
-    return fig, df
 
 
 def trial_event_distributions(
