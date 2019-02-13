@@ -7,6 +7,7 @@ import pandas as pd
 from .. import config
 from .. import database
 from . import behavior as bdf
+from ..calc import aligned_dfs
 
 POST_PAD_S = 2.3
 POST_PAVLOVIAN_PAD_S = 2.6
@@ -98,16 +99,13 @@ def trial_classifier_df(runs):
     Returns
     -------
     pd.DataFrame
-        Index : mouse, date, run, trial_idx, condition, error, time
-        Columns : [one per replay type, i.e. 'plus', 'neutral', 'minus']
+        Index : mouse, date, run, trial_idx, time
+        Columns {replay_type}
 
     """
     result = [pd.DataFrame()]
-    db = database.db()
     for run in runs:
-        result.append(db.get(
-            'trialdf_classifier', mouse=run.mouse, date=run.date, run=run.run,
-            metadata_object=run, force=False))
+        result.append(aligned_dfs.trial_classifier_probability(run))
     result = pd.concat(result, axis=0)
 
     return result
