@@ -10,6 +10,7 @@ import numpy as np
 from flow import paths
 import flow.config
 import flow.metadata as metadata
+from flow.misc.wordhash import word
 
 
 class BackendBase(with_metaclass(ABCMeta, object)):
@@ -101,7 +102,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
             self._dependencies[logging_analysis][analysis_name] = updated
 
     def needs_update(
-            self, analysis_name, updated, stored_updated, dependencies=None):
+            self, analysis_name, updated, stored_updated, depends_on=None):
         """
         Check to see if an analysis needs to be re-calc'd.
 
@@ -113,7 +114,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
             Current update date of analysis.
         stored_updated : int
             Update date of analysis when it was originally stored in db.
-        dependencies : dict, optional
+        depends_on : dict, optional
             Dictionary of analyses with update dates for analysis when it was
             originally stored in db. Make sure none of them have been updated.
 
@@ -123,8 +124,8 @@ class BackendBase(with_metaclass(ABCMeta, object)):
             True if updated needed, False otherwise.
 
         """
-        if dependencies is None:
-            dependencies = {}
+        if depends_on is None:
+            depends_on = {}
         # If update date has changed or is missing from the 'updated_dates'
         # dict for this analysis or any of it's dependencies, trigger re-calc.
         if int(updated) != int(stored_updated):
@@ -132,14 +133,14 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         # Note, this currently requires the memoization decorator to work, but
         # could be abstracted out by passing another parameter with current
         # analysis update dates.
-        for dependency, date in dependencies.items():
+        for dependency, date in depends_on.items():
             if self.update_dates.get(dependency, None) != date:
                 return True
 
         # At this point, the analysis doesn't need an update, so log it and
         # it's dependencies, so that other analyses know their dependencies.
         self.log_dependency(analysis_name, updated)
-        for dependency, date in dependencies.items():
+        for dependency, date in depends_on.items():
             self.log_dependency(dependency, date)
         return False
 
@@ -505,7 +506,11 @@ def keyname(analysis, mouse, date, run=None, classifier_word=None, **kwargs):
     keyname += '-%s' % (analysis)
 
     for key in sorted(kwargs):
-        keyname += '-{}:{}'.format(key, kwargs[key])
+        if isinstance(kwargs[key], (list, tuple)) and len(kwargs[key]) > 2:
+            val = '#{}#'.format(word(kwargs[key]))
+        else:
+            val = kwargs[key]
+        keyname += '-{}:{}'.format(key, val)
 
     return keyname
 
