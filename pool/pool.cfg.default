@@ -1,6 +1,7 @@
 {
     "backends": {
         "backend": "memory",
+        "large_backend": "null",
         "couch_options": {
             "port": 5984,
             "host": "localhost",
@@ -9,7 +10,9 @@
         "supported_backends": [
             "memory",
             "shelve",
-            "couch"
+            "couch",
+            "disk",
+            "null"
         ]
     }
 }

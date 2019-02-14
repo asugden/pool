@@ -13,6 +13,8 @@ CONFIG_PATHS = [
     os.path.join(os.path.dirname(__file__)),
     os.environ.get("POOL_CONF"),
 ]
+supported_backends = \
+    ["memory", "shelve", "couch", "disk", "null"]
 
 _stimuli = ['plus', 'neutral', 'minus']
 
@@ -105,10 +107,14 @@ def reconfigure():
     with open(config_path, 'r') as f:
         config = json.load(f)
 
+    config['backends']['supported_backends'] = supported_backends
+
     print('ANALYSIS BACKEND')
     print(' memory: stores values in memory, not persistent')
     print(' shelve: stores values in a shelve database file')
     print(' couch: store values in a CouchDB (should already be running)')
+    print(' disk: store values to disk as individual files')
+    print(' null: does not store anything')
 
     backend = None
     while backend not in config['backends']['supported_backends']:
@@ -142,6 +148,15 @@ def reconfigure():
             config['backends']['couch_options'].get('password', None)))
         if len(password):
             config['backends']['couch_options']['password'] = password
+
+    large_backend = None
+    while large_backend not in config['backends']['supported_backends']:
+        large_backend = input(
+            'Enter backend type for large files: [{}] '.format(
+                config['backends'].get('large_backend', 'null')))
+        if not len(large_backend):
+            large_backend = config['backends'].get('backend', 'null')
+    config['backends']['large_backend'] = large_backend
 
     with open(config_path, 'w') as f:
         json.dump(config, f, sort_keys=True, indent=4, separators=(',', ': '))
