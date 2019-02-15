@@ -2,6 +2,7 @@
 import numpy as np
 import pandas as pd
 
+import pool
 from .. import config
 from ..database import memoize
 
@@ -70,3 +71,67 @@ def trial_classifier_probability(run, pad_s=(PRE_PAD_S, POST_PAD_S)):
     final_result = pd.concat(result, axis=0)
 
     return final_result
+
+
+@memoize(across='run', updated=190215, large_output=True)
+def trial_events(
+        run, threshold=0.1, xmask=False, inactivity_mask=False,
+        pad_s=(PRE_PAD_S, POST_PAD_S)):
+    """
+    Determine event times relative to stimulus onset.
+
+    Parameters
+    ----------
+    run : Run
+    threshold : float
+        Classifier cutoff probability.
+    xmask : bool
+        If True, only allow one event (across types) per time bin.
+    inactivity_mask : bool
+        If True, enforce that all events are during times of inactivity.
+    pad_s : 2-element tuple of float
+        Used to calculate the padded end of the previous stimulus and the
+        padded start of the next stimulus when cutting up output. Does NOT
+        pad the current stimulus.
+
+    Note
+    ----
+    Individual events will appear in this DataFrame multiple times!
+    Events will show up both as being after a stimulus and before
+    the next one.
+
+    """
+    t2p = run.trace2p()
+
+    all_onsets = t2p.csonsets()
+
+    next_onsets = np.concatenate([all_onsets[1:], t2p.nframes], axis=None)
+    prev_onsets = np.concatenate([0, all_onsets[:-1]], axis=None)
+
+    fr = t2p.framerate
+    pre_onset_pad_fr = int(np.ceil(pad_s[0] * fr))
+    post_onset_pad_fr = int(np.ceil(pad_s[1] * fr))
+
+    events = pool.dataframes.reactivation.events_df(
+        [run], threshold, xmask=xmask,
+        inactivity_mask=inactivity_mask)
+
+    result = [pd.DataFrame()]
+    for trial_idx, (onset, next_onset, prev_onset) in enumerate(zip(
+            all_onsets, next_onsets, prev_onsets)):
+
+        trial_events = events.loc[
+            (events.frame >= (prev_onset + post_onset_pad_fr)) &
+            (events.frame < (next_onset - pre_onset_pad_fr))].copy()
+        trial_events['time'] = (trial_events.frame - onset) / fr
+        trial_events['trial_idx'] = trial_idx
+
+        result.append(trial_events)
+
+    result_df = (pd
+                 .concat(result, axis=0)
+                 .rename(columns={'frame': 'abs_frame'})
+                 .sort_index()
+                 )
+
+    return result_df

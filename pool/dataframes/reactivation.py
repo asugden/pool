@@ -9,8 +9,8 @@ from .. import database
 from . import behavior as bdf
 from ..calc import aligned_dfs
 
-POST_PAD_S = 2.3
-POST_PAVLOVIAN_PAD_S = 2.6
+POST_PAD_S = 0.3
+POST_PAVLOVIAN_PAD_S = 0.6
 PRE_PAD_S = 0.2
 
 
@@ -50,10 +50,14 @@ def events_df(
             all_stim_mask = t2p.trialmask(
                 cs='', errortrials=-1, fulltrial=False, padpre=PRE_PAD_S,
                 padpost=POST_PAD_S)
-            pav_stim_mask = t2p.trialmask(
+            pav_mask = t2p.trialmask(
                 cs='pavlovian', errortrials=-1, fulltrial=False,
                 padpre=PRE_PAD_S, padpost=POST_PAVLOVIAN_PAD_S)
-            stim_mask = np.invert(all_stim_mask | pav_stim_mask)
+            blank_mask = t2p.trialmask(
+                cs='blank', errortrials=-1, fulltrial=False,
+                padpre=PRE_PAD_S, padpost=POST_PAVLOVIAN_PAD_S)
+            stim_mask = np.invert((all_stim_mask | pav_mask) & (~blank_mask))
+            # stim_mask = np.invert(all_stim_mask | pav_stim_mask)
         if inactivity_mask and stimulus_mask:
             mask = inact_mask & stim_mask
         elif inactivity_mask:
@@ -128,26 +132,21 @@ def trial_events_df(
 
     Note
     ----
-    Events are included multiple times, bot before the next stim and after the
+    Events are included multiple times, both before the next stim and after the
     previous stim presentation!
 
     Returns
     -------
     pd.DataFrame
-        Index : mouse, date, run, trial_idx, condition, error, event_type, event_idx
-        Columns : time
+        Index : mouse, date, run, event_idx
+        Columns : event_type, abs_frame, time, trial_idx
 
     """
     result = [pd.DataFrame()]
-    db = database.db()
-    analysis = 'trialdf_events_{}_{}_{}'.format(
-        threshold,
-        'xmask' if xmask else 'noxmask',
-        'inactmask' if inactivity_mask else 'noinactmask')
     for run in runs:
-        result.append(db.get(
-            analysis, mouse=run.mouse, date=run.date, run=run.run,
-            metadata_object=run, force=False))
+        result.append(aligned_dfs.trial_events(
+            run, threshold=threshold, xmask=xmask,
+            inactivity_mask=inactivity_mask))
     result = pd.concat(result, axis=0)
 
     return result
