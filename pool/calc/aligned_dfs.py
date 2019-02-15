@@ -13,7 +13,7 @@ PRE_PAD_S = 0.2
 
 # Eventually would like to have a way to locally cache DataFrames to disk.
 @memoize(across='run', updated=190213, large_output=True)
-def trial_classifier_probability(run, pad_s=(PRE_PAD_S, POST_PAD_S)):
+def trial_classifier_probability(run, pad_s=None):
     """
     Return the classifier probability aligned to trial onsets.
 
@@ -32,6 +32,9 @@ def trial_classifier_probability(run, pad_s=(PRE_PAD_S, POST_PAD_S)):
         Columns : {replay_type}
 
     """
+    if pad_s is None:
+        pad_s = (PRE_PAD_S, POST_PAD_S)
+
     c2p = run.classify2p()
     t2p = run.trace2p()
 
@@ -75,8 +78,7 @@ def trial_classifier_probability(run, pad_s=(PRE_PAD_S, POST_PAD_S)):
 
 @memoize(across='run', updated=190215, large_output=True)
 def trial_events(
-        run, threshold=0.1, xmask=False, inactivity_mask=False,
-        pad_s=(PRE_PAD_S, POST_PAD_S)):
+        run, threshold=0.1, xmask=False, inactivity_mask=False, pad_s=None):
     """
     Determine event times relative to stimulus onset.
 
@@ -101,6 +103,9 @@ def trial_events(
     the next one.
 
     """
+    if pad_s is None:
+        pad_s = (PRE_PAD_S, POST_PAD_S)
+
     t2p = run.trace2p()
 
     all_onsets = t2p.csonsets()
@@ -132,6 +137,73 @@ def trial_events(
                  .concat(result, axis=0)
                  .rename(columns={'frame': 'abs_frame'})
                  .sort_index()
+                 )
+
+    return result_df
+
+
+@memoize(across='run', updated=190215, large_output=True)
+def trial_frames(run, inactivity_mask=False, pad_s=None):
+    """
+    Return acquisition frames relative to stimuli presentations.
+
+    Parameters
+    ----------
+    run : Run
+    inactivity_mask : bool
+        If True, enforce that all events are during times of inactivity.
+    pad_s : 2-element tuple of float
+        Used to calculate the padded end of the previous stimulus and the
+        padded start of the next stimulus when cutting up output. Does NOT
+        pad the current stimulus.
+
+    Returns
+    -------
+    pd.DataFrame
+        Index : mouse, date, run, trial_idx
+        Columns : frame, frame_period, time
+
+    """
+    if pad_s is None:
+        pad_s = (PRE_PAD_S, POST_PAD_S)
+
+    t2p = run.trace2p()
+
+    all_onsets = t2p.csonsets()
+
+    next_onsets = np.concatenate([all_onsets[1:], t2p.nframes], axis=None)
+    prev_onsets = np.concatenate([0, all_onsets[:-1]], axis=None)
+
+    fr = t2p.framerate
+    pre_onset_pad_fr = int(np.ceil(pad_s[0] * fr))
+    post_onset_pad_fr = int(np.ceil(pad_s[1] * fr))
+
+    frames = (pool.dataframes.imaging
+              .frames_df([run], inactivity_mask)
+              .reset_index(['frame'])
+              )
+
+    result = [pd.DataFrame()]
+    for trial_idx, (onset, next_onset, prev_onset) in \
+            enumerate(zip(all_onsets, next_onsets, prev_onsets)):
+        # Pull out events around the current onset
+        trial_frames = frames.loc[
+            (frames.frame >= (prev_onset + post_onset_pad_fr)) &
+            (frames.frame < (next_onset - pre_onset_pad_fr))].copy()
+
+        # Convert to relative times
+        trial_frames.frame -= onset
+
+        # Add in some additional information
+        trial_frames['time'] = \
+            trial_frames.frame * trial_frames.frame_period
+        trial_frames['trial_idx'] = trial_idx
+
+        result.append(trial_frames)
+
+    result_df = (pd
+                 .concat(result, axis=0)
+                 .set_index(['trial_idx', 'frame'], append=True)
                  )
 
     return result_df
