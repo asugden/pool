@@ -34,7 +34,7 @@ class ShelveBackend(BackendBase):
             else:
                 self.updated_analyses[mouse].append(dependent_id)
 
-    def recall(self, analysis_name, keys, updated):
+    def recall(self, analysis_name, keys):
         """Return the value from the data store for a given analysis."""
         mouse = keys.get('mouse')
         key = keyname(analysis_name, **keys)
@@ -42,28 +42,29 @@ class ShelveBackend(BackendBase):
         try:
             out = deepcopy(self.dbrs[mouse][key])
         except KeyError:
-            return None, True
+            return None, None, None
         except:
             sleep(10)
             out = deepcopy(self.dbrs[mouse][key])
 
         stored_updated = self.dbus.get(mouse, {}).get(key, 0)
-        return out, int(updated) != int(stored_updated)
 
-    def is_analysis_old(self, analysis_name, keys, updated):
-        """Determine if the analysis needs to be re-run.
+        return out, stored_updated, None
 
-        Checks to see if analysis is already stored in shelve and the
-        update key matches.
+    # def is_analysis_old(self, analysis_name, keys, updated):
+    #     """Determine if the analysis needs to be re-run.
 
-        """
-        mouse = keys['mouse']
-        key = keyname(analysis_name, **keys)
-        self._open(mouse)
-        return \
-            key not in self.dbrs[mouse] or \
-            key not in self.dbus[mouse] or \
-            self.dbus[mouse][key] != updated
+    #     Checks to see if analysis is already stored in shelve and the
+    #     update key matches.
+
+    #     """
+    #     mouse = keys['mouse']
+    #     key = keyname(analysis_name, **keys)
+    #     self._open(mouse)
+    #     return \
+    #         key not in self.dbrs[mouse] or \
+    #         key not in self.dbus[mouse] or \
+    #         self.dbus[mouse][key] != updated
 
     def save(self, closedb=True):
         """Save all updated databases."""

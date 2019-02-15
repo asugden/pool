@@ -155,8 +155,10 @@ class memoize(object):
             analysis_name = '{}.{}'.format(fn.__module__, fn.__name__)
 
             if not force:
-                out, doupdate = self.db.recall(
-                    analysis_name, keys, self.updated)
+                out, stored_updated, depends_on = self.db.recall(
+                    analysis_name, keys)
+                doupdate = self.db.is_analysis_old(
+                    analysis_name, self.updated, stored_updated, depends_on)
             if force or doupdate:
                 print('Recalcing {}'.format(analysis_name))
                 if subset is not None:

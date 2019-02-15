@@ -57,7 +57,7 @@ class DiskBackend(BackendBase):
             # Compact dump
             json.dump(doc, f, separators=(',', ':'))
 
-    def recall(self, analysis_name, keys, updated):
+    def recall(self, analysis_name, keys):
         """Recall data."""
 
         file = self._filename(analysis_name, keys)
@@ -66,7 +66,7 @@ class DiskBackend(BackendBase):
             with open(file + '.json', 'r') as f:
                 info = json.load(f)
         except IOError:
-            return None, True
+            return None, None, None
 
         if info['value'] == '__ndarray__':
             with open(file + '.npy', 'r') as f:
@@ -80,9 +80,4 @@ class DiskBackend(BackendBase):
         stored_updated = info['updated']
         depends_on = info.get('depends_on', {})
 
-        return data, self.needs_update(
-            analysis_name, updated, stored_updated, depends_on)
-
-
-    def is_analysis_old(self, analysis_name, keys, updated):
-        return False
+        return data, stored_updated, depends_on

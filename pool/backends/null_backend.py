@@ -16,13 +16,9 @@ class NullBackend(BackendBase):
         """Store a value from running an analysis in the data store."""
         pass
 
-    def recall(self, analysis_name, keys, updated):
+    def recall(self, analysis_name, keys):
         """Return the value from the data store for a given analysis."""
-        return None, True
-
-    def is_analysis_old(self, analysis_name, keys, updated):
-        """Determine if the analysis needs to be re-run."""
-        return True
+        return None, None, None
 
 
 if __name__ == '__main__':

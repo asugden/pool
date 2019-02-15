@@ -101,8 +101,9 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         for logging_analysis in self._dependencies:
             self._dependencies[logging_analysis][analysis_name] = updated
 
-    def needs_update(
-            self, analysis_name, updated, stored_updated, depends_on=None):
+    def is_analysis_old(
+            self, analysis_name, updated, stored_updated=None,
+            depends_on=None):
         """
         Check to see if an analysis needs to be re-calc'd.
 
@@ -113,7 +114,8 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         updated : int
             Current update date of analysis.
         stored_updated : int
-            Update date of analysis when it was originally stored in db.
+            Update date of analysis when it was originally stored in db. If
+            None, always re-calc.
         depends_on : dict, optional
             Dictionary of analyses with update dates for analysis when it was
             originally stored in db. Make sure none of them have been updated.
@@ -128,7 +130,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
             depends_on = {}
         # If update date has changed or is missing from the 'updated_dates'
         # dict for this analysis or any of it's dependencies, trigger re-calc.
-        if int(updated) != int(stored_updated):
+        if stored_updated is None or int(updated) != int(stored_updated):
             return True
         # Note, this currently requires the memoization decorator to work, but
         # could be abstracted out by passing another parameter with current
@@ -170,20 +172,27 @@ class BackendBase(with_metaclass(ABCMeta, object)):
                 depends_on_dict.get(analysis_name, {}))
 
     @abstractmethod
-    def recall(self, analysis_name, keys, updated):
+    def recall(self, analysis_name, keys):
         """Return the value from the data store for a given analysis.
 
-        Note
-        ----
-        Must call needs_update within any implementation.
+        Parameters
+        ----------
+        analysis_name : str
+            Name of analysis.
+        keys : dict
+            Keyword arguments used to call cached function.
+
+        Returns
+        -------
+        data
+        stored_updated : int
+            Stored updated date.
+        depends_on : dict
+            Dictionary of {analysis_name: update_date} pairs of the stored
+            analysis.
 
         """
         raise NotImplementedError
-
-    @abstractmethod
-    def is_analysis_old(self, analysis_name, keys, updated):
-        """Determine if the analysis needs to be re-run."""
-        return True
 
     def save(self, **kwargs):
         """Save all updated databases.
@@ -286,7 +295,9 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         }
 
         # Get the analysis, or calculate if necessary
-        out, doupdate = self.recall(analysis, keys, an['updated'])
+        out, stored_updated, depends_on = self.recall(analysis, keys)
+        doupdate = self.is_analysis_old(
+            analysis, an['updated'], stored_updated, depends_on)
         if force or doupdate:
             c = object.__new__(an['class'])
             print('\tupdating analysis... {} {} {} {}'.format(
@@ -301,7 +312,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
                 if key not in self.ans:
                     raise ValueError('%s analysis was not declared in sets.' % key)
             self.store_all(out, keys, an['updated'], self.deps)
-            out, _ = self.recall(analysis, keys, an['updated'])
+            out, _, _ = self.recall(analysis, keys)
 
         if isinstance(out, float) and np.isnan(out):
             return None

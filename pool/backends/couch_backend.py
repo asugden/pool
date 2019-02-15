@@ -69,26 +69,19 @@ class CouchBackend(BackendBase):
     # def store_all(self, data_dict, keys):
     #     pass
 
-    def recall(self, analysis_name, keys, updated):
+    def recall(self, analysis_name, keys):
         """Return the value from the data store for a given analysis."""
         _id = keyname(analysis_name, **keys)
         dbentry = self.database.get(_id)
         if dbentry is None:
-            return None, True
+            return None, None, None
 
         out = dbentry.get('value', None)
 
         stored_updated = int(dbentry.get('updated'))
-        dependencies = dbentry.get('depends_on', {})
+        depends_on = dbentry.get('depends_on', {})
 
-        # return out, int(stored_updated) != int(updated)
-        return out, self.needs_update(
-            analysis_name, updated, stored_updated, dependencies)
-
-    def is_analysis_old(self, analysis_name, keys, updated):
-        """Determine if the analysis needs to be re-run."""
-        key = keyname(analysis_name, **keys)
-        return key not in self.database
+        return out, stored_updated, depends_on
 
     #
     # Couch backend-specific functions
@@ -135,8 +128,6 @@ class CouchBackend(BackendBase):
 
 def timestamp():
     """Return the current time as a JSON-friendly timestamp."""
-    # return datetime.datetime.strftime(
-    #     datetime.datetime.now(), '%Y-%m-%d-%Hh%Mm%Ss')
     return DateTimeField()._to_json(datetime.datetime.now())
 
 

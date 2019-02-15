@@ -35,25 +35,21 @@ class CloudantBackend(BackendBase):
         return "CloudantBackend(host={}, port={}, database={})".format(
             self.database.host, self.database.port, self.database.name)
 
-    def store(self, analysis_name, data, keys, updated, dependents=None):
+    def store(self, analysis_name, data, keys, updated, depends_on=None):
         pass
 
-    def recall(self, analysis_name, keys, updated):
+    def recall(self, analysis_name, keys):
         """Return the value from the data store for a given analysis."""
 
         dbentry = self.database.get(keyname(analysis_name, **keys))
         if dbentry is None:
-            return None, True
+            return None, None, None
 
         out = dbentry.get('value', None)
         stored_updated = dbentry.get('updated')
-        return out, int(updated) != int(stored_updated)
+        depends_on = dbentry.get('depends_on', {})
 
-    def is_analysis_old(self, analysis_name, keys, updated):
-        """Determine if the analysis needs to be re-run."""
-        key = keyname(analysis_name, **keys)
-        # TODO: check if old too
-        return key not in self.database
+        return out, stored_updated, depends_on
 
     #
     # Cloudant backend-specific functions
