@@ -1,1 +1,1 @@
-from . import colors, graphfns, reactivation, stimulus
+from . import colors, graphfns, stimulus
