@@ -160,7 +160,9 @@ class memoize(object):
                 doupdate = self.db.is_analysis_old(
                     analysis_name, self.updated, stored_updated, depends_on)
             if force or doupdate:
-                print('Recalcing {}'.format(analysis_name))
+                print('Recalcing {}: {} {} {}'.format(
+                    analysis_name, keys['mouse'], keys['date'],
+                    keys.get('run', '')))
                 if subset is not None:
                     date_or_run.set_subset(None)
 

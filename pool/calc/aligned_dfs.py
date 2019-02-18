@@ -11,7 +11,6 @@ POST_PAVLOVIAN_PAD_S = 2.6
 PRE_PAD_S = 0.2
 
 
-# Eventually would like to have a way to locally cache DataFrames to disk.
 @memoize(across='run', updated=190213, large_output=True)
 def trial_classifier_probability(run, pad_s=None):
     """
