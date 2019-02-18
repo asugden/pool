@@ -9,6 +9,10 @@ import matplotlib.gridspec as grd
 import matplotlib.pyplot as plt
 import numpy as np
 import os.path as opath
+try:
+    from bottleneck import nanmin, nanmax
+except ImportError:
+    from numpy import nanmin, nanmax
 
 import flow
 from flow import classify2p, config, misc, paths
@@ -16,10 +20,6 @@ from flow.classifier import classify
 
 import pool
 from pool.plotting import colors, graphfns
-
-POST_PAD_S = 2.3
-POST_PAVLOVIAN_PAD_S = 2.6
-PRE_PAD_S = 0.2
 
 
 class ClassifierHeatmap(object):
@@ -61,9 +61,12 @@ class ClassifierHeatmap(object):
 
         # Set the width of the image based on number of frames presented
         if zoom < 0:
-            if nframes > 5000: zoom = 0
-            elif nframes > 1000: zoom = 1
-            else: zoom = 2
+            if nframes > 5000:
+                zoom = 0
+            elif nframes > 1000:
+                zoom = 1
+            else:
+                zoom = 2
 
         framescale = {0: 0.002, 1: 0.0054, 2: 0.01}
         width = max(10, framescale[zoom]*nframes)
@@ -103,7 +106,8 @@ class ClassifierHeatmap(object):
                     tx = ax
 
                 x, y = graphfns.reducepoints(ts, top[key], 30000)
-                tx.plot(x, y, linewidth=vstyle[key][0], color=vstyle[key][1], alpha=vstyle[key][2])
+                tx.plot(x, y, linewidth=vstyle[key][0], color=vstyle[key][1],
+                        alpha=vstyle[key][2])
                 tx.set_ylim(vstyle[key][3])
                 tx.yaxis.set_ticks(vstyle[key][3])
                 tx.set_ylabel(key.upper()[:4], color=vstyle[key][1])
@@ -142,7 +146,8 @@ class ClassifierHeatmap(object):
                 # 	x, y = x[np.isfinite(y)], y[np.isfinite(y)]
 
                 x, y = graphfns.reducepoints(ts, beh[key])
-                tx.plot(x, y, linewidth=vstyle[key][0], color=vstyle[key][1], alpha=vstyle[key][2])
+                tx.plot(x, y, linewidth=vstyle[key][0], color=vstyle[key][1],
+                        alpha=vstyle[key][2])
                 tx.set_ylim(vstyle[key][3])
                 tx.yaxis.set_ticks(vstyle[key][3])
                 tx.set_ylabel(key.upper()[:3], color=vstyle[key][1])
@@ -152,8 +157,10 @@ class ClassifierHeatmap(object):
         # Add licking below the graph
         if 'licking' in beh:
             for lick in beh['licking']:
-                ax.axvspan(lick, lick + 1.0/60.0, ymin=-0.05, ymax=-0.15, clip_on=False,
-                            zorder=100, color=colors.color('purple'), lw=0, alpha=0.6)
+                ax.axvspan(
+                    lick, lick + 1.0/60.0, ymin=-0.05, ymax=-0.15,
+                    clip_on=False, zorder=100, color=colors.color('purple'),
+                    lw=0, alpha=0.6)
 
     def classifier(self, ax, ts, cls, clrs):
         """
@@ -185,12 +192,14 @@ class ClassifierHeatmap(object):
 
         for cs in stims:
             for ons in stims[cs]:
-                ax.axvspan(ons, ons+2.0/60.0, ymin=1.01, ymax=1.03, clip_on=False, zorder=100,
-                            color=clrs[cs], lw=0, alpha=0.9)
+                ax.axvspan(
+                    ons, ons+2.0/60.0, ymin=1.01, ymax=1.03, clip_on=False,
+                    zorder=100, color=clrs[cs], lw=0, alpha=0.9)
 
                 if not correct:
-                    ax.axvspan(ons, ons+2.0/60.0, ymin=1.01, ymax=1.03, clip_on=False, zorder=100,
-                                color='#000000', lw=0, alpha=0.4)
+                    ax.axvspan(
+                        ons, ons+2.0/60.0, ymin=1.01, ymax=1.03, clip_on=False,
+                        zorder=100, color='#000000', lw=0, alpha=0.4)
 
     def heatmap(self, ax, ts, trs, bord, clrs, ttype, beh):
         """
@@ -225,8 +234,10 @@ class ClassifierHeatmap(object):
         ax.spines['top'].set_visible(False)
         ax.set_xlabel('TIME (m)')
 
-        if 'correct-stimuli' in beh: self.stimuli(ax, beh['correct-stimuli'], clrs, True)
-        if 'error-stimuli' in beh: self.stimuli(ax, beh['error-stimuli'], clrs, False)
+        if 'correct-stimuli' in beh:
+            self.stimuli(ax, beh['correct-stimuli'], clrs, True)
+        if 'error-stimuli' in beh:
+            self.stimuli(ax, beh['error-stimuli'], clrs, False)
 
             # =====================================================================
             # GRAPHING ESSENTIALS
@@ -273,8 +284,10 @@ class ReplayGraphInputs(object):
         :return: None
         """
 
-        if lpars['display-training']: self._fmin = 0
-        else: self._fmin = t2p.lastonset()
+        if lpars['display-training']:
+            self._fmin = 0
+        else:
+            self._fmin = t2p.lastonset()
 
         self._trangem = lpars['trange-m']
         self._frange = [int(round(lpars['trange-m'][0]*60.0*t2p.framerate)),
@@ -287,9 +300,9 @@ class ReplayGraphInputs(object):
         self._clstraces = {}
 
         self._gettraces(andb, pars, lpars, classifier, t2p, mouse, date)
-        self._getbehavior(t2p)
+        self._getbehavior(t2p, lpars)
         self._gettoptrace(lpars, t2p, classifier, plusprob)
-        self._getclassifier(lpars, classifier, searchms, t2p.framerate)
+        self._getclassifier(lpars, classifier, searchms, t2p)
 
     def pull_traces(self, frame=-1):
         """
@@ -298,7 +311,8 @@ class ReplayGraphInputs(object):
         :return: matrix of ncells, ntimes
         """
 
-        if frame < 0: return np.copy(self.tr[:, self._fmin:self._maxframe])
+        if frame < 0:
+            return np.copy(self.tr[:, self._fmin:self._maxframe])
         else:
             frange, pad = self._getfrange(frame)
             out = np.copy(self.tr[:, frange[0]:frange[1]])
@@ -326,19 +340,22 @@ class ReplayGraphInputs(object):
                     vec = np.copy(self._behtraces[key])
                     vec = vec[(vec >= self._fmin) & (vec < self._maxframe)]
                     if len(vec) > 0:
-                        out[key] = (vec.astype(np.float32)/self._maxframe)*self._maxtimem
+                        out[key] = (vec.astype(np.float32)/
+                                    self._maxframe)*self._maxtimem
                 elif 'stimuli' in key:
                     outstim = {}
                     for cs in self._behtraces[key]:
                         vec = np.copy(self._behtraces[key][cs])
                         vec = vec[(vec >= self._fmin) & (vec < self._maxframe)]
                         if len(vec) > 0:
-                            outstim[cs] = (vec.astype(np.float32)/self._maxframe)*self._maxtimem
+                            outstim[cs] = (vec.astype(np.float32)/
+                                           self._maxframe)*self._maxtimem
                     if outstim != {}:
                         out[key] = outstim
 
                 else:
-                    out[key] = np.copy(self._behtraces[key][self._fmin:self._maxframe])
+                    out[key] = np.copy(
+                        self._behtraces[key][self._fmin:self._maxframe])
         else:
             frange, pad = self._getfrange(frame)
             for key in self._behtraces:
@@ -432,10 +449,13 @@ class ReplayGraphInputs(object):
             out = np.arange(fnum, dtype=np.float32)/fnum
             out = out*(self._maxtimem - self._tmin) + self._tmin
         else:
-            out = np.arange(self._frange[1] - self._frange[0], dtype=np.float32)/(self._frange[1] - self._frange[0])
+            out = np.arange(
+                self._frange[1] - self._frange[0],
+                dtype=np.float32)/(self._frange[1] - self._frange[0])
             out = out*(self._trangem[1] - self._trangem[0]) + self._trangem[0]
 
-        if unit[0] == 's': out *= 60.0
+        if unit[0] == 's':
+            out *= 60.0
         return out
 
     def pull_borders(self):
@@ -475,39 +495,35 @@ class ReplayGraphInputs(object):
         boxcar = 6
 
         # Get the sorting order for display
-        sorting, self._dborders = graphfns.sortorder(andb, mouse, date, lpars['sort'])
-        # from pudb import set_trace; set_trace()
+        sorting, self._dborders = graphfns.sortorder(
+            andb, mouse, date, lpars['sort'])
         if 'traces' in classifier:
-            self.tr = np.copy(classifier['traces'][sorting, :]).astype(np.float64)
+            self.tr = np.copy(
+                classifier['traces'][sorting, :]).astype(np.float64)
         else:
-            self.tr = np.copy(t2p.trace(lpars['display-type'])[sorting, :]).astype(np.float64)
+            self.tr = np.copy(t2p.trace(
+                lpars['display-type'])[sorting, :]).astype(np.float64)
 
         if lpars['temporal-filter']:
             actmn, actvar, actouts = classify.activity(pars)
-            tprior = classify.temporal_prior(self.tr, actmn, actvar, actouts, 3, -1, {'out':1.0})
+            tprior = classify.temporal_prior(
+                self.tr, actmn, actvar, actouts, 3, -1, {'out':1.0})
 
             for i in range(np.shape(self.tr)[0]):
                 self.tr[i, :] = tprior['out']*self.tr[i, :]
 
         if lpars['mask-stimuli']:
-            # move before normalization
-            all_stim_mask = t2p.trialmask(
-                cs='', errortrials=-1, fulltrial=False, padpre=PRE_PAD_S,
-                padpost=POST_PAD_S)
-            pav_stim_mask = t2p.trialmask(
-                cs='pavlovian', errortrials=-1, fulltrial=False,
-                padpre=PRE_PAD_S, padpost=POST_PAVLOVIAN_PAD_S)
-            stim_mask = all_stim_mask | pav_stim_mask
-            self.tr[:, stim_mask] = np.nan
+            self.tr[:, stim_mask(t2p)] = np.nan
 
         # Add a boxcar filter to make it easier to see, if desired
         if not lpars['skip-boxcar']:
             for i in range(np.shape(self.tr)[0]):
-                self.tr[i, :] = np.convolve(self.tr[i, :], np.ones(boxcar)/boxcar, mode='same')
+                self.tr[i, :] = np.convolve(
+                    self.tr[i, :], np.ones(boxcar)/boxcar, mode='same')
 
         # Normalize by firing rate
         firingrate = np.nansum(self.tr, 1)
-        firingrate = 1.0 - firingrate/np.nanmax(firingrate)
+        firingrate = 1.0 - firingrate/nanmax(firingrate)
 
         for i in range(len(firingrate)):
             self.tr[i, :] *= firingrate[i]
@@ -521,7 +537,7 @@ class ReplayGraphInputs(object):
         self._maxtimem = self._maxframe/t2p.framerate/60.0
         self._tmin = self._maxtimem/self._maxframe*self._fmin
 
-    def _getbehavior(self, t2p):
+    def _getbehavior(self, t2p, lpars):
         """
         Get the behavior traces to be put along the top.
         :return: None
@@ -530,12 +546,17 @@ class ReplayGraphInputs(object):
         # Add the pupil trace and pupil mask
         pupil = t2p.pupil()
         if len(pupil) > 0:
-            self._behtraces['pupil'] = (pupil - np.min(pupil))/(np.max(pupil) - np.min(pupil))
+            if lpars['mask-stimuli']:
+                pupil[stim_mask(t2p)] = np.nan
+            self._behtraces['pupil'] = \
+                (pupil - nanmin(pupil))/(nanmax(pupil) - nanmin(pupil))
             # pmask = t2p.pupilmask(False)
             pmask = t2p.inactivity()
             if len(pmask) > 0:
                 pmasked = np.copy(self._behtraces['pupil'])
                 pmasked[np.invert(pmask)] = np.nan
+                if lpars['mask-stimuli']:
+                    pmasked[stim_mask(t2p)] = np.nan
                 self._behtraces['pupil-mask'] = pmasked
 
         # Add brain motion
@@ -543,6 +564,8 @@ class ReplayGraphInputs(object):
         if len(motion) > 0:
             mot = np.zeros(len(motion))
             mot[1:] = motion[1:] - motion[:-1]
+            if lpars['mask-stimuli']:
+                mot[stim_mask(t2p)] = np.nan
             self._behtraces['motion'] = mot
 
         # Add running
@@ -550,11 +573,18 @@ class ReplayGraphInputs(object):
         if len(running) > 0:
             running[running > 10] = 10
             running /= 10.0
+            if lpars['mask-stimuli']:
+                running[stim_mask(t2p)] = np.nan
             self._behtraces['running'] = running
 
         # Add licking
         licks = t2p.licking()
         if len(licks) > 0:
+            if lpars['mask-stimuli']:
+                mask = stim_mask(t2p)
+                frames = np.arange(len(mask))
+                stim_frames = frames[mask]
+                licks = sorted(set(licks).difference(stim_frames))
             self._behtraces['licking'] = licks
 
         # Add stimuli
@@ -562,11 +592,15 @@ class ReplayGraphInputs(object):
         errstims = {}
         for cs in ['plus', 'neutral', 'minus', 'pavlovian']:
             stims = t2p.csonsets(cs, errortrials=0)
-            if len(stims) > 0: corstims[cs] = stims
+            if len(stims) > 0:
+                corstims[cs] = stims
             stims = t2p.csonsets(cs, errortrials=1)
-            if len(stims) > 0: errstims[cs] = stims
-        if corstims != {}: self._behtraces['correct-stimuli'] = corstims
-        if errstims != {}: self._behtraces['error-stimuli'] = errstims
+            if len(stims) > 0:
+                errstims[cs] = stims
+        if corstims != {}:
+            self._behtraces['correct-stimuli'] = corstims
+        if errstims != {}:
+            self._behtraces['error-stimuli'] = errstims
 
     def _gettoptrace(self, lpars, t2p, classifier, plusprob):
         """
@@ -590,30 +624,37 @@ class ReplayGraphInputs(object):
                     ripple = np.clip(ripple, 0, 1)
                     self._toptraces['ripple'] = ripple
             elif lpars['top-trace'][:3] == 'tem':
-                self._toptraces['pop-activity'] = classifier['priors']['plus']/plusprob
-                print(np.nanmax(classifier['priors']['plus'][10000:]/plusprob),
-                      plusprob, np.nanmax(classifier['priors']['plus'][10000:]))
+                self._toptraces['pop-activity'] = \
+                    classifier['priors']['plus']/plusprob
+                print(nanmax(classifier['priors']['plus'][10000:]/plusprob),
+                      plusprob, nanmax(classifier['priors']['plus'][10000:]))
             # 	popact = timeclassify.flat_population_activity(t2p.trace('deconvolved'))
             # 	self._toptraces['pop-activity'] = popact
 
-    def _getclassifier(self, lpars, classifier, searchms, framerate):
+    def _getclassifier(self, lpars, classifier, searchms, t2p):
         """
         Append the output of the classifier and account for its offset relative to the rest of the data.
         :return: None
         """
-
+        framerate = t2p.framerate
         if lpars['display-classifier'] == 'identity':
             foffset = int(round((searchms/1000.0*framerate + 0.5)/2.0))
 
             for key in classifier['results']:
                 if lpars['display-other'] or 'other' not in key:
                     if len(classifier['results'][key]) > 0:
-                        self._clstraces[key] = np.concatenate([[np.nan]*foffset, classifier['results'][key]])
+                        trace = np.concatenate(
+                            [[np.nan]*foffset,
+                             classifier['results'][key][:-foffset]])
+                        if lpars['mask-stimuli']:
+                            trace[stim_mask(t2p)] = np.nan
+                        self._clstraces[key] = trace
         elif lpars['display-classifier'] == 'time':
             for key in classifier['time-results']:
                 if lpars['display-other'] or 'other' not in key:
                     if lpars['display-ancillary'] or 'real' in key:
-                        self._clstraces[key] = np.copy(classifier['time-results'][key])
+                        self._clstraces[key] = np.copy(
+                            classifier['time-results'][key])
 
 
 def graph(path, frame, ttype, gri):
@@ -633,7 +674,8 @@ def graph(path, frame, ttype, gri):
     top = gri.pull_toptrace(frame)
     clrs = pool.config.colors()
 
-    chm = ClassifierHeatmap(path, ts, trs, cls, beh, bord, top, clrs, tracetype=ttype)
+    chm = ClassifierHeatmap(
+        path, ts, trs, cls, beh, bord, top, clrs, tracetype=ttype)
 
 
 def grevents(classifier, t2p, md, gri, lpars, basepath):
@@ -694,6 +736,7 @@ def deleteclassifier(pars, randomize=''):
                     out = opath.join(path, f)
                     os.remove(out)
 
+
 def activity(andb, sated=True):
     """
     Get activity levels for temporal classifier.
@@ -720,6 +763,30 @@ def activity(andb, sated=True):
         actvar = andb['activity%s-deviation'%atype]*config.default()['temporal-prior-baseline-sigma']
 
     return actbl, actvar, actouts
+
+
+def stim_mask(t2p, pre_pad_s=0.2, post_pad_s=0.3, post_pavlovian_pad_s=None):
+    """Return a binary mask over frames of stim times."""
+    mask = t2p.trialmask(
+        cs='', errortrials=-1, fulltrial=False, padpre=pre_pad_s,
+        padpost=post_pad_s)
+
+    if post_pavlovian_pad_s is not None:
+        pav_stim_mask = t2p.trialmask(
+            cs='pavlovian', errortrials=-1, fulltrial=False,
+            padpre=pre_pad_s, padpost=post_pavlovian_pad_s)
+        mask = mask | pav_stim_mask
+
+    blank_stim_mask = t2p.trialmask(
+        cs='blank', errortrials=-1, fulltrial=False,
+        padpre=pre_pad_s, padpost=post_pad_s)
+    mask = mask & (~blank_stim_mask)
+
+    # Not exactly sure what this is correcting for, but this will line things
+    # up better
+    mask = np.concatenate([[True, True], mask[:-2]])
+
+    return mask
 
 
 def old_main():
@@ -770,8 +837,9 @@ def old_main():
 
             t2p = paths.gett2p(md[0], md[1], md[2])
             trs = np.clip(t2p.trace('deconvolved')*pars['analog-comparison-multiplier'], 0.0, 1.0)
-            gm = {'results':rc.compare(trs, pars['probability'], 4,
-                            actbl, actvar, pars['classification-frames'])}
+            gm = {'results': rc.compare(
+                trs, pars['probability'], 4, actbl, actvar,
+                pars['classification-frames'])}
 
         gri = ReplayGraphInputs(andb, args, lpars, gm, t2p, md[0], md[1], args['classification-ms'], args['probability']['plus'])
         basepath = paths.graphgroup(args, 'heatmap')
