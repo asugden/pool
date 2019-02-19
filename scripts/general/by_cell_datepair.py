@@ -3,11 +3,15 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 
-# import flow.paths as hardcodedpaths
-import flow.misc
+from flow import glm
+from flow import paths
+
+# import flow.misc
 import flow.metadata
 from flow.misc import math
-import pool.calc.driven
+import flow.paths
+
+import pool.calc_legacy.driven
 
 
 # from lib import analysis
@@ -400,7 +404,7 @@ def parse_args():
                                                             'plus-only', 'minus-only', 'neutral-only'),
         help='Order in which to categorize cells by their labels.')
     arg_parser.add_argument(
-        '-s', '--save_path', type=str, default=flow.paths.graphcrossday(),
+        '-s', '--save_path', type=str, default=paths.graphcrossday(),
         help='Directory in which to save any graphs.')
 
     # Rarely used options
@@ -429,8 +433,7 @@ def main():
             cross_reversal=args.cross_reversal, tags=args.tags)
 
         for day1, day2 in sorter:
-            print(pool.calc.driven.visually(day1, 'plus'))
-            import pdb;pdb.set_trace()
+            print(pool.calc_legacy.driven.visually(day1, 'plus'))
 
 
 if __name__ == '__main__':
