@@ -12,7 +12,7 @@ import os.path as opath
 
 import flow
 from flow import classify2p, config, misc, paths
-from flow.classifier import classify
+from flow.classifier import _old_classify
 
 import pool
 from pool.plotting import colors, graphfns
@@ -478,8 +478,8 @@ class ReplayGraphInputs(object):
             self.tr = np.copy(t2p.trace(lpars['display-type'])[sorting, :]).astype(np.float64)
 
         if lpars['temporal-filter']:
-            actmn, actvar, actouts = classify.activity(pars)
-            tprior = classify.temporal_prior(self.tr, actmn, actvar, actouts, 3, -1, {'out':1.0})
+            actmn, actvar, actouts = _old_classify.activity(pars)
+            tprior = _old_classify.temporal_prior(self.tr, actmn, actvar, actouts, 3, -1, {'out':1.0})
 
             for i in range(np.shape(self.tr)[0]):
                 self.tr[i, :] = tprior['out']*self.tr[i, :]
