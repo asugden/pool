@@ -46,7 +46,8 @@ DEFAULTS = {
 
 def add_mouse_date_runs(
         mouse, date, runs, mouse_tags=None, date_tags=None, run_tags=None,
-        photometry=None, no_action=False, verbose=False):
+        photometry=None, run_type=None, replace_run_tags=False,
+        no_action=False, verbose=False):
     """Add a set of runs to the metadata record.
 
     Parameters
@@ -96,12 +97,18 @@ def add_mouse_date_runs(
                 mouse, date, date_tags))
 
     for run in runs:
-        run_type = DEFAULTS[run]['run_type']
-        tags = sorted(set(DEFAULTS[run]['tags']).union(run_tags))
+        if run_type is None:
+            run_run_type = DEFAULTS[run]['run_type']
+        else:
+            run_run_type = run_type
+        if replace_run_tags:
+            tags = run_tags
+        else:
+            tags = sorted(set(DEFAULTS[run]['tags']).union(run_tags))
         if not no_action:
             try:
                 fm.add_run(
-                    mouse, date, run, run_type=run_type, tags=tags,
+                    mouse, date, run, run_type=run_run_type, tags=tags,
                     overwrite=False)
             except fm.AlreadyPresentError:
                 if verbose:
@@ -109,12 +116,12 @@ def add_mouse_date_runs(
                         mouse, date, run))
             else:
                 if verbose:
-                    print("Added run: {}-{}-{}, tags: {}".format(
-                        mouse, date, run, tags))
+                    print("Added run: {}-{}-{}, run_type: {}, tags: {}".format(
+                        mouse, date, run, run_run_type, tags))
         else:
             if verbose:
-                print("Adding run: {}-{}-{}, tags: {}".format(
-                    mouse, date, run, tags))
+                print("Adding run: {}-{}-{}, run_type: {}, tags: {}".format(
+                    mouse, date, run, run_run_type, tags))
 
 def check_date(mouse, date):
     """Check date and locate if needed.
@@ -281,6 +288,12 @@ def main():
         "-r", "--run_tag", action="append", default=None,
         help="Tag to add to ALL runs. Combined with default tags.")
     arg_parser.add_argument(
+        "-R", "--replace_run_tags", action="store_true",
+        help="Instead of appending tags, replace default tags with specified tags.")
+    arg_parser.add_argument(
+        "-T", "--run_type", action="store", default=None,
+        help="Run type of all matching runs. Replaces default run type.")
+    arg_parser.add_argument(
         "-l", "--list", action="store_true",
         help="Only list currently matching runs, don't actually add anything.")
     arg_parser.add_argument(
@@ -303,7 +316,8 @@ def main():
         add_mouse_date_runs(
             mouse=args.mouse, date=date, runs=runs,
             mouse_tags=args.mouse_tag, date_tags=args.date_tag,
-            run_tags=args.run_tag, photometry=args.photometry,
+            run_tags=args.run_tag,  photometry=args.photometry,
+            run_type=args.run_type, replace_run_tags=args.replace_run_tags,
             no_action=args.no_action, verbose=args.verbose)
 
 
