@@ -10,10 +10,10 @@ class Stim(base.AnalysisBase):
     requires = ['']
     sets = ['stim_dff_%s' % cs for cs in config.stimuli()] + \
            ['stim_dff_2_4_%s' % cs for cs in config.stimuli()] + \
-           ['stim_dff_alltrials_%s' % cs for cs in config.stimuli()] + \
-           ['stim_dff_alltrials_pertrial']
+           ['stim_dff_all_%s' % cs for cs in config.stimuli()] + \
+           ['stim_dff_all_pertrial']
     across = 'day'
-    updated = '1901152'
+    updated = '190219'
 
     def run(self, date):
         """
@@ -37,9 +37,9 @@ class Stim(base.AnalysisBase):
                 date.runs('training'), cs, (0, 2), 'dff', all_trials=False)
             out['stim_dff_2_4_%s' % cs] = self.get_stimuli(
                 date.runs('training'), cs, (2, 4), 'dff', all_trials=False)
-            out['stim_dff_alltrials_%s' % cs] = self.get_stimuli(
+            out['stim_dff_all_%s' % cs] = self.get_stimuli(
                 date.runs('training'), cs, (0, 2), 'dff', all_trials=True)
-        out['stim_dff_alltrials_pertrial'] = self.get_stimuli_per_trial(
+        out['stim_dff_all_pertrial'] = self.get_stimuli_per_trial(
             date.runs('training'), (0, 2), 'dff')
 
         return out
