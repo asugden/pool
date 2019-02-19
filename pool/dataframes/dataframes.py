@@ -5,6 +5,38 @@ import pandas as pd
 from .. import config
 
 
+def select_columns(df, columns, index_levels=None):
+    """
+    Select specific columns and levels from a DataFrame, the rest are dropped.
+
+    Useful to ensure that the columns and index of a DataFrame match what is
+    expected.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Input DataFrame to select data from.
+    columns : list of str
+        Columns to keep in the resulting DataFrame.
+    index_levels : list of str, optional
+        If not None, select theses levels from the index, dropping the rest.
+
+    Returns
+    -------
+    pd.DataFrame
+
+    """
+    assert all(col in df.columns for col in columns)
+    out = df[columns]
+    if index_levels is not None:
+        assert all(name in out.index.names for name in index_levels)
+        current_levels = set(out.index.names)
+        levels_to_drop = current_levels.difference(index_levels)
+        for lvl in levels_to_drop:
+            out.index = out.index.droplevel(lvl)
+    return out
+
+
 def agg_across(df, across, agg_fn='sum'):
     """
     Aggregate across a level of the index, reducing the number of levels by 1.
@@ -137,7 +169,8 @@ def bin_events(events, edges, labels=None, time_col='time'):
 
 
 def event_rate(events, frames, event_label_col=None, return_counts=False):
-    """Calculate event rates from a DataFrame of events and frame times.
+    """
+    Calculate event rates from a DataFrame of events and frame times.
 
     All columns in events and frames should match and will be used to
     calculate the rates. DataFrame should already be binned, such that there
@@ -149,7 +182,7 @@ def event_rate(events, frames, event_label_col=None, return_counts=False):
     events : pd.DataFrame
     frames :pd.DataFrame
     event_label_col : str, optional
-        Optionally, calculate event rate for each "flavor" or event
+        Optionally, calculate event rate for each "flavor" of event
         independently. If not None, pivot events on this column to calculate
         a rate for each type.
     return_counts : bool
@@ -174,6 +207,7 @@ def event_rate(events, frames, event_label_col=None, return_counts=False):
     events = events.reindex(frames_series.index).fillna(0)
 
     if not return_counts:
+
         # Calc rate
         rate_df = events.div(frames_series, axis=0)
         if event_label_col is not None:

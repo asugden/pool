@@ -7,9 +7,10 @@ import pandas as pd
 from .. import config
 from .. import database
 from . import behavior as bdf
+from ..calc import aligned_dfs
 
-POST_PAD_S = 2.3
-POST_PAVLOVIAN_PAD_S = 2.6
+POST_PAD_S = 0.3
+POST_PAVLOVIAN_PAD_S = 0.6
 PRE_PAD_S = 0.2
 
 
@@ -49,10 +50,14 @@ def events_df(
             all_stim_mask = t2p.trialmask(
                 cs='', errortrials=-1, fulltrial=False, padpre=PRE_PAD_S,
                 padpost=POST_PAD_S)
-            pav_stim_mask = t2p.trialmask(
+            pav_mask = t2p.trialmask(
                 cs='pavlovian', errortrials=-1, fulltrial=False,
                 padpre=PRE_PAD_S, padpost=POST_PAVLOVIAN_PAD_S)
-            stim_mask = np.invert(all_stim_mask | pav_stim_mask)
+            blank_mask = t2p.trialmask(
+                cs='blank', errortrials=-1, fulltrial=False,
+                padpre=PRE_PAD_S, padpost=POST_PAVLOVIAN_PAD_S)
+            stim_mask = np.invert((all_stim_mask | pav_mask) & (~blank_mask))
+            # stim_mask = np.invert(all_stim_mask | pav_stim_mask)
         if inactivity_mask and stimulus_mask:
             mask = inact_mask & stim_mask
         elif inactivity_mask:
@@ -87,34 +92,36 @@ def events_df(
     return pd.concat(events_list, axis=0)
 
 
-def trial_classifier_df(runs):
+def trial_classifier_df(runs, pad_s=None):
     """
     Return classifier probability across trials.
 
     Parameters
     ----------
     runs : RunSorter or list of Runs
+    pad_s : 2-element tuple of float
+        Used to calculate the padded end of the previous stimulus and the
+        padded start of the next stimulus when cutting up output. Does NOT
+        pad the current stimulus.
 
     Returns
     -------
     pd.DataFrame
-        Index : mouse, date, run, trial_idx, condition, error, time
-        Columns : [one per replay type, i.e. 'plus', 'neutral', 'minus']
+        Index : mouse, date, run, trial_idx, time
+        Columns {replay_type}
 
     """
     result = [pd.DataFrame()]
-    db = database.db()
     for run in runs:
-        result.append(db.get(
-            'trialdf_classifier', mouse=run.mouse, date=run.date, run=run.run,
-            metadata_object=run, force=False))
+        result.append(aligned_dfs.trial_classifier_probability(
+            run, pad_s=pad_s))
     result = pd.concat(result, axis=0)
 
     return result
 
 
 def trial_events_df(
-        runs, threshold=0.1, xmask=False, inactivity_mask=False):
+        runs, threshold=0.1, xmask=False, inactivity_mask=False, pad_s=None):
     """
     Return reactivation events relative to stimuli presentations.
 
@@ -127,29 +134,29 @@ def trial_events_df(
         If True, only allow one event (across types) per time bin.
     inactivity_mask : bool
         If True, enforce that all events are during times of inactivity.
+    pad_s : 2-element tuple of float
+        Used to calculate the padded end of the previous stimulus and the
+        padded start of the next stimulus when cutting up output. Does NOT
+        pad the current stimulus. Be careful changing this and make sure it
+        matched trial_frames_df if used together.
 
     Note
     ----
-    Events are included multiple times, bot before the next stim and after the
+    Events are included multiple times, both before the next stim and after the
     previous stim presentation!
 
     Returns
     -------
     pd.DataFrame
-        Index : mouse, date, run, trial_idx, condition, error, event_type, event_idx
-        Columns : time
+        Index : mouse, date, run, event_idx
+        Columns : event_type, abs_frame, time, trial_idx
 
     """
     result = [pd.DataFrame()]
-    db = database.db()
-    analysis = 'trialdf_events_{}_{}_{}'.format(
-        threshold,
-        'xmask' if xmask else 'noxmask',
-        'inactmask' if inactivity_mask else 'noinactmask')
     for run in runs:
-        result.append(db.get(
-            analysis, mouse=run.mouse, date=run.date, run=run.run,
-            metadata_object=run, force=False))
+        result.append(aligned_dfs.trial_events(
+            run, threshold=threshold, xmask=xmask,
+            inactivity_mask=inactivity_mask, pad_s=pad_s))
     result = pd.concat(result, axis=0)
 
     return result
@@ -175,8 +182,8 @@ def trigger_events_df_orig(
 
 
 def trigger_events_df(
-        runs, trigger, threshold=0.1, xmask=False, inactivity_mask=False,
-        pre_s=-1., post_s=5.):
+        runs, trigger, pre_s=-1., post_s=5., threshold=0.1, xmask=False,
+        inactivity_mask=False, stimulus_mask=True):
     """
     Determine event times aligned to other (other than stimulus) events.
 
@@ -185,29 +192,26 @@ def trigger_events_df(
     runs : RunSorter
     trigger : {'punishment', 'reward', 'lickbout'}
         Event to trigger PSTH on.
+    pre_s, post_s : float
+        Time around each event to look.
     threshold : float
         Classifier cutoff probability.
     xmask : bool
         If True, only allow one event (across types) per time bin.
     inactivity_mask : bool
         If True, enforce that all events are during times of inactivity.
-    pre_s, post_s : float
-        Time around each event to look.
+    stimulus_mask : bool
+        If True, remove all events during stimulus presentation.
 
     Note
     ----
-    Individual events will appear in this DataFrame multiple times!
+    Individual events may appear in this DataFrame multiple times!
     Events may show up both as being after a triggering event and before
     the next one.
 
     """
     # Initialize with an empty DataFrame that will match same format as output
-    result = [pd.DataFrame({'trigger_idx': [], 'event_type': [],
-                            'frame': [], 'time': []},
-                           index=pd.MultiIndex(
-                               levels=[[], [], [], []],
-                               labels=[[], [], [], []],
-                               names=['mouse', 'date', 'run', 'event_idx']))]
+    result = []
     for run in runs:
         t2p = run.trace2p()
 
@@ -221,6 +225,8 @@ def trigger_events_df(
             onsets = onsets[onsets > 0]
         elif trigger == 'lickbout':
             onsets = t2p.lickbout()
+        else:
+            raise ValueError("Unrecognized 'trigger' value.")
 
         fr = t2p.framerate
         pre_fr = int(np.ceil(-pre_s * fr))
@@ -229,23 +235,32 @@ def trigger_events_df(
         events = events_df(
             [run], threshold, xmask=xmask,
             inactivity_mask=inactivity_mask,
-            stimulus_mask=True)
+            stimulus_mask=stimulus_mask)
 
         for trigger_idx, onset in enumerate(onsets):
 
             trigger_events = events.loc[
                 (events.frame >= (onset - pre_fr)) &
                 (events.frame < (onset + post_fr))].copy()
-            trigger_events['frame'] -= onset
-            trigger_events['time'] = trigger_events.frame / fr
+            trigger_events['time'] = (trigger_events.frame - onset) / fr
             trigger_events['trigger_idx'] = trigger_idx
 
             result.append(trigger_events)
-    result_df = (pd
-                 .concat(result, axis=0)
-                 .loc[:, ['trigger_idx', 'event_type', 'time']]
-                 .sort_index()
-                 )
+
+    if len(result):
+        result_df = (pd
+                     .concat(result, axis=0)
+                     .rename(columns={'frame': 'abs_frame'})
+                     .sort_index()
+                     )
+    else:
+        result_df = pd.DataFrame(
+            {'trigger_idx': [], 'event_type': [], 'abs_frame': [], 'time': []},
+            index=pd.MultiIndex(
+                levels=[[], [], [], []],
+                labels=[[], [], [], []],
+                names=['mouse', 'date', 'run', 'event_idx']))
+
     return result_df
 
 

@@ -34,7 +34,7 @@ class Sort(base.AnalysisBase):
             stim = self.analysis('stim_dff_%s' % cs)
             dffs[cs] = np.copy(stim) if stim is not None else None
             if np.sum(np.invert(np.isfinite(dffs[cs]))) > 4:
-                stim = self.analysis('stim_all_%s' % cs)
+                stim = self.analysis('stim_dff_all_%s' % cs)
                 dffs[cs] = np.copy(stim) if stim is not None else None
 
         out['sort_order'], out['sort_borders'] = self.simple(dffs, config.stimuli())

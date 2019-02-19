@@ -2,7 +2,10 @@
 import numpy as np
 from scipy.spatial.distance import cosine
 
+from ..database import memoize
 
+
+@memoize(across='run', updated=190208)
 def cosdist(
         run, group, tracetype='deconvolved', trange=(0, 1), rectify=False,
         exclude_outliers=False, remove_group=None):
@@ -43,6 +46,8 @@ def cosdist(
 
     trace = run.trace2p().trace(tracetype)
 
+    # scipy.spatial.distance.cdist should be able to do this, but as of 190207
+    # it keeps silently crashing the kernel (at least in Jupyter notebooks)
     result = [cosine(trace_t, unit) for trace_t in trace.T]
 
     return np.array(result)

@@ -3,8 +3,8 @@ from __future__ import division
 import numpy as np
 import pandas as pd
 
-from .. import config
 from .. import database
+from ..calc import aligned_dfs
 
 PRE_S = 5
 POST_S = 5
@@ -61,7 +61,7 @@ def frames_df(runs, inactivity_mask=False, stimulus_mask=False):
     return pd.concat(frames_list, axis=0)
 
 
-def trial_frames_df(runs, inactivity_mask=False):
+def trial_frames_df(runs, inactivity_mask=False, pad_s=None):
     """
     Return acquisition frames relative to stimuli presentations.
 
@@ -70,22 +70,23 @@ def trial_frames_df(runs, inactivity_mask=False):
     runs : RunSorter
     inactivity_mask : bool
         If True, enforce that all events are during times of inactivity.
+    pad_s : 2-element tuple of float
+        Used to calculate the padded end of the previous stimulus and the
+        padded start of the next stimulus when cutting up output. Does NOT
+        pad the current stimulus. Be careful changing this and make sure it
+        matched trial_events_df if used together.
 
     Returns
     -------
     pd.DataFrame
-        Index : mouse, date, run, trial_idx, condition, error
+        Index : mouse, date, run, trial_idx
         Columns : frame, frame_period, time
 
     """
     result = [pd.DataFrame()]
-    db = database.db()
-    analysis = 'trialdf_frames_{}'.format(
-        'inactmask' if inactivity_mask else 'noinactmask')
     for run in runs:
-        result.append(db.get(
-            analysis, mouse=run.mouse, date=run.date, run=run.run,
-            metadata_object=run))
+        result.append(aligned_dfs.trial_frames(
+            run, inactivity_mask=inactivity_mask, pad_s=pad_s))
     result = pd.concat(result, axis=0)
 
     return result
@@ -132,7 +133,6 @@ def trigger_frames_df(runs, trigger, inactivity_mask=False):
                   .reset_index(['frame'])
                   )
 
-        result = [pd.DataFrame()]
         for trigger_idx, onset in enumerate(onsets):
 
             trigger_frames = frames.loc[

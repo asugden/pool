@@ -34,27 +34,27 @@ class StimulusDFF(object):
 
         # Set up the fluorescence and baseline arguments for passing
         argsf = {
-            'start-s': self._pars['trange-ms'][0]/1000.,
-            'end-s': self._pars['trange-ms'][1]/1000.,
-            'trace-type': tracetype,
-            'cutoff-before-lick-ms': lickprems,
-            'error-trials': errortrials,
+            'start_s': self._pars['trange-ms'][0]/1000.,
+            'end_s': self._pars['trange-ms'][1]/1000.,
+            'trace_type': tracetype,
+            'cutoff_before_lick_ms': lickprems,
+            'errortrials': errortrials,
         }
 
         self._tracetype = tracetype
 
         argsb = deepcopy(argsf)
-        argsb['start-s'] = self._pars['baseline-ms'][0]/1000.
-        argsb['end-s'] = self._pars['baseline-ms'][1]/1000.
+        argsb['start_s'] = self._pars['baseline-ms'][0]/1000.
+        argsb['end_s'] = self._pars['baseline-ms'][1]/1000.
 
         # Go through the added stimuli and add all onsets
         for cs in orderedcses:
-            out = t2p.cstraces(cs, argsf) # ncells, frames, nstimuli/onsets
+            out = t2p.cstraces(cs, **argsf) # ncells, frames, nstimuli/onsets
             # for fr in range(np.shape(out)[1]):
             #   out[:, fr, :] -= np.nanmean(t2p.cstraces(cs, argsb), 1)
 
             if cs in equivalents:
-                eq = t2p.cstraces(equivalents[cs], argsf)
+                eq = t2p.cstraces(equivalents[cs], **argsf)
                 # for fr in range(np.shape(eq)[1]):
                 #   eq[:, fr, :] -= np.nanmean(t2p.cstraces(equivalents[cs], argsb), 1)
                 out = np.concatenate((out, eq), axis=2)

@@ -10,6 +10,7 @@ import numpy as np
 from flow import paths
 import flow.config
 import flow.metadata as metadata
+from flow.misc.wordhash import word
 
 
 class BackendBase(with_metaclass(ABCMeta, object)):
@@ -100,8 +101,9 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         for logging_analysis in self._dependencies:
             self._dependencies[logging_analysis][analysis_name] = updated
 
-    def needs_update(
-            self, analysis_name, updated, stored_updated, dependencies=None):
+    def is_analysis_old(
+            self, analysis_name, updated, stored_updated=None,
+            depends_on=None):
         """
         Check to see if an analysis needs to be re-calc'd.
 
@@ -112,8 +114,9 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         updated : int
             Current update date of analysis.
         stored_updated : int
-            Update date of analysis when it was originally stored in db.
-        dependencies : dict, optional
+            Update date of analysis when it was originally stored in db. If
+            None, always re-calc.
+        depends_on : dict, optional
             Dictionary of analyses with update dates for analysis when it was
             originally stored in db. Make sure none of them have been updated.
 
@@ -123,23 +126,23 @@ class BackendBase(with_metaclass(ABCMeta, object)):
             True if updated needed, False otherwise.
 
         """
-        if dependencies is None:
-            dependencies = {}
+        if depends_on is None:
+            depends_on = {}
         # If update date has changed or is missing from the 'updated_dates'
         # dict for this analysis or any of it's dependencies, trigger re-calc.
-        if int(updated) != int(stored_updated):
+        if stored_updated is None or int(updated) != int(stored_updated):
             return True
         # Note, this currently requires the memoization decorator to work, but
         # could be abstracted out by passing another parameter with current
         # analysis update dates.
-        for dependency, date in dependencies.items():
+        for dependency, date in depends_on.items():
             if self.update_dates.get(dependency, None) != date:
                 return True
 
         # At this point, the analysis doesn't need an update, so log it and
         # it's dependencies, so that other analyses know their dependencies.
         self.log_dependency(analysis_name, updated)
-        for dependency, date in dependencies.items():
+        for dependency, date in depends_on.items():
             self.log_dependency(dependency, date)
         return False
 
@@ -169,20 +172,27 @@ class BackendBase(with_metaclass(ABCMeta, object)):
                 depends_on_dict.get(analysis_name, {}))
 
     @abstractmethod
-    def recall(self, analysis_name, keys, updated):
+    def recall(self, analysis_name, keys):
         """Return the value from the data store for a given analysis.
 
-        Note
-        ----
-        Must call needs_update within any implementation.
+        Parameters
+        ----------
+        analysis_name : str
+            Name of analysis.
+        keys : dict
+            Keyword arguments used to call cached function.
+
+        Returns
+        -------
+        data
+        stored_updated : int
+            Stored updated date.
+        depends_on : dict
+            Dictionary of {analysis_name: update_date} pairs of the stored
+            analysis.
 
         """
         raise NotImplementedError
-
-    @abstractmethod
-    def is_analysis_old(self, analysis_name, keys, updated):
-        """Determine if the analysis needs to be re-run."""
-        return True
 
     def save(self, **kwargs):
         """Save all updated databases.
@@ -285,7 +295,9 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         }
 
         # Get the analysis, or calculate if necessary
-        out, doupdate = self.recall(analysis, keys, an['updated'])
+        out, stored_updated, depends_on = self.recall(analysis, keys)
+        doupdate = self.is_analysis_old(
+            analysis, an['updated'], stored_updated, depends_on)
         if force or doupdate:
             c = object.__new__(an['class'])
             print('\tupdating analysis... {} {} {} {}'.format(
@@ -300,7 +312,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
                 if key not in self.ans:
                     raise ValueError('%s analysis was not declared in sets.' % key)
             self.store_all(out, keys, an['updated'], self.deps)
-            out, _ = self.recall(analysis, keys, an['updated'])
+            out, _, _ = self.recall(analysis, keys)
 
         if isinstance(out, float) and np.isnan(out):
             return None
@@ -505,7 +517,11 @@ def keyname(analysis, mouse, date, run=None, classifier_word=None, **kwargs):
     keyname += '-%s' % (analysis)
 
     for key in sorted(kwargs):
-        keyname += '-{}:{}'.format(key, kwargs[key])
+        if isinstance(kwargs[key], (list, tuple)) and len(kwargs[key]) > 2:
+            val = '#{}#'.format(word(kwargs[key]))
+        else:
+            val = kwargs[key]
+        keyname += '-{}:{}'.format(key, val)
 
     return keyname
 
@@ -519,11 +535,16 @@ def default_parameters(mouse, date):
     pars['mouse'] = mouse
     pars['training-date'] = str(date)
     pars['comparison-date'] = str(date)
-    pars['training-runs'] = metadata.meta(
-        mice=[mouse], dates=[date], run_types=['training']).run.tolist()
-    pars['training-other-running-runs'] = metadata.meta(
-        mice=[mouse], dates=[date], run_types=['running']).run.tolist()
-    # pars['training-runs'] = metadata.dataframe(mouse, date,tags='training')['run'].as_list()
-    # pars['training-other-running-runs'] = metadata.dataframe(mouse, date, tags='running')['run'].as_list()
+    runs = metadata.meta(mice=[mouse], dates=[date])
+    pars['training-runs'] = \
+        (runs[runs.run_type.isin(['training'])]
+         .index.get_level_values('run')
+         .tolist()
+         )
+    pars['training-other-running-runs'] = \
+        (runs[runs.run_type.isin(['running'])]
+         .index.get_level_values('run')
+         .tolist()
+         )
 
     return pars

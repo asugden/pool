@@ -6,7 +6,8 @@ import inspect
 
 from flow import paths
 from . import config
-from .backends import MemoryBackend, ShelveBackend, CouchBackend
+from .backends import \
+    MemoryBackend, ShelveBackend, CouchBackend, DiskBackend, NullBackend
 try:
     from .backends._cloudant_backend import CloudantBackend
 except ImportError:
@@ -38,6 +39,10 @@ def db(backend=None, **kwargs):
             _dbs['memory'] = MemoryBackend(**options)
         elif backend == 'cloudant':
             _dbs['cloudant'] = CloudantBackend(**options)
+        elif backend == 'disk':
+            _dbs['disk'] = DiskBackend(**options)
+        elif backend == 'null':
+            _dbs['null'] = NullBackend(**options)
 
     try:
         return _dbs[backend]
@@ -66,6 +71,10 @@ class memoize(object):
         If the analysis returns either an array of cells or a matrix of cells
         and the trace2p is subset, then it will return the subset of the analysis
         results.
+    large_ouput : bool
+        Specifies that this analysis returns a large output and thus should not
+        be stored in the normal database. Intended to allow for disk or memory
+        caching of large results.
 
     Returns
     -------
@@ -83,7 +92,9 @@ class memoize(object):
 
     """
 
-    def __init__(self, across, updated, requires_classifier=False, returns='value'):
+    def __init__(
+            self, across, updated, requires_classifier=False, returns='value',
+            large_output=False):
         """Init."""
         self.across = across
         assert across in ['date', 'run']
@@ -91,7 +102,12 @@ class memoize(object):
         self.requires_classifier = requires_classifier
         self.returns = returns
 
-        self.db = db()
+        if large_output:
+            self.db = db(
+                backend=config.params()['backends'].get(
+                    'large_backend', 'null'))
+        else:
+            self.db = db()
 
     def __call__(self, fn):
         """Make the class behave like a function."""
@@ -139,10 +155,14 @@ class memoize(object):
             analysis_name = '{}.{}'.format(fn.__module__, fn.__name__)
 
             if not force:
-                out, doupdate = self.db.recall(
-                    analysis_name, keys, self.updated)
+                out, stored_updated, depends_on = self.db.recall(
+                    analysis_name, keys)
+                doupdate = self.db.is_analysis_old(
+                    analysis_name, self.updated, stored_updated, depends_on)
             if force or doupdate:
-                print('Recalcing {}'.format(analysis_name))
+                print('Recalcing {}: {} {} {}'.format(
+                    analysis_name, keys['mouse'], keys['date'],
+                    keys.get('run', '')))
                 if subset is not None:
                     date_or_run.set_subset(None)
 
