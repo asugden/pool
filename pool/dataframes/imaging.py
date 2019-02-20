@@ -126,8 +126,8 @@ def trigger_frames_df(runs, trigger, inactivity_mask=False):
             onsets = t2p.lickbout()
 
         fr = t2p.framerate
-        pre_fr = int(np.ceil(PRE_S * fr))
-        post_fr = int(np.ceil(POST_S * fr))
+        pre_fr = PRE_S * fr
+        post_fr = POST_S * fr
 
         frames = (frames_df([run], inactivity_mask, stimulus_mask=True)
                   .reset_index(['frame'])
@@ -136,7 +136,7 @@ def trigger_frames_df(runs, trigger, inactivity_mask=False):
         for trigger_idx, onset in enumerate(onsets):
 
             trigger_frames = frames.loc[
-                (frames.frame >= (onset - pre_fr)) &
+                (frames.frame > (onset - pre_fr)) &
                 (frames.frame < (onset + post_fr))].copy()
             trigger_frames['frame'] -= onset
             trigger_frames['time'] = trigger_frames.frame / fr

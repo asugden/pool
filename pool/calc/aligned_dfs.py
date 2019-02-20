@@ -75,7 +75,7 @@ def trial_classifier_probability(run, pad_s=None):
     return final_result
 
 
-@memoize(across='run', updated=190215, large_output=True)
+@memoize(across='run', updated=190218, large_output=True)
 def trial_events(
         run, threshold=0.1, xmask=False, inactivity_mask=False, pad_s=None):
     """
@@ -113,8 +113,9 @@ def trial_events(
     prev_onsets = np.concatenate([0, all_onsets[:-1]], axis=None)
 
     fr = t2p.framerate
-    pre_onset_pad_fr = int(np.ceil(pad_s[0] * fr))
-    post_onset_pad_fr = int(np.ceil(pad_s[1] * fr))
+    # For discrete events, leave as floats to avoid rounding errors
+    pre_onset_pad_fr = pad_s[0] * fr
+    post_onset_pad_fr = pad_s[1] * fr
 
     events = pool.dataframes.reactivation.events_df(
         [run], threshold, xmask=xmask,
@@ -123,9 +124,8 @@ def trial_events(
     result = [pd.DataFrame()]
     for trial_idx, (onset, next_onset, prev_onset) in enumerate(zip(
             all_onsets, next_onsets, prev_onsets)):
-
         trial_events = events.loc[
-            (events.frame >= (prev_onset + post_onset_pad_fr)) &
+            (events.frame > (prev_onset + post_onset_pad_fr)) &
             (events.frame < (next_onset - pre_onset_pad_fr))].copy()
         trial_events['time'] = (trial_events.frame - onset) / fr
         trial_events['trial_idx'] = trial_idx
@@ -141,7 +141,7 @@ def trial_events(
     return result_df
 
 
-@memoize(across='run', updated=190215, large_output=True)
+@memoize(across='run', updated=190218, large_output=True)
 def trial_frames(run, inactivity_mask=False, pad_s=None):
     """
     Return acquisition frames relative to stimuli presentations.
@@ -174,8 +174,8 @@ def trial_frames(run, inactivity_mask=False, pad_s=None):
     prev_onsets = np.concatenate([0, all_onsets[:-1]], axis=None)
 
     fr = t2p.framerate
-    pre_onset_pad_fr = int(np.ceil(pad_s[0] * fr))
-    post_onset_pad_fr = int(np.ceil(pad_s[1] * fr))
+    pre_onset_pad_fr = pad_s[0] * fr
+    post_onset_pad_fr = pad_s[1] * fr
 
     frames = (pool.dataframes.imaging
               .frames_df([run], inactivity_mask)
@@ -187,7 +187,7 @@ def trial_frames(run, inactivity_mask=False, pad_s=None):
             enumerate(zip(all_onsets, next_onsets, prev_onsets)):
         # Pull out events around the current onset
         trial_frames = frames.loc[
-            (frames.frame >= (prev_onset + post_onset_pad_fr)) &
+            (frames.frame > (prev_onset + post_onset_pad_fr)) &
             (frames.frame < (next_onset - pre_onset_pad_fr))].copy()
 
         # Convert to relative times
