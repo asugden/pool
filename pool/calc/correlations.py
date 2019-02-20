@@ -41,7 +41,7 @@ def noise(date, cs, trange=(0, None), trace_type='dff',
         return corrs
 
     stimorder = np.arange(np.shape(trs)[1])
-    if np.sum(np.invert(np.isfinite(corrs))) == 0:
+    if np.sum(np.invert(np.isfinite(trs))) == 0:
         corrs = np.corrcoef(trs)
 
         for i in range(randomizations):
@@ -49,7 +49,7 @@ def noise(date, cs, trange=(0, None), trace_type='dff',
                 np.random.shuffle(stimorder)
                 trs[c, :] = trs[c, stimorder]
 
-                corrs -= np.corrcoef(trs)/float(randomizations)
+            corrs -= np.corrcoef(trs)/float(randomizations)
     else:
         dftrs = pd.DataFrame(trs.T)
         corrs = dftrs.corr().as_matrix()
@@ -59,7 +59,7 @@ def noise(date, cs, trange=(0, None), trace_type='dff',
                 np.random.shuffle(stimorder)
                 trs[c, :] = trs[c, stimorder]
 
-                dftrs = pd.DataFrame(trs.T)
-                corrs -= dftrs.corr().as_matrix()/float(randomizations)
+            dftrs = pd.DataFrame(trs.T)
+            corrs -= dftrs.corr().as_matrix()/float(randomizations)
 
     return corrs
