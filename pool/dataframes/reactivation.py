@@ -229,8 +229,8 @@ def trigger_events_df(
             raise ValueError("Unrecognized 'trigger' value.")
 
         fr = t2p.framerate
-        pre_fr = int(np.ceil(-pre_s * fr))
-        post_fr = int(np.ceil(post_s * fr))
+        pre_fr = -pre_s * fr
+        post_fr = post_s * fr
 
         events = events_df(
             [run], threshold, xmask=xmask,
@@ -240,7 +240,7 @@ def trigger_events_df(
         for trigger_idx, onset in enumerate(onsets):
 
             trigger_events = events.loc[
-                (events.frame >= (onset - pre_fr)) &
+                (events.frame > (onset - pre_fr)) &
                 (events.frame < (onset + post_fr))].copy()
             trigger_events['time'] = (trigger_events.frame - onset) / fr
             trigger_events['trigger_idx'] = trigger_idx
