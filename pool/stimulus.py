@@ -3,7 +3,7 @@ import flow.metadata.sorters
 import pool.config
 
 def trials(runs, cs, start_s=0, end_s=None, trace_type='dff', cutoff_before_lick_ms=-1,
-              error_trials=-1, baseline=None, pavlovian=True, end_relative=0):
+           error_trials=-1, baseline=None, pavlovian=True, end_relative=0):
     """
     Get all training trials.
 
