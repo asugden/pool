@@ -6,12 +6,10 @@ import flow.metadata
 import flow.misc
 import flow.paths
 from flow.misc.type_conversion import nannone
-import pool.calc
-import pool.calc_legacy
-import pool.calc_legacy.performance
-import pool.calc_legacy.reactivation_rate
-import pool.calc_legacy.cosine_distance
-import pool.database
+
+from .. import calc
+from .. import calc_legacy
+from .. import database
 
 
 def dataframe_date(date):
@@ -29,27 +27,36 @@ def dataframe_date(date):
     df = pd.DataFrame([date.mouse], columns=['mouse'])
     # df['mouse'] = date.mouse
     df['date'] = date.date
-    df['dprime'] = pool.calc_legacy.performance.dprime(date)
-    df['dprime_new'] = pool.calc.performance.dprime(date)
+    df['dprime'] = calc_legacy.performance.dprime(date)
+    df['dprime_new'] = calc.performance.dprime(date)
+    df['dprime_run'] = calc.performance.dprime(date, across_run=False)
 
-    df['react_plus'] = nannone(pool.calc_legacy.reactivation_rate.freq(date, 'plus'))
-    df['react_neutral'] = nannone(pool.calc_legacy.reactivation_rate.freq(date, 'neutral'))
-    df['react_minus'] = nannone(pool.calc_legacy.reactivation_rate.freq(date, 'minus'))
+    df['react_plus'] = nannone(calc_legacy.reactivation_rate.freq(date, 'plus'))
+    df['react_neutral'] = nannone(calc_legacy.reactivation_rate.freq(date, 'neutral'))
+    df['react_minus'] = nannone(calc_legacy.reactivation_rate.freq(date, 'minus'))
 
-    df['react_new_plus'] = nannone(pool.calc.reactivation_rate.freq(date, 'plus'))
-    df['react_new_neutral'] = nannone(pool.calc.reactivation_rate.freq(date, 'neutral'))
-    df['react_new_minus'] = nannone(pool.calc.reactivation_rate.freq(date, 'minus'))
+    df['react_new_plus'] = nannone(calc.reactivation_rate.freq(date, 'plus'))
+    df['react_new_neutral'] = nannone(calc.reactivation_rate.freq(date, 'neutral'))
+    df['react_new_minus'] = nannone(calc.reactivation_rate.freq(date, 'minus'))
 
-    df['cosdist_plus'] = nannone(pool.calc_legacy.cosine_distance.stimulus(date, 'plus'))
-    df['cosdist_neutral'] = nannone(pool.calc_legacy.cosine_distance.stimulus(date, 'neutral'))
-    df['cosdist_minus'] = nannone(pool.calc_legacy.cosine_distance.stimulus(date, 'minus'))
+    df['cosdist_plus'] = nannone(calc_legacy.cosine_distance.stimulus(date, 'plus'))
+    df['cosdist_neutral'] = nannone(calc_legacy.cosine_distance.stimulus(date, 'neutral'))
+    df['cosdist_minus'] = nannone(calc_legacy.cosine_distance.stimulus(date, 'minus'))
 
-    df['cosdist_dec_plus'] = nannone(pool.calc_legacy.cosine_distance.stimulus(
+    df['cosdist_dec_plus'] = nannone(calc_legacy.cosine_distance.stimulus(
         date, 'plus', trace_type='decon', end_s=1))
-    df['cosdist_dec_neutral'] = nannone(pool.calc_legacy.cosine_distance.stimulus(
+    df['cosdist_dec_neutral'] = nannone(calc_legacy.cosine_distance.stimulus(
         date, 'neutral', trace_type='decon', end_s=1))
-    df['cosdist_dec_minus'] = nannone(pool.calc_legacy.cosine_distance.stimulus(
+    df['cosdist_dec_minus'] = nannone(calc_legacy.cosine_distance.stimulus(
         date, 'minus', trace_type='decon', end_s=1))
+
+    df['cossim_plus'] = nannone(calc.distance.cosine_similarity_stimuli(
+        date, 'plus', 'ensure', rectify=False))
+    df['cossim_neutral'] = nannone(calc.distance.cosine_similarity_stimuli(
+        date, 'neutral', 'ensure', rectify=False))
+    df['cossim_minus'] = nannone(calc.distance.cosine_similarity_stimuli(
+        date, 'minus', 'ensure', rectify=False))
+
 
     return df
 

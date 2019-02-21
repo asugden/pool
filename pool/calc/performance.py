@@ -34,7 +34,7 @@ def engaged(run, across_run=True):
 
         return hmm.engagement(run)
     else:
-        hmm.set_runs([run.trace2p()]).calculate()
+        hmm.set_runs([run]).calculate()
 
         return hmm.engagement()
 

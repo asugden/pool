@@ -1,3 +1,5 @@
+import numpy as np
+
 class EngagementHMM:
     def __init__(self):
         """
@@ -36,7 +38,7 @@ class EngagementHMM:
             self.run_number.append(run.run)
 
             t2p = run.trace2p()
-            conditions = t2p.conditions().astype(np.int16)
+            conditions, codes = t2p.conditions()
             errors = t2p.errors()
             codes = t2p.codes
 
