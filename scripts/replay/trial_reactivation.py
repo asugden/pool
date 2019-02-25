@@ -7,7 +7,6 @@ if 'DISPLAY' not in os.environ:
 
 import flow
 from flow import misc
-import flow.metadata as metadata
 import pool
 from pool.layouts import reactivation as plr
 
@@ -33,7 +32,7 @@ def main():
     filename = '{}_trial_reactivation.pdf'
     save_dir = os.path.join(flow.paths.graphd, 'trial_reactivation')
     args = parse_args()
-    sorter = metadata.MouseSorter.frommeta(
+    sorter = flow.MouseSorter.frommeta(
         mice=args.mice, tags=args.tags)
 
     pre_s = -1 * args.t_range_s[0]

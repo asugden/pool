@@ -911,7 +911,7 @@ def main():
 
     run_types = ['training', 'spontaneous'] if args.display_training else ['spontaneous']
 
-    dates = flow.metadata.DateSorter.frommeta(
+    dates = flow.DateSorter.frommeta(
         mice=args.mice, dates=args.dates, tags=args.tags)
     for date in dates:
         defaults['mouse'] = date.mouse
