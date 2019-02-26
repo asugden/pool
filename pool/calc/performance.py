@@ -490,5 +490,9 @@ def _trial_errors(run, cs=None, hmm_engaged=True, combine_pavlovian=False, acros
     if cs is not None:
         if combine_pavlovian and cs == 'plus':
             conds[conds == codes['pavlovian']] = codes['plus']
-        errs = errs[conds == codes[cs]]
+        try:
+            errs = errs[conds == codes[cs]]
+        except KeyError:
+            # No trials of the given type
+            errs = np.array([], dtype=bool)
     return errs
