@@ -9,7 +9,7 @@ except ImportError:
 from ..database import memoize
 
 
-@memoize(across='date', updated=190220, returns='cell array')
+@memoize(across='date', updated=190226, returns='cell array')
 def outliers(date, trace_type='deconvolved', sigma=2, run_type='spontaneous'):
     """
     Find the cells with outlier activity levels.
@@ -32,8 +32,13 @@ def outliers(date, trace_type='deconvolved', sigma=2, run_type='spontaneous'):
     outliers = None
     for run in date.runs(run_type):
         t2p = run.trace2p()
-        fmin = t2p.lastonset()
-        trs = t2p.trace(trace_type)[:, fmin:]
+        trs = t2p.trace(trace_type)
+        if run.run_type == 'training':
+            mask = t2p.trialmask(padpre=0, padpost=2)
+            trs = trs[:, mask]
+        else:
+            fmin = t2p.lastonset()
+            trs = trs[:, fmin:]
 
         cellact = nanmean(trs, axis=1)
         outs = cellact > nanmedian(cellact) + sigma*np.std(cellact)
