@@ -1,5 +1,6 @@
 """Analyses directly related to behavioral performance."""
 from __future__ import division
+import numpy as np
 from scipy.stats import norm
 
 from ..database import memoize
@@ -37,6 +38,27 @@ def engaged(run, across_run=True):
         hmm.set_runs([run]).calculate()
 
         return hmm.engagement()
+
+
+@memoize(across='date', updated=190226, returns='value')
+def engagement(date):
+    """
+    Return result of engagement HMM.
+
+    Parameters
+    ----------
+    date : Date
+
+    Returns
+    -------
+    float
+        Return the fraction of time engaged
+
+    """
+
+    hmm = engagement_hmm.EngagementHMM()
+    hmm.set_runs(date.runs('training', tags='hungry')).calculate()
+    return np.nanmean(hmm.engagement().astype(float))
 
 
 @memoize(across='run', updated=190220)
