@@ -31,10 +31,23 @@ def dataframe_date(date):
     df['dprime'] = calc_legacy.performance.dprime(date)
     df['dprime_new'] = calc.performance.dprime(date)
     df['dprime_run'] = calc.performance.dprime(date, across_run=False)
+
     df['dprime_first'] = calc.performance.dprime_run(date.runs('training', tags='hungry')[0])
     df['dprime_last'] = calc.performance.dprime_run(date.runs('training', tags='hungry')[-1])
+
+    runs = date.runs('training', tags='hungry')
+    dp = [calc.performance.dprime_run(run) for run in runs]
+    df['dprime_within'] = max(dp) - min(dp)
+
     df['engagement'] = calc.performance.engagement(date)
     df['reversed'] = flow.metadata.reversal(date.mouse) < date.date
+
+    df['behavior_hmm_p'] = calc.performance.correct_fraction(date, 'plus', hmm_engaged=True)
+    df['behavior_hmm_n'] = calc.performance.correct_fraction(date, 'neutral', hmm_engaged=True)
+    df['behavior_hmm_m'] = calc.performance.correct_fraction(date, 'minus', hmm_engaged=True)
+    df['behavior_p'] = calc.performance.correct_fraction(date, 'plus', hmm_engaged=False)
+    df['behavior_n'] = calc.performance.correct_fraction(date, 'neutral', hmm_engaged=False)
+    df['behavior_m'] = calc.performance.correct_fraction(date, 'minus', hmm_engaged=False)
 
     df['react_plus'] = nannone(calc_legacy.reactivation_rate.freq(date, 'plus'))
     df['react_neutral'] = nannone(calc_legacy.reactivation_rate.freq(date, 'neutral'))

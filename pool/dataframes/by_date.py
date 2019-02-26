@@ -30,33 +30,58 @@ def dataframe_date(date):
     df['dprime'] = calc_legacy.performance.dprime(date)
     df['dprime_new'] = calc.performance.dprime(date)
     df['dprime_run'] = calc.performance.dprime(date, across_run=False)
+    df['reversed'] = flow.metadata.reversal(date.mouse) < date.date
 
     df['react_plus'] = nannone(calc_legacy.reactivation_rate.freq(date, 'plus'))
     df['react_neutral'] = nannone(calc_legacy.reactivation_rate.freq(date, 'neutral'))
     df['react_minus'] = nannone(calc_legacy.reactivation_rate.freq(date, 'minus'))
 
-    df['react_new_plus'] = nannone(calc.reactivation_rate.freq(date, 'plus'))
-    df['react_new_neutral'] = nannone(calc.reactivation_rate.freq(date, 'neutral'))
-    df['react_new_minus'] = nannone(calc.reactivation_rate.freq(date, 'minus'))
+    # df['react_new_plus'] = nannone(calc.reactivation_rate.freq(date, 'plus'))
+    # df['react_new_neutral'] = nannone(calc.reactivation_rate.freq(date, 'neutral'))
+    # df['react_new_minus'] = nannone(calc.reactivation_rate.freq(date, 'minus'))
 
-    df['cosdist_plus'] = nannone(calc_legacy.cosine_distance.stimulus(date, 'plus'))
-    df['cosdist_neutral'] = nannone(calc_legacy.cosine_distance.stimulus(date, 'neutral'))
-    df['cosdist_minus'] = nannone(calc_legacy.cosine_distance.stimulus(date, 'minus'))
+    # df['cosdist_plus'] = nannone(calc_legacy.cosine_distance.stimulus(date, 'plus'))
+    # df['cosdist_neutral'] = nannone(calc_legacy.cosine_distance.stimulus(date, 'neutral'))
+    # df['cosdist_minus'] = nannone(calc_legacy.cosine_distance.stimulus(date, 'minus'))
 
-    df['cosdist_dec_plus'] = nannone(calc_legacy.cosine_distance.stimulus(
-        date, 'plus', trace_type='decon', end_s=1))
-    df['cosdist_dec_neutral'] = nannone(calc_legacy.cosine_distance.stimulus(
-        date, 'neutral', trace_type='decon', end_s=1))
-    df['cosdist_dec_minus'] = nannone(calc_legacy.cosine_distance.stimulus(
-        date, 'minus', trace_type='decon', end_s=1))
+    # cosine_similarity_stimuli(
+    #     date, cs, group, trace_type='deconvolved', start_s=0, end_s=1, trange_glm=(0, 1), rectify=False,
+    #     exclude_outliers=False, remove_group=None, offset_glm_positive=False, remove_baseline_stimuli=False,
+    #     drop_glm_zeros=False, max_across_trial=False, compare_to_trials=False, error_trials=0, binarize=None,
+    #     correlation=False)
 
     df['cossim_plus'] = nannone(calc.distance.cosine_similarity_stimuli(
-        date, 'plus', 'ensure', rectify=False))
-    df['cossim_neutral'] = nannone(calc.distance.cosine_similarity_stimuli(
-        date, 'neutral', 'ensure', rectify=False))
-    df['cossim_minus'] = nannone(calc.distance.cosine_similarity_stimuli(
-        date, 'minus', 'ensure', rectify=False))
+        date, 'plus', 'ensure'))
+    df['cossim_plus_dropzero'] = nannone(calc.distance.cosine_similarity_stimuli(
+        date, 'plus', 'ensure', drop_glm_zeros=True, rectify=True))
+    df['cossim_plus_trials_max'] = nannone(calc.distance.cosine_similarity_stimuli(
+        date, 'plus', 'ensure', compare_to_trials=True, max_across_trial=True, rectify=True))
+    df['cossim_plus_trials'] = nannone(calc.distance.cosine_similarity_stimuli(
+        date, 'plus', 'ensure', compare_to_trials=True, rectify=True))
 
+    return df
+
+
+def date_fraction(df):
+    """
+    Add the fractional time passed for each mouse.
+
+    Parameters
+    ----------
+    df : Dataframe
+
+    Returns
+    -------
+    updated dataframe
+
+    """
+
+    for mouse in df['mouse'].unique():
+        df.loc[df.mouse == mouse, 'sequential_date'], _ = \
+            pd.factorize(df.loc[df.mouse == mouse, 'date'], sort=True)
+        df.loc[df.mouse == mouse, 'fractional_date'] = \
+            (df.loc[df.mouse == mouse, 'sequential_date'].astype(float)/
+             df.loc[df.reversed == 0, 'sequential_date'].max())
 
     return df
 
@@ -75,6 +100,8 @@ def main(args):
             df = df_date
         else:
             df = pd.concat([df, df_date], ignore_index=True, sort=True)
+
+    df = date_fraction(df)
 
     return df
 
