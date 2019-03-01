@@ -42,7 +42,9 @@ def trials(runs, cs, start_s=0, end_s=None, trace_type='dff', cutoff_before_lick
     """
 
     # Convert date to runsorter of training sessions
-    if not isinstance(runs, flow.metadata.sorters.RunSorter):
+    if isinstance(runs, flow.metadata.sorters.Run):
+        runs = [runs]
+    elif isinstance(runs, flow.metadata.sorters.Date):
         runs = runs.runs(run_types='training', tags='hungry')
 
     # Convert a string cs into an iterable list

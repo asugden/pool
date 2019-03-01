@@ -1,12 +1,13 @@
 """Analyses directly related to behavioral performance."""
 from __future__ import division
+import numpy as np
 from scipy.stats import norm
 
 from ..database import memoize
 from .. import engagement_hmm
 
 
-@memoize(across='run', updated=190220)
+@memoize(across='run', updated=190226)
 def engaged(run, across_run=True):
     """
     Return result of engagement HMM.
@@ -31,12 +32,34 @@ def engaged(run, across_run=True):
         runs = []
         for training_run in date.runs('training', tags=['hungry']):
             runs.append(training_run)
+        hmm.set_runs(runs).calculate()
 
         return hmm.engagement(run)
     else:
         hmm.set_runs([run]).calculate()
 
         return hmm.engagement()
+
+
+@memoize(across='date', updated=190226, returns='value')
+def engagement(date):
+    """
+    Return result of engagement HMM.
+
+    Parameters
+    ----------
+    date : Date
+
+    Returns
+    -------
+    float
+        Return the fraction of time engaged
+
+    """
+
+    hmm = engagement_hmm.EngagementHMM()
+    hmm.set_runs(date.runs('training', tags='hungry')).calculate()
+    return np.nanmean(hmm.engagement().astype(float))
 
 
 @memoize(across='run', updated=190220)
@@ -468,5 +491,9 @@ def _trial_errors(run, cs=None, hmm_engaged=True, combine_pavlovian=False, acros
     if cs is not None:
         if combine_pavlovian and cs == 'plus':
             conds[conds == codes['pavlovian']] = codes['plus']
-        errs = errs[conds == codes[cs]]
+        try:
+            errs = errs[conds == codes[cs]]
+        except KeyError:
+            # No trials of the given type
+            errs = np.array([], dtype=bool)
     return errs

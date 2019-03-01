@@ -1,3 +1,4 @@
+from datetime import datetime
 import numpy as np
 import pandas as pd
 
@@ -30,7 +31,23 @@ def dataframe_date(date):
     df['dprime'] = calc_legacy.performance.dprime(date)
     df['dprime_new'] = calc.performance.dprime(date)
     df['dprime_run'] = calc.performance.dprime(date, across_run=False)
+
+    df['dprime_first'] = calc.performance.dprime_run(date.runs('training', tags='hungry')[0])
+    df['dprime_last'] = calc.performance.dprime_run(date.runs('training', tags='hungry')[-1])
+
+    runs = date.runs('training', tags='hungry')
+    dp = [calc.performance.dprime_run(run) for run in runs]
+    df['dprime_within'] = max(dp) - min(dp)
+
+    df['engagement'] = calc.performance.engagement(date)
     df['reversed'] = flow.metadata.reversal(date.mouse) < date.date
+
+    df['behavior_hmm_p'] = calc.performance.correct_fraction(date, 'plus', hmm_engaged=True)
+    df['behavior_hmm_n'] = calc.performance.correct_fraction(date, 'neutral', hmm_engaged=True)
+    df['behavior_hmm_m'] = calc.performance.correct_fraction(date, 'minus', hmm_engaged=True)
+    df['behavior_p'] = calc.performance.correct_fraction(date, 'plus', hmm_engaged=False)
+    df['behavior_n'] = calc.performance.correct_fraction(date, 'neutral', hmm_engaged=False)
+    df['behavior_m'] = calc.performance.correct_fraction(date, 'minus', hmm_engaged=False)
 
     df['react_plus'] = nannone(calc_legacy.reactivation_rate.freq(date, 'plus'))
     df['react_neutral'] = nannone(calc_legacy.reactivation_rate.freq(date, 'neutral'))
@@ -62,62 +79,49 @@ def dataframe_date(date):
     return df
 
 
-def date_fraction(df):
-    """
-    Add the fractional time passed for each mouse.
-
-    Parameters
-    ----------
-    df : Dataframe
-
-    Returns
-    -------
-    updated dataframe
-
-    """
-
-    for mouse in df['mouse'].unique():
-        df.loc[df.mouse == mouse, 'sequential_date'], _ = \
-            pd.factorize(df.loc[df.mouse == mouse, 'date'], sort=True)
-        df.loc[df.mouse == mouse, 'fractional_date'] = \
-            (df.loc[df.mouse == mouse, 'sequential_date'].astype(float)/
-             df.loc[df.reversed == 0, 'sequential_date'].max())
-
-    return df
-
-
 def main(args):
     """Main function."""
-    sorter = flow.metadata.DateSorter.frommeta(
-        mice=args.mice, dates=args.dates, tags=args.tags)
+    sorter = flow.metadata.DatePairSorter.frommeta(
+        mice=args.mice, dates=args.dates, day_distance=args.day_distance, sequential=args.sequential,
+        cross_reversal=args.cross_reversal, tags=args.tags)
     # np.warnings.filterwarnings('ignore')
 
     df = None
-    for date in sorter:
-        df_date = dataframe_date(date)
+    for day1, day2 in sorter:
+        day1df = dataframe_date(day1)
+        day2df = dataframe_date(day2)
+
+        ans = [key for key in day1df.keys() if np.issubdtype(day1df[key].dtype, np.number)]
+
+        day1df = day1df.add_suffix('_day1')
+        day2df = day2df.add_suffix('_day2')
+        pairdf = pd.concat([day1df, day2df], axis=1)
+
+        tdelta = datetime.strptime(str(day2.date), '%y%m%d') - datetime.strptime(str(day1.date), '%y%m%d')
+        pairdf['day_distance'] = tdelta.days
+
+        for an in ans:
+            pairdf['d_%s'%an] = pairdf['%s_day2'%an] - pairdf['%s_day1'%an]
 
         if df is None:
-            df = df_date
+            df = pairdf
         else:
-            df = pd.concat([df, df_date], ignore_index=True, sort=True)
-
-    df = date_fraction(df)
+            df = pd.concat([df, pairdf], ignore_index=True, sort=True)
 
     return df
 
 
-def parse_args():
-    arg_parser = flow.misc.default_parser(
-        description="""
-        Plot clusters across pairs of days.""",
-        arguments=('mice', 'tags', 'dates'))
-    arg_parser.add_argument(
-        '-p', '--save_path', type=str, default=flow.paths.graphcrossday(),
-        help='The directory in which to save the output graph.')
+def subset_bidirectional_pairs(df):
+    """
+    Keep only those days in which there is a change in behavior that can be predicted from day1 or day2.
+    Parameters
+    ----------
+    df
 
-    args = arg_parser.parse_args()
+    Returns
+    -------
 
-    return args
+    """
 
 
 def jupyter(mice=None, dates=None, tags=None):
@@ -144,12 +148,13 @@ def jupyter(mice=None, dates=None, tags=None):
             self.mice = mice
             self.dates = dates
             self.tags = tags
+            self.xday = True
+            self.pairs = False
+            self.save_path = flow.paths.graphcrossday()
+            self.day_distance = (0, 6)
+            self.sequential = True
+            self.cross_reversal = False
 
     # args = parse_args()
     args = TempArgs()
     return main(args)
-
-
-if __name__ == '__main__':
-    clargs = parse_args()
-    main(clargs)
