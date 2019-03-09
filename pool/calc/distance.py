@@ -1,22 +1,25 @@
 """Measures of population distance."""
+import itertools as it
+from multiprocessing import cpu_count, Pool
 import numpy as np
 from scipy.spatial.distance import cosine
 try:
     from bottleneck import nanmean, nanmedian, nanmax
 except ImportError:
     from numpy import nanmean, nanmedian, nanmax
+import warnings
 
 from ..database import memoize
 from .. import stimulus
 from . import cell_activity
 
 
-@memoize(across='run', updated=190220, returns='cells by other')
-def cosdist_continuous(
+@memoize(across='run', updated=190226, returns='other')
+def cosine_similarity_continuous(
         run, group, tracetype='deconvolved', trange=(0, 1), rectify=False,
-        exclude_outliers=False, remove_group=None):
+        exclude_outliers=False, remove_group=None, drop_glm_zeros=False):
     """
-    Calculate the cosine distance between a GLM protovector and population.
+    Calculate the cosine distance between a GLM protovector and the population.
 
     Parameters
     ----------
@@ -28,38 +31,68 @@ def cosdist_continuous(
     trange : 2-element tuple of float
         Time range to look at for the protovector.
     rectify : bool
-        If True, set negative values of the protovector to 0.
+        If True, set negative values of the reconstructed vector (before
+        averaging acoss `trange`) to 0.
     exclude_outliers : bool
         Not currently supported, eventually exclude some cells from the
         calculation.
     remove_group : str, optional
         If not None, remove this group protovector from the result.
+    drop_glm_zeros : bool
+        If True, remove all cells in which the GLM protovector is <= 0.
 
     Returns
     -------
     np.ndarray
         Array of length number of time points corresponding to the cosine
-        distance between the specified protovector and the population response.
+        similarity between the specified protovector and the population
+        response. 1==most similar, 0==orthogonal, -1==anti-correlated
 
     """
-    if exclude_outliers:
-        raise NotImplementedError
 
     glm = run.parent.glm()
     unit = glm.protovector(
         group, trange=trange, rectify=rectify, err=-1,
         remove_group=remove_group)
-
     trace = run.trace2p().trace(tracetype)
+
+    if exclude_outliers:
+        keep = cell_activity.keep(run.parent, run_type=run.run_type)
+        unit = unit[keep]
+        trace = trace[keep, :]
+
+    if drop_glm_zeros:
+        keep = unit > 0
+        unit = unit[keep]
+        trace = trace[keep, :]
+
+    n_processes = cpu_count() - 2
+    pool = Pool(processes=n_processes)
+    n_frames = trace.shape[1]
+    chunksize = min(200, n_frames // n_processes)
+    result = np.empty(n_frames, dtype=float)
+    for idx, res in enumerate(pool.imap(
+            _unpack_cosine, it.izip(trace.T, it.repeat(unit)),
+            chunksize=chunksize)):
+        result[idx] = res
+    pool.close()
 
     # scipy.spatial.distance.cdist should be able to do this, but as of 190207
     # it keeps silently crashing the kernel (at least in Jupyter notebooks)
-    result = [cosine(trace_t, unit) for trace_t in trace.T]
+    # result = [cosine(trace_t, unit) for trace_t in trace.T]
 
-    return np.array(result)
+    return 1.0 - np.array(result)
 
 
-@memoize(across='date', updated=190225, returns='value')
+def _unpack_cosine(a):
+    """Unpacker for parallelizing cosine calc."""
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        result = cosine(a[0], a[1])
+    return result
+
+
+@memoize(across='date', updated=190226, returns='value')
 def cosine_similarity_stimuli(
         date, cs, group, trace_type='deconvolved', start_s=0, end_s=1, trange_glm=(0, 1), rectify=False,
         exclude_outliers=False, remove_group=None, offset_glm_positive=False, remove_baseline_stimuli=False,
@@ -198,8 +231,6 @@ def cosine_similarity_stimuli_run(
 
     stimuli = stimulus.trials(run, cs, start_s=start_s, end_s=end_s, trace_type=trace_type, error_trials=0)
 
-
-
     stimuli = nanmean(stimuli, axis=2)
     stimuli = nanmean(stimuli, axis=1)
 
@@ -223,3 +254,70 @@ def cosine_similarity_stimuli_run(
         stimuli = stimuli[keep]
 
     return 1.0 - cosine(stimuli, unit)
+
+
+@memoize(across='run', updated=190226, returns='other')
+def correlation_continuous(
+        run, group, tracetype='deconvolved', trange=(0, 1), rectify=False,
+        exclude_outliers=False, remove_group=None, drop_glm_zeros=False):
+    """
+    Calculate the correlation between a GLM protovector and the population.
+
+    Parameters
+    ----------
+    run : Run
+    group : str
+        Group in GLM.groups.
+    tracetype : str
+        Type of trace to compare to the GLM protovector.
+    trange : 2-element tuple of float
+        Time range to look at for the protovector.
+    rectify : bool
+        If True, set negative values of the reconstructed vector (before
+        averaging acoss `trange`) to 0.
+    drop_glm_zeros : bool
+        If True, remove all cells in which the GLM protovector is <= 0.
+    exclude_outliers : bool
+        Not currently supported, eventually exclude some cells from the
+        calculation.
+    remove_group : str, optional
+        If not None, remove this group protovector from the result.
+
+    Returns
+    -------
+    np.ndarray
+        Array of length number of time points corresponding to the correlation
+        between the specified protovector and the population response.
+
+    """
+    glm = run.parent.glm()
+    unit = glm.protovector(
+        group, trange=trange, rectify=rectify, err=-1,
+        remove_group=remove_group)
+    trace = run.trace2p().trace(tracetype)
+
+    if exclude_outliers:
+        keep = cell_activity.keep(run.parent, run_type=run.run_type)
+        unit = unit[keep]
+        trace = trace[keep, :]
+
+    if drop_glm_zeros:
+        keep = unit > 0
+        unit = unit[keep]
+        trace = trace[keep, :]
+
+    n_processes = cpu_count() - 2
+    pool = Pool(processes=n_processes)
+    n_frames = trace.shape[1]
+    chunksize = min(200, n_frames // n_processes)
+    result = np.empty(n_frames, dtype=float)
+    for idx, res in enumerate(pool.imap(
+            np.corrcoef, it.izip(trace.T, it.repeat(unit)),
+            chunksize=chunksize)):
+        result[idx] = res[0, 1]
+    pool.close()
+
+    # Pool calculation should be equivalent to this:
+    # result = [np.corrcoef(trace_t, unit)[0, 1] for trace_t in trace.T]
+
+    return np.array(result)
