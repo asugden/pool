@@ -1,6 +1,6 @@
 {
     "backends": {
         "backend": "memory",
-        "large_backend": "null",
+        "large_backend": "null"
     }
 }
