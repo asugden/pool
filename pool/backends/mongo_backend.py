@@ -97,7 +97,7 @@ class Connection(object):
         """Create the database, collection, and indices."""
         db = self._client.get_database(self.database_name)
         collection = db.create_collection(self.collection_name)
-        collection.create_index('key', unique=True, name='key')
+        # collection.create_index('key', unique=True, name='key')
         # collection.create_index(
         #     [('analysis', 1), ('mouse', 1), ('date', 1), ('run', 1)],
         #     name='analysis_mdr')
