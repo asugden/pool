@@ -5,6 +5,7 @@ import flow.grapher
 import flow.metadata
 import flow.misc
 import flow.paths
+import flow.sorters
 from flow.misc.type_conversion import nannone
 
 from .. import calc
@@ -65,7 +66,7 @@ def main(args):
     elif 'hungry' not in args.tags:
         args.tags = args.tags + ['hungry']
 
-    sorter = flow.metadata.RunSorter.frommeta(
+    sorter = flow.sorters.RunSorter.frommeta(
         mice=args.mice, dates=args.dates, tags=args.tags, run_types='training')
     # np.warnings.filterwarnings('ignore')
 

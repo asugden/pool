@@ -6,6 +6,7 @@ import flow.grapher
 import flow.metadata
 import flow.misc
 import flow.paths
+import flow.sorters
 from flow.misc.type_conversion import nannone
 
 from .. import calc
@@ -81,7 +82,7 @@ def dataframe_date(date):
 
 def main(args):
     """Main function."""
-    sorter = flow.metadata.DatePairSorter.frommeta(
+    sorter = flow.sorters.DatePairSorter.frommeta(
         mice=args.mice, dates=args.dates, day_distance=args.day_distance, sequential=args.sequential,
         cross_reversal=args.cross_reversal, tags=args.tags)
     # np.warnings.filterwarnings('ignore')

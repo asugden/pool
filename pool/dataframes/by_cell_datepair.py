@@ -5,6 +5,7 @@ import pandas as pd
 
 from flow import glm
 from flow import paths
+from flow import sorters
 
 # import flow.misc
 import flow.metadata
@@ -461,7 +462,7 @@ def main(args):
 
     df = None
     if args.xday:
-        sorter = flow.metadata.DatePairSorter.frommeta(
+        sorter = sorters.DatePairSorter.frommeta(
             mice=args.mice, dates=args.dates, day_distance=args.day_distance, sequential=args.sequential,
             cross_reversal=args.cross_reversal, tags=args.tags)
 
@@ -493,7 +494,7 @@ def main(args):
 
             df = pd.concat([df, pairdf], ignore_index=True, sort=True)
     else:
-        sorter = flow.metadata.DateSorter.frommeta(
+        sorter = sorters.DateSorter.frommeta(
             mice=args.mice, dates=args.dates, tags=args.tags)
 
         for date in sorter:

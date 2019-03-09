@@ -1,5 +1,5 @@
 import numpy as np
-import flow.metadata.sorters
+import flow.sorters
 import pool.config
 
 def trials(runs, cs, start_s=0, end_s=None, trace_type='dff', cutoff_before_lick_ms=-1,
@@ -42,9 +42,9 @@ def trials(runs, cs, start_s=0, end_s=None, trace_type='dff', cutoff_before_lick
     """
 
     # Convert date to runsorter of training sessions
-    if isinstance(runs, flow.metadata.sorters.Run):
+    if isinstance(runs, flow.sorters.Run):
         runs = [runs]
-    elif isinstance(runs, flow.metadata.sorters.Date):
+    elif isinstance(runs, flow.sorters.Date):
         runs = runs.runs(run_types='training', tags='hungry')
 
     # Convert a string cs into an iterable list

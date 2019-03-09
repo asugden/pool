@@ -5,10 +5,10 @@ import os.path as opath
 import scipy.stats
 
 from flow import misc
+from flow import sorters
 import flow.categories
 import flow.misc.math
 import flow.grapher as grapher
-import flow.metadata as metadata
 import flow.netcom as netcom
 import flow.paths
 import pool.config
@@ -334,7 +334,7 @@ def main():
     """Main function."""
     args = parse_args()
     andb = pool.database.db()
-    sorter = metadata.DatePairSorter.frommeta(
+    sorter = sorters.DatePairSorter.frommeta(
         mice=args.mice, dates=args.dates, day_distance=args.day_distance, sequential=args.sequential,
         cross_reversal=args.cross_reversal, tags=args.tags)
     np.warnings.filterwarnings('ignore')
