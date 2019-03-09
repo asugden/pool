@@ -2,17 +2,5 @@
     "backends": {
         "backend": "memory",
         "large_backend": "null",
-        "couch_options": {
-            "port": 5984,
-            "host": "localhost",
-            "database": "analysis"
-        },
-        "supported_backends": [
-            "memory",
-            "shelve",
-            "couch",
-            "disk",
-            "null"
-        ]
     }
 }

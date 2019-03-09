@@ -7,7 +7,8 @@ import inspect
 from flow import paths
 from . import config
 from .backends import \
-    MemoryBackend, ShelveBackend, CouchBackend, DiskBackend, NullBackend
+    CouchBackend, DiskBackend, MemoryBackend, MongoBackend, NullBackend, \
+    ShelveBackend
 try:
     from .backends._cloudant_backend import CloudantBackend
 except ImportError:
@@ -35,6 +36,8 @@ def db(backend=None, **kwargs):
             _dbs['shelve'] = ShelveBackend(**options)
         elif backend == 'couch':
             _dbs['couch'] = CouchBackend(**options)
+        elif backend == 'mongo':
+            _dbs['mongo'] = MongoBackend(**options)
         elif backend == 'memory':
             _dbs['memory'] = MemoryBackend(**options)
         elif backend == 'cloudant':
@@ -47,7 +50,7 @@ def db(backend=None, **kwargs):
     try:
         return _dbs[backend]
     except KeyError:
-        raise ValueError("Unrecognized 'backend' option: {}".format(backend))
+        raise ValueError("Unrecognized backend option: {}".format(backend))
 
 
 class memoize(object):

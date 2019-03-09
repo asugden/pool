@@ -14,7 +14,7 @@ CONFIG_PATHS = [
     os.environ.get("POOL_CONF"),
 ]
 supported_backends = \
-    ["memory", "shelve", "couch", "disk", "null"]
+    ["memory", "shelve", "couch", "mongo", "disk", "null"]
 
 _stimuli = ['plus', 'neutral', 'minus']
 
@@ -107,55 +107,106 @@ def reconfigure():
     with open(config_path, 'r') as f:
         config = json.load(f)
 
-    config['backends']['supported_backends'] = supported_backends
-
     print('ANALYSIS BACKEND')
     print(' memory: stores values in memory, not persistent')
     print(' shelve: stores values in a shelve database file')
     print(' couch: store values in a CouchDB (should already be running)')
+    print(' mongo: store values in a MongoDB (should already be running)')
     print(' disk: store values to disk as individual files')
     print(' null: does not store anything')
 
     backend = None
-    while backend not in config['backends']['supported_backends']:
+    while backend not in supported_backends:
+        prev_backend = config['backends'].get('backend', 'memory')
         backend = input(
-            'Enter backend type: [{}] '.format(
-                config['backends']['backend']))
+            'Enter backend type: [{}] '.format(prev_backend))
         if not len(backend):
-            backend = config['backends']['backend']
+            backend = prev_backend
     config['backends']['backend'] = backend
 
     if backend == 'couch':
         if 'couch_options' not in config['backends']:
             config['backends']['couch_options'] = {}
+
+        prev_host = config['backends']['couch_options'].get(
+            'host', 'localhost')
         host = input("Enter ip or hostname of CouchDB: [{}] ".format(
-            config['backends']['couch_options'].get('host', None)))
-        if len(host):
-            config['backends']['couch_options']['host'] = host
-        port = input("Enter port for CouchDB: [{}] ".format(
-            config['backends']['couch_options'].get('port', None)))
-        if len(port):
-            config['backends']['couch_options']['port'] = port
+            prev_host))
+        if not len(host):
+            host = prev_host
+        config['backends']['couch_options']['host'] = host
+
+        prev_port = config['backends']['couch_options'].get('port', 5984)
+        port = input("Enter port for CouchDB: [{}] ".format(prev_port))
+        if not len(port):
+            port = prev_port
+        config['backends']['couch_options']['port'] = port
+
+        prev_database = config['backends']['couch_options'].get(
+            'database', 'analysis')
         database = input("Enter name of analysis database: [{}] ".format(
-            config['backends']['couch_options'].get('database', None)))
-        if len(database):
-            config['backends']['couch_options']['database'] = database
+            prev_database))
+        if not len(database):
+            database = prev_database
+        config['backends']['couch_options']['database'] = database
+
+        prev_user = config['backends']['couch_options'].get('user', None)
         user = input("Enter username to authenticate with CouchDB (optional): [{}] ".format(
-            config['backends']['couch_options'].get('user', None)))
-        if len(user):
-            config['backends']['couch_options']['user'] = user
+            prev_user))
+        if not len(user):
+            user = prev_user
+        config['backends']['couch_options']['user'] = user
+
+        prev_password = config['backends']['couch_options'].get(
+            'password', None)
         password = input("Enter password to authenticate with CouchDB (optional): [{}] ".format(
-            config['backends']['couch_options'].get('password', None)))
-        if len(password):
-            config['backends']['couch_options']['password'] = password
+            prev_password))
+        if not len(password):
+            password = prev_password
+        config['backends']['couch_options']['password'] = password
+
+    elif backend == 'mongo':
+        if 'mongo_options' not in config['backends']:
+            config['backends']['mongo_options'] = {}
+
+        prev_host = config['backends']['mongo_options'].get(
+            'host', 'localhost')
+        host = input("Enter ip or hostname of MongoDB: [{}] ".format(
+            prev_host))
+        if not len(host):
+            host = prev_host
+        config['backends']['mongo_options']['host'] = host
+
+        prev_port = config['backends']['mongo_options'].get('port', 27017)
+        port = input("Enter port for MongoDB: [{}] ".format(prev_port))
+        if not len(port):
+            port = prev_port
+        config['backends']['mongo_options']['port'] = port
+
+        prev_database = config['backends']['mongo_options'].get(
+            'database', 'analysis')
+        database = input("Enter name of analysis database: [{}] ".format(
+            prev_database))
+        if not len(database):
+            database = prev_database
+        config['backends']['mongo_options']['database'] = database
+
+        prev_collection = config['backends']['mongo_options'].get(
+            'collection', 'cache')
+        collection = input("Enter name of analysis collection: [{}] ".format(
+            prev_collection))
+        if not len(collection):
+            collection = prev_collection
+        config['backends']['mongo_options']['collection'] = collection
 
     large_backend = None
-    while large_backend not in config['backends']['supported_backends']:
+    while large_backend not in supported_backends:
+        prev_large_backend = config['backends'].get('large_backend', 'null')
         large_backend = input(
             'Enter backend type for large files: [{}] '.format(
-                config['backends'].get('large_backend', 'null')))
+                prev_large_backend))
         if not len(large_backend):
-            large_backend = config['backends'].get('backend', 'null')
+            large_backend = prev_large_backend
     config['backends']['large_backend'] = large_backend
 
     with open(config_path, 'w') as f:
