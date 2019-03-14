@@ -1,3 +1,4 @@
+import cPickle as pickle
 from getpass import getuser
 import json
 import numpy as np
@@ -43,13 +44,11 @@ class DiskBackend(BackendBase):
             updated=int(updated),
             depends_on=depends_on,
             **keys)
-
-        if isinstance(data, np.ndarray):
-            doc['value'] = '__ndarray__'
-            np.save(file + '.npy', data)
-        elif isinstance(data, pd.DataFrame):
-            doc['value'] = '__DataFrame__'
-            data.to_pickle(file + '.pkl', compression=None)
+        if isinstance(data, np.ndarray) or \
+                isinstance(data, pd.DataFrame):
+            doc['value'] = '__data__'
+            with open(file + '.pkl', 'w') as f:
+                pickle.dump(data, f, protocol=2)
         else:
             doc['value'] = data
 
@@ -68,12 +67,9 @@ class DiskBackend(BackendBase):
         except IOError:
             return None, None, None
 
-        if info['value'] == '__ndarray__':
-            with open(file + '.npy', 'r') as f:
-                data = np.load(f)
-        elif info['value'] == '__DataFrame__':
+        if info['value'] == '__data__':
             with open(file + '.pkl', 'r') as f:
-                data = pd.read_pickle(f)
+                data = pickle.load(f)
         else:
             data = info['value']
 
