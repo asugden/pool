@@ -97,10 +97,6 @@ class Connection(object):
         """Create the database, collection, and indices."""
         db = self._client.get_database(self.database_name)
         collection = db.create_collection(self.collection_name)
-        collection.create_index('key', unique=True, name='key')
-        # collection.create_index(
-        #     [('analysis', 1), ('mouse', 1), ('date', 1), ('run', 1)],
-        #     name='analysis_mdr')
 
     def put(self, doc):
         """Store a value in the database."""
@@ -108,15 +104,6 @@ class Connection(object):
                 isinstance(doc['value'], pd.DataFrame):
             doc['__data__'] = Binary(pickle.dumps(doc['value'], protocol=2))
             doc['value'] = '__data__'
-            # temp_file = TemporaryFile()
-            # np.save(temp_file, doc['value'])
-            # temp_file.seek(0)
-            # doc['__data__'] = Binary(temp_file.read())
-        # elif isinstance(doc['value'], pd.DataFrame):
-            # temp_file = TemporaryFile()
-            # doc['value'].to_pickle(temp_file, compression=None)
-            # temp_file.seek(0)
-            # doc['__data__'] = Binary(temp_file.read())
         self.collection.find_one_and_replace(
             {'_id': doc['_id']}, doc, upsert=True)
 
@@ -133,8 +120,6 @@ class Connection(object):
             return doc
         if val == '__data__':
             doc['value'] = pickle.loads(doc.pop('__data__'))
-            # doc['value'] = np.load(BytesIO(doc.pop('__data__')))
-            # doc['value'] = pd.read_pickle(BytesIO(doc.pop('__data__')))
         return doc
 
     # def delete(self, _id):
