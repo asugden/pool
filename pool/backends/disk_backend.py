@@ -29,7 +29,7 @@ class DiskBackend(BackendBase):
         file_base = opath.join(self.savedir, analysis_name)
         # If there's a mouse, date, and run in keys, group by mouse and date
         if 'mouse' in keys and 'date' in keys and 'run' in keys:
-            file_base = opath.join(file_base, keys['mouse'], keys['date'])
+            file_base = opath.join(file_base, keys['mouse'], str(keys['date']))
         # If there's a mouse and date in keys (but no run), group by mouse
         elif 'mouse' in keys and 'date' in keys:
             file_base = opath.join(file_base, keys['mouse'])
