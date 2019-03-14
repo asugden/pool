@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import shutil
+from tempfile import mkdtemp
 import time
 import uuid
 
@@ -238,7 +240,9 @@ def test_recall_df(db, verbose=True):
 
 def full_test(relative=True):
     mem_db = pool.database.db(backend='memory')
-    disk_db = pool.database.db(backend='disk')
+    disk_savedir = mkdtemp()
+    print disk_savedir
+    disk_db = pool.database.db(backend='disk', savedir=disk_savedir)
     dbs = [mem_db, disk_db]
     db_names = ['mem', 'disk']
     try:
@@ -269,6 +273,8 @@ def full_test(relative=True):
             for db_name in db_names[1:]:
                 print("{}: {}x memory".format(db_name, time[db_name] / time['mem']))
         print('')
+
+    shutil.rmtree(disk_savedir)
 
 if __name__ == '__main__':
     full_test()
