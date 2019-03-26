@@ -75,7 +75,7 @@ def careful_first(series):
     series : pd.Series
 
     """
-    assert series.unique() <= 1
+    assert len(series.unique()) <= 1
     return series[0]
 
 
