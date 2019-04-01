@@ -79,6 +79,26 @@ class BaseTests(with_metaclass(ABCMeta, object)):
             self.db.recall(analysis_name=analysis_name, keys=self.keys)
         assert_equal(val2, val)
 
+    def test_bool(self):
+        analysis_name = 'test_bool'
+        val = True
+        self.db.store(
+            analysis_name=analysis_name, data=val, keys=self.keys,
+            updated=self.updated)
+        val2, updated2, dependencies2 = \
+            self.db.recall(analysis_name=analysis_name, keys=self.keys)
+        assert_equal(val2, val)
+
+    def test_np_bool(self):
+        analysis_name = 'test_np_bool'
+        val = np.bool_(True)
+        self.db.store(
+            analysis_name=analysis_name, data=val, keys=self.keys,
+            updated=self.updated)
+        val2, updated2, dependencies2 = \
+            self.db.recall(analysis_name=analysis_name, keys=self.keys)
+        assert_equal(val2, val)
+
     def test_list(self):
         analysis_name = 'test_list'
         val = [1, 2., 'foo', np.int64(1), np.float64(2.)]

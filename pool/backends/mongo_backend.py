@@ -101,7 +101,8 @@ class Connection(object):
     def put(self, doc):
         """Store a value in the database."""
         if isinstance(doc['value'], np.ndarray) or \
-                isinstance(doc['value'], pd.DataFrame):
+                isinstance(doc['value'], pd.DataFrame) or \
+                isinstance(doc['value'], np.bool_):
             doc['__data__'] = Binary(pickle.dumps(doc['value'], protocol=2))
             doc['value'] = '__data__'
         self.collection.find_one_and_replace(
