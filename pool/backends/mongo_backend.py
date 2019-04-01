@@ -4,7 +4,10 @@ from __future__ import division, print_function
 from builtins import object
 
 from bson.binary import Binary
-import cPickle as pickle
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 from datetime import datetime
 from getpass import getuser
 import numpy as np
