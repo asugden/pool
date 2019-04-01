@@ -1,4 +1,4 @@
-"""Analyses directly related to zscoring."""
+"""Analyses directly related to z-scoring."""
 import numpy as np
 try:
     from bottleneck import nanmean
@@ -8,8 +8,8 @@ except ImportError:
 from ..database import memoize
 
 
-@memoize(across='date', updated=190130, returns='cell array')
-def iti_mu(date, window=4, nan_artifacts=False, thresh=8):
+@memoize(across='date', updated=190212, returns='cell array')
+def iti_mu(date, window=4, nan_artifacts=False, thresh=20):
     """
     Calculate the mean (mu) of daily trace per cell avoiding visual
     stimulus period.
@@ -71,8 +71,8 @@ def iti_mu(date, window=4, nan_artifacts=False, thresh=8):
     return mu
 
 
-@memoize(across='date', updated=190130, returns='cell array')
-def iti_sigma(date, window=4, nan_artifacts=False, thresh=8):
+@memoize(across='date', updated=190212, returns='cell array')
+def iti_sigma(date, window=4, nan_artifacts=False, thresh=20):
     """
     Calculate the standard deviation (sigma) of daily trace per
     cell avoiding visual stimulus period.
@@ -134,8 +134,8 @@ def iti_sigma(date, window=4, nan_artifacts=False, thresh=8):
     return sigma
 
 
-@memoize(across='date', updated=190130, returns='cell array')
-def mu(date, nan_artifacts=False, thresh=8):
+@memoize(across='date', updated=190212, returns='cell array')
+def mu(date, nan_artifacts=False, thresh=20):
     """
     Calculate the mean (mu) of daily trace per cell.
 
@@ -181,8 +181,8 @@ def mu(date, nan_artifacts=False, thresh=8):
     return mu
 
 
-@memoize(across='date', updated=190130, returns='cell array')
-def sigma(date, nan_artifacts=False, thresh=8):
+@memoize(across='date', updated=190212, returns='cell array')
+def sigma(date, nan_artifacts=False, thresh=20):
     """
     Calculate the standard deviation (sigma) of daily trace per
     cell.
@@ -229,8 +229,8 @@ def sigma(date, nan_artifacts=False, thresh=8):
     return sigma
 
 
-@memoize(across='run', updated=190130, returns='cell array')
-def run_mu(run, nan_artifacts=False, thresh=8):
+@memoize(across='run', updated=190212, returns='cell array')
+def run_mu(run, nan_artifacts=False, thresh=20):
     """
     Calculate the mean (mu) of single run trace per cell.
 
@@ -270,8 +270,8 @@ def run_mu(run, nan_artifacts=False, thresh=8):
     return mu
 
 
-@memoize(across='run', updated=190130, returns='cell array')
-def run_sigma(run, nan_artifacts=False, thresh=8):
+@memoize(across='run', updated=190212, returns='cell array')
+def run_sigma(run, nan_artifacts=False, thresh=20):
     """
     Calculate the standard deviation (sigma) of single run trace per
     cell.
