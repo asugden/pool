@@ -9,7 +9,6 @@ import os
 
 import flow
 from flow import misc
-import flow.metadata as metadata
 
 from pool.layouts import stimulus as pls
 
@@ -47,7 +46,7 @@ def main():
     filename = '{}_stimulus_response.pdf'
     save_dir = os.path.join(flow.paths.graphd, 'stimulus_response')
     args = parse_args()
-    sorter = metadata.MouseSorter.frommeta(
+    sorter = flow.MouseSorter.frommeta(
         mice=args.mice, tags=args.tags)
     for mouse in sorter:
         save_path = os.path.join(save_dir, filename.format(mouse))

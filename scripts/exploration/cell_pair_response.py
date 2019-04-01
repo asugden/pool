@@ -9,9 +9,9 @@ import os.path as opath
 
 import flow
 from flow import misc
+from flow import sorters
 import flow.misc.math
 import flow.grapher as grapher
-import flow.metadata as metadata
 import pool.config
 import pool.plotting.colors as colors
 import pool.database
@@ -239,7 +239,7 @@ def main():
     save_dir = opath.join(flow.paths.graphd, 'cell_response')
     args = parse_args()
     andb = pool.database.db()
-    sorter = metadata.DatePairSorter.frommeta(
+    sorter = sorters.DatePairSorter.frommeta(
         mice=args.mice, dates=args.dates, day_distance=args.day_distance, sequential=args.sequential,
         cross_reversal=args.cross_reversal, tags=args.tags)
 

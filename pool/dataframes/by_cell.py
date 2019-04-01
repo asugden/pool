@@ -3,11 +3,17 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 
-# import flow.paths as hardcodedpaths
-import flow.misc
-import flow.metadata
+from flow import glm
+from flow import metadata
+from flow import paths
+from flow import sorters
+
 from flow.misc import math
-import pool.calc.driven
+import flow.paths
+
+from .. import config
+from .. import calc
+from .. import calc_legacy
 
 
 # from lib import analysis
@@ -61,6 +67,36 @@ def getanalyses(andb, mouse, date, categorize, analyses):
     df.loc[df['nolick_lbl'] == 'reward-nolick-cluster-1', 'nolick_lbl'] = 'reward'
     df.loc[df['base_lbl'] == 'reward-cluster-non-1', 'base_lbl'] = 'non'
     df.loc[df['nolick_lbl'] == 'reward-nolick-cluster-non-1', 'nolick_lbl'] = 'non'
+
+    return df
+
+
+
+def date_analyses(date):
+    """
+    Get a list of analyses and add them to a dataframe.
+
+    Parameters
+    ----------
+    date : Date object
+
+    Returns
+    -------
+    Pandas dataframe
+        A dataframe containing all cells, labeled, with all analyses
+
+    """
+
+    df = None
+    for cs in ['plus']:# pool.config.stimuli():
+        vals = pool.calc.driven.visually(date, cs)
+
+        if df is None:
+            df = pd.DataFrame(vals, columns=['vdrive_%s' % cs])
+        else:
+            df['vdrive_%s' % cs] = vals
+
+        df['vdrive_classic_%s' % cs] = pool.calc.driven.visually_no_bonferroni(date, cs)
 
     return df
 
@@ -400,7 +436,7 @@ def parse_args():
                                                             'plus-only', 'minus-only', 'neutral-only'),
         help='Order in which to categorize cells by their labels.')
     arg_parser.add_argument(
-        '-s', '--save_path', type=str, default=flow.paths.graphcrossday(),
+        '-s', '--save_path', type=str, default=paths.graphcrossday(),
         help='Directory in which to save any graphs.')
 
     # Rarely used options
@@ -419,19 +455,79 @@ def parse_args():
     return args
 
 
-def main():
+def main(args):
     """Main function."""
-    args = parse_args()
 
+    df = None
     if args.xday:
-        sorter = flow.metadata.DatePairSorter.frommeta(
+        sorter = sorters.DatePairSorter.frommeta(
             mice=args.mice, dates=args.dates, day_distance=args.day_distance, sequential=args.sequential,
-            cross_reversal=args.cross_reversal, tags=args.tags)
+            cross_reversal=args.cross_reversal, tags=['replay1'])
 
         for day1, day2 in sorter:
-            print(pool.calc.driven.visually(day1, 'plus'))
-            import pdb;pdb.set_trace()
+            day1df = date_analyses(day1)
+            day2df = date_analyses(day2)
+
+            # nextdf = getanalyses(andb, md[0], md[1], lpars['categorize'], ans)
+            # nextdf = addglm(nextdf, md[0], md[1])
+            # nextdf = addcluster(nextdf, andb, md[0], md[1])
+            #
+            # if lpars['pairs']:
+            #     xlastdf = addpairs(xlastdf, andb, lastmd[0], lastmd[-1], pair_analyses)
+            #     xnextdf = addpairs(xnextdf, andb, nextmd[0], nextmd[-1], pair_analyses)
+            #
+            # pairdf = combinexday(lastmd, nextmd, xlastdf, xnextdf, lpars['pairs'])
+            # pairdf['day_distance'] = tdelta.days
+
+            day1df = day1df.add_suffix('_day1')
+            day2df = day2df.add_suffix('_day2')
+
+            # if pairs:
+            #     pairdf = pd.merge(day1df, day2df, how='inner', left_on=['cell1_id_day1', 'cell2_id_day1'],
+            #                       right_on=['cell1_id_day2', 'cell2_id_day2'])
+            # else:
+            #     pairdf = pd.merge(day1df, day2df, how='inner', left_on='xday_ids_day1', right_on='xday_ids_day2')
+
+            pairdf = pd.concat([day1df, day2df], axis=1)
+
+            df = pd.concat([df, pairdf], ignore_index=True, sort=True)
+
+    return df
+
+
+def jupyter(mice=None, dates=None, tags=None):
+    """
+    Run from Jupyter Notebook
+
+    Parameters
+    ----------
+    mice
+    dates
+    tags
+
+    Returns
+    -------
+
+    """
+
+    class TempArgs:
+        def __init__(self):
+            self.mice = mice
+            self.dates = dates
+            self.tags = tags
+            self.xday = True
+            self.pairs = False
+            self.visually_driven = 50
+            self.categorize = ('lick', 'ensure', 'quinine', 'plus-only', 'minus-only', 'neutral-only')
+            self.save_path = paths.graphcrossday()
+            self.day_distance = (0, 6)
+            self.sequential = True
+            self.cross_reversal = False
+
+    args = TempArgs()
+    return main(args)
 
 
 if __name__ == '__main__':
-    main()
+    clargs = parse_args()
+    main(clargs)

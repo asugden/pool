@@ -159,6 +159,57 @@ def dprime(
     return z_hit_rate - z_fa_rate
 
 
+@memoize(across='run', updated=190130)
+def dprime_run(
+        run, hmm_engaged=True, combine_pavlovian=False,
+        combine_passives=True):
+    """
+    Return d-prime calculated for a specific run.
+
+    Parameters
+    ----------
+    run : Run
+    hmm_engaged : bool
+        If True, only include engaged trials.
+    combine_pavlovian : bool
+        If True, combine pavlovian trials with plus trials.
+    combine_passives : bool
+        If True, combine minus and neutral trials.
+
+    Returns
+    -------
+    float
+
+    """
+    nhits, nplus, nfas, npassives = 0, 0, 0, 0
+    nhits += correct_count(
+        run, cs='plus', hmm_engaged=hmm_engaged,
+        combine_pavlovian=combine_pavlovian)
+    nplus += trial_count(
+        run, cs='plus', hmm_engaged=hmm_engaged,
+        combine_pavlovian=combine_pavlovian)
+
+    nfas += incorrect_count(
+        run, cs='minus', hmm_engaged=hmm_engaged,
+        combine_pavlovian=combine_pavlovian)
+    npassives += trial_count(
+        run, cs='minus', hmm_engaged=hmm_engaged,
+        combine_pavlovian=combine_pavlovian)
+
+    if combine_passives:
+        nfas += incorrect_count(
+            run, cs='neutral', hmm_engaged=hmm_engaged,
+            combine_pavlovian=combine_pavlovian)
+        npassives += trial_count(
+            run, cs='neutral', hmm_engaged=hmm_engaged,
+            combine_pavlovian=combine_pavlovian)
+
+    z_hit_rate = norm.ppf((nhits + 0.5) / (nplus + 1.0))
+    z_fa_rate = norm.ppf((nfas + 0.5) / (npassives + 1.0))
+
+    return z_hit_rate - z_fa_rate
+
+
 @memoize(across='date', updated=190131)
 def criterion(
         date, hmm_engaged=True, combine_pavlovian=False,
@@ -385,7 +436,11 @@ def _trial_errors(run, cs=None, hmm_engaged=True, combine_pavlovian=False):
     if cs is not None:
         if combine_pavlovian and cs == 'plus':
             conds[conds == codes['pavlovian']] = codes['plus']
-        errs = errs[conds == codes[cs]]
+        try:
+            errs = errs[conds == codes[cs]]
+        except KeyError:
+            # No trials of the given type
+            errs = np.array([], dtype=bool)
     return errs
 
 
@@ -393,7 +448,7 @@ class HMM:
     """The engagement HMM."""
 
     def __init__(self):
-        """Initalize the HMM."""
+        """Initialize the HMM."""
 
         self.cses = config.stimuli()
 

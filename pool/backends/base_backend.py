@@ -7,9 +7,7 @@ import os
 from importlib import import_module
 import numpy as np
 
-from flow import paths
-import flow.config
-import flow.metadata as metadata
+from flow import config, metadata, paths, sorters
 from flow.misc.wordhash import word
 
 
@@ -303,9 +301,9 @@ class BackendBase(with_metaclass(ABCMeta, object)):
             print('\tupdating analysis... {} {} {} {}'.format(
                 c, mouse, date, run if an['across'] == 'run' else ''))
             if metadata_object is None and an['across'] == 'run':
-                metadata_object = metadata.Run(mouse, date, run)
+                metadata_object = sorters.Run(mouse, date, run)
             elif metadata_object is None:
-                metadata_object = metadata.Date(mouse, date)
+                metadata_object = sorters.Date(mouse, date)
             c.__init__(metadata_object, self, pars)
             out = c._get()
             for key in out:
@@ -531,7 +529,7 @@ def default_parameters(mouse, date):
     Parse command-line arguments and return.
     """
 
-    pars = flow.config.default()
+    pars = config.default()
     pars['mouse'] = mouse
     pars['training-date'] = str(date)
     pars['comparison-date'] = str(date)

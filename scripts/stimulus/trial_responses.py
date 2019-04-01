@@ -13,7 +13,6 @@ if 'DISPLAY' not in os.environ:
 
 import flow
 from flow import misc
-import flow.metadata as metadata
 import pool
 from pool.layouts import stimulus as pls
 
@@ -99,7 +98,7 @@ def main():
     filename = '{}_trial_{}.pdf'
     save_dir = os.path.join(flow.paths.graphd, 'trial_traces')
     args = parse_args()
-    sorter = metadata.DateSorter.frommeta(
+    sorter = flow.DateSorter.frommeta(
         mice=args.mice, dates=args.dates, tags=args.tags)
     for date in sorter:
         save_path = os.path.join(save_dir, date.mouse, filename.format(

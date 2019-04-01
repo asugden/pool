@@ -92,13 +92,17 @@ def events_df(
     return pd.concat(events_list, axis=0)
 
 
-def trial_classifier_df(runs):
+def trial_classifier_df(runs, pad_s=None):
     """
     Return classifier probability across trials.
 
     Parameters
     ----------
     runs : RunSorter or list of Runs
+    pad_s : 2-element tuple of float
+        Used to calculate the padded end of the previous stimulus and the
+        padded start of the next stimulus when cutting up output. Does NOT
+        pad the current stimulus.
 
     Returns
     -------
@@ -109,14 +113,15 @@ def trial_classifier_df(runs):
     """
     result = [pd.DataFrame()]
     for run in runs:
-        result.append(aligned_dfs.trial_classifier_probability(run))
+        result.append(aligned_dfs.trial_classifier_probability(
+            run, pad_s=pad_s))
     result = pd.concat(result, axis=0)
 
     return result
 
 
 def trial_events_df(
-        runs, threshold=0.1, xmask=False, inactivity_mask=False):
+        runs, threshold=0.1, xmask=False, inactivity_mask=False, pad_s=None):
     """
     Return reactivation events relative to stimuli presentations.
 
@@ -129,6 +134,11 @@ def trial_events_df(
         If True, only allow one event (across types) per time bin.
     inactivity_mask : bool
         If True, enforce that all events are during times of inactivity.
+    pad_s : 2-element tuple of float
+        Used to calculate the padded end of the previous stimulus and the
+        padded start of the next stimulus when cutting up output. Does NOT
+        pad the current stimulus. Be careful changing this and make sure it
+        matched trial_frames_df if used together.
 
     Note
     ----
@@ -146,7 +156,7 @@ def trial_events_df(
     for run in runs:
         result.append(aligned_dfs.trial_events(
             run, threshold=threshold, xmask=xmask,
-            inactivity_mask=inactivity_mask))
+            inactivity_mask=inactivity_mask, pad_s=pad_s))
     result = pd.concat(result, axis=0)
 
     return result
@@ -219,8 +229,8 @@ def trigger_events_df(
             raise ValueError("Unrecognized 'trigger' value.")
 
         fr = t2p.framerate
-        pre_fr = int(np.ceil(-pre_s * fr))
-        post_fr = int(np.ceil(post_s * fr))
+        pre_fr = -pre_s * fr
+        post_fr = post_s * fr
 
         events = events_df(
             [run], threshold, xmask=xmask,
@@ -230,7 +240,7 @@ def trigger_events_df(
         for trigger_idx, onset in enumerate(onsets):
 
             trigger_events = events.loc[
-                (events.frame >= (onset - pre_fr)) &
+                (events.frame > (onset - pre_fr)) &
                 (events.frame < (onset + post_fr))].copy()
             trigger_events['time'] = (trigger_events.frame - onset) / fr
             trigger_events['trigger_idx'] = trigger_idx

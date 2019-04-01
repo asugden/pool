@@ -299,7 +299,7 @@ class Database(object):
     def _get_attachment(self, _id):
         attachment = self._db.get_attachment(_id, 'value')
         if isinstance(attachment, couchdb.http.ResponseBody):
-            attachment = couchdb.util.StringIO(attachment.read())
+            attachment = StringIO(attachment.read())
         return attachment
 
     # @staticmethod

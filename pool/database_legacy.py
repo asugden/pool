@@ -5,57 +5,34 @@ import functools
 import inspect
 
 from flow import paths
-from . import config
-from .backends import \
-    CouchBackend, DiskBackend, MemoryBackend, MongoBackend, NullBackend, \
-    ShelveBackend
-try:
-    from .backends._cloudant_backend import CloudantBackend
-except ImportError:
-    pass
-from .backends.base_backend import default_parameters
+from replay.lib import analysis
 
 _dbs = {}
 
 
-def db(backend=None, **kwargs):
+def db(backend='couch', **kwargs):
     """Get a database of analyses from which one can pull individual analyses.
 
     :return: class that interacts with analysis db
 
     """
+
     global _dbs
-    params = config.params()
-    if backend is None:
-        backend = params['backends']['backend']
-    options = params['backends'].get('{}_options'.format(backend), dict())
-    options.update(kwargs)
 
     if backend not in _dbs:
-        if backend == 'shelve':
-            _dbs['shelve'] = ShelveBackend(**options)
-        elif backend == 'couch':
-            _dbs['couch'] = CouchBackend(**options)
-        elif backend == 'mongo':
-            _dbs['mongo'] = MongoBackend(**options)
-        elif backend == 'memory':
-            _dbs['memory'] = MemoryBackend(**options)
-        elif backend == 'cloudant':
-            _dbs['cloudant'] = CloudantBackend(**options)
-        elif backend == 'disk':
-            _dbs['disk'] = DiskBackend(**options)
-        elif backend == 'null':
-            _dbs['null'] = NullBackend(**options)
+        _dbs[backend] = analysis.db(backend)
 
     try:
         return _dbs[backend]
     except KeyError:
-        raise ValueError("Unrecognized backend option: {}".format(backend))
+        raise ValueError("Unrecognized 'backend' option: {}".format(backend))
 
 
-class memoize(object):
+class memoize_legacy(object):
     """
-    Memoization decorator.
+    Memoization decorator. Takes in a translation string and argument order
+    to create analysis names created by the replay library. Will return
+    a warning if a recalculation is necessary.
 
     Parameters
     ----------
@@ -74,10 +51,6 @@ class memoize(object):
         If the analysis returns either an array of cells or a matrix of cells
         and the trace2p is subset, then it will return the subset of the analysis
         results.
-    large_ouput : bool
-        Specifies that this analysis returns a large output and thus should not
-        be stored in the normal database. Intended to allow for disk or memory
-        caching of large results.
 
     Returns
     -------
@@ -95,29 +68,20 @@ class memoize(object):
 
     """
 
-    def __init__(
-            self, across, updated, requires_classifier=False, returns='value',
-            large_output=False):
+    def __init__(self, across, requires_classifier=False, returns='value',
+                 format_string='', format_args=()):
         """Init."""
         self.across = across
         assert across in ['date', 'run']
-        self.updated = int(updated)
         self.requires_classifier = requires_classifier
         self.returns = returns
+        self.format_string = format_string
+        self.format_args = format_args
 
-        if large_output:
-            self.db = db(
-                backend=config.params()['backends'].get(
-                    'large_backend', 'null'))
-        else:
-            self.db = db()
+        self.db = db()
 
     def __call__(self, fn):
         """Make the class behave like a function."""
-
-        # Collect all updated dates for memoized functions.
-        self.db.update_dates['{}.{}'.format(fn.__module__, fn.__name__)] = \
-            self.updated
 
         # Make the memoized function look like the original function upon
         # inspection.
@@ -132,55 +96,29 @@ class memoize(object):
             # Extract mouse/date/run
             if self.across == 'date':
                 date_or_run = parsed_kwargs['date']
-                keys = {'mouse': date_or_run.mouse,
-                        'date': date_or_run.date}
             elif self.across == 'run':
                 date_or_run = parsed_kwargs['run']
-                keys = {'mouse': date_or_run.mouse,
-                        'date': date_or_run.date,
-                        'run': date_or_run.run}
+                parsed_kwargs['run'] = date_or_run.run
 
             subset = date_or_run.cells
 
-            # Get default parameters for the classifier if needed.
-            if self.requires_classifier:
-                pars = parsed_kwargs.get('pars', None)
-                if pars is None:
-                    pars = default_parameters(
-                        mouse=keys['mouse'], date=keys['date'])
-                keys['classifier_word'] = paths.classifierword(pars)
-                parsed_kwargs['pars'] = pars
+            format_tuple = []
+            for key in self.format_args:
+                format_tuple.append(parsed_kwargs[key])
 
-            for key in parsed_kwargs:
-                if key not in ['date', 'run', 'pars']:
-                    keys[key] = parsed_kwargs[key]
+            analysis_name = self.format_string % tuple(format_tuple)
 
-            analysis_name = '{}.{}'.format(fn.__module__, fn.__name__)
+            if subset is not None:
+                date_or_run.set_subset(None)
 
-            if not force:
-                out, stored_updated, depends_on = self.db.recall(
-                    analysis_name, keys)
-                doupdate = self.db.is_analysis_old(
-                    analysis_name, self.updated, stored_updated, depends_on)
-            if force or doupdate:
-                print('Recalcing {}: {} {} {}'.format(
-                    analysis_name, keys['mouse'], keys['date'],
-                    keys.get('run', '')))
-                if subset is not None:
-                    date_or_run.set_subset(None)
+            out = self.db.get(analysis_name, date_or_run.mouse, date_or_run.date, force=force)
 
-                self.db.pre_calc(analysis_name)
-                out = fn(**parsed_kwargs)
-                depends_on = self.db.post_calc(
-                    analysis_name, self.updated)
-                self.db.store(
-                    analysis_name, out, keys, self.updated,
-                    depends_on=depends_on)
+            if subset is not None:
+                date_or_run.set_subset(subset)
 
-                if subset is not None:
-                    date_or_run.set_subset(subset)
-
-            if subset is not None and self.returns == 'cell array':
+            if out is None:
+                return None
+            elif subset is not None and self.returns == 'cell array':
                 return out[subset]
             elif subset is not None and self.returns == 'cell matrix':
                 return out[subset, subset]

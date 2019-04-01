@@ -1,5 +1,9 @@
 from builtins import range
 from builtins import object
+try:
+    from bottleneck import nanargmin, nanargmax
+except ImportError:
+    from numpy import nanargmin, nanargmax
 import math
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -218,8 +222,15 @@ def reducepoints(x, y, n=2000, further=True):
     # Search over each block for the min and max y value, order
     # correctly, and add to the output
     for i in range(newn):
-        pmn = np.argmin(y[i*block:(i + 1)*block])
-        pmx = np.argmax(y[i*block:(i + 1)*block])
+        # Avoid just adding NaN's for all NaN blocks
+        try:
+            pmn = nanargmin(y[i*block:(i + 1)*block])
+        except ValueError:
+            pmn = 0
+        try:
+            pmx = nanargmax(y[i*block:(i + 1)*block])
+        except ValueError:
+            pmx = 0
 
         if pmn < pmx:
             ox[2*i], oy[2*i] = x[i*block + pmn], y[i*block + pmn]

@@ -1,22 +1,23 @@
 from numpy.testing import run_module_suite
+from shutil import rmtree
+from tempfile import mkdtemp
 
-from pool.backends.couch_backend import CouchBackend
+from pool.backends.disk_backend import DiskBackend
 from pool.backends.tests.base_test import BaseTests
-
-host = 'localhost'
-database = 'testing'
 
 
 class TestCouchDB(BaseTests):
 
     def setup(self):
-        self.db = CouchBackend(host=host, database=database)
+        self.savedir = mkdtemp()
+        self.db = DiskBackend(savedir=self.savedir)
         self.keys = {'date': 180101,
                      'mouse': 'TM001'}
         self.updated = 180413
 
     def teardown(self):
         del self.db
+        rmtree(self.savedir)
 
 
 if __name__ == "__main__":
