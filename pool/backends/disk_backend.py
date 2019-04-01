@@ -1,4 +1,7 @@
-import cPickle as pickle
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 from getpass import getuser
 import json
 import numpy as np
