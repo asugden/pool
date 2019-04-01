@@ -56,7 +56,8 @@ class EngagementHMM:
                     conditions[conditions == codes[code]] = -3
 
             for i, cs in enumerate(self.cses):
-                conditions[conditions == codes[cs]] = -i
+                if cs in codes:
+                    conditions[conditions == codes[cs]] = -i
 
             self.cond.extend([abs(v) for v in conditions])
             self.licks.extend(errors)
