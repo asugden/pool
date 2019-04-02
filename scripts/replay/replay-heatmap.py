@@ -5,6 +5,8 @@ from builtins import object, range, str
 from subprocess import getoutput
 
 from copy import copy
+import matplotlib as mpl
+mpl.use('Agg')
 import matplotlib.gridspec as grd
 import matplotlib.pyplot as plt
 import numpy as np
