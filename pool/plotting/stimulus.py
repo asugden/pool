@@ -135,23 +135,59 @@ def trial_traces(
 
 def trial_heatmap(
         ax, date, roi_idx, stim_type, t_range_s=(-1, 2), trace_type='dff',
-        normalize=False, errors=None, plot_outcome=True, **kwargs):
+        normalize=False, plot_outcome=True, plot_licking=True, cmax='auto',
+        sort_by_first_lick=False, colorbar=False, **kwargs):
     """Plot all trial responses as a heatmap."""
-    start_s, end_s = t_range_s
-
-    traces, errors, outcomes = [], [], []
     runs = date.runs(run_types=['training'])
     framerate = runs[0].trace2p().framerate
+
+    start_s, end_s = t_range_s
+    start_fr = int(round(framerate*np.abs(start_s)))
+    end_fr = int(round(framerate*np.abs(end_s)))
+
+    traces, outcomes, licks, stim_len = [], [], [], []
     for run in runs:
         t2p = run.trace2p()
+        stim_len.append(t2p.stimulus_length)
         assert t2p.framerate == framerate
+        if 'baseline' in kwargs:
+            baseline = kwargs.pop('baseline')
+        elif trace_type == 'dff':
+            baseline = (t_range_s[0], 0)
+        else:
+            baseline = None
         all_traces = t2p.cstraces(
             stim_type, start_s=start_s, end_s=end_s, trace_type=trace_type,
-            **kwargs)
+            baseline=baseline, **kwargs)
         traces.append(all_traces[roi_idx])
-        errors.extend(t2p.errors(stim_type))
-        outcomes.extend(t2p.outcomes(stim_type))
+        if plot_outcome:
+            outcomes.extend(t2p.outcomes(stim_type))
+        if plot_licking or sort_by_first_lick:
+            onsets = t2p.csonsets(stim_type, errortrials=-1)
+            lickbouts = t2p.lickbout()
+            run_licks = [[] for _ in range(len(onsets))]
+            for idx, ons in enumerate(onsets):
+                on_licks = lickbouts - (ons - start_fr)
+                on_licks = on_licks[on_licks > 0]
+                for lick in on_licks:
+                    if lick < start_fr + end_fr:
+                        run_licks[idx].append(lick)
+                    else:
+                        break
+            licks.extend(run_licks)
+    stim_len = np.median(stim_len)
     traces = np.concatenate(traces, axis=1)
+    outcomes = np.array(outcomes)
+
+    if sort_by_first_lick:
+        order = np.argsort(
+            [t_licks[0] if len(t_licks) else np.nan
+             for t_licks in licks])[::-1]
+        traces = traces[:, order]
+        if plot_outcome:
+            outcomes = outcomes[order]
+        if plot_licking:
+            licks = [licks[i] for i in order]
 
     mean_trace = np.nanmean(traces, 1)[:, None]
     nan_trace = np.empty(len(mean_trace))[:, None]
@@ -159,21 +195,27 @@ def trial_heatmap(
     traces = np.concatenate([traces, nan_trace, nan_trace, mean_trace, mean_trace], axis=1)
 
     pool.plotting.graphfns.axheatmap(
-        ax.figure, ax, traces.T, [], trace_type, 'auto')
+        ax.figure, ax, traces.T, [], trace_type, cmax, colorbar)
 
     if plot_outcome:
         for idx, outcome in enumerate(outcomes):
-            if outcome >=0 and outcome < traces.shape[0]:
+            if outcome >= 0 and outcome < traces.shape[0]:
                 # Outcomes are time since onset, so add back in pre-onset frames
                 ax.fill_between(
                     [outcome + framerate*np.abs(t_range_s[0]),
                      outcome + framerate*np.abs(t_range_s[0]) + framerate*0.1],
-                    idx, idx+1, color='green')
+                    idx, idx+1, color='xkcd:neon green')
+
+    if plot_licking:
+        for idx, trial_licks in enumerate(licks):
+            if len(trial_licks):
+                ax.plot(trial_licks, [idx+0.5]*len(trial_licks), ls='',
+                        marker='*', color='k')
 
     ax.set_title(stim_type)
 
     # Set x-axis
-    if start_s < 0 and end_s > 0:
+    if start_s < 0 < end_s:
         zero = traces.T.shape[1] * np.abs(start_s) / (end_s - start_s)
         ax.axvline(zero, color='k', linestyle='--')
         xticks = [0, zero, traces.T.shape[1]-1]
@@ -181,6 +223,10 @@ def trial_heatmap(
     else:
         xticks = [0, traces.T.shape[1]]
         xticklabels = [str(start_s), str(end_s)]
+    if start_s < stim_len < end_s:
+        stim_end = traces.T.shape[1] * \
+            (np.abs(start_s) + stim_len) / (end_s - start_s)
+        ax.axvline(stim_end, color='k', linestyle='--')
 
     ax.set_xticks(xticks)
     ax.set_xticklabels(xticklabels)
