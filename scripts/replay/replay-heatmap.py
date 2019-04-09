@@ -18,7 +18,6 @@ except ImportError:
 
 import flow
 from flow import classify2p, config, misc, paths
-from flow.classifier import _old_classify
 
 import pool
 from pool.plotting import colors, graphfns
