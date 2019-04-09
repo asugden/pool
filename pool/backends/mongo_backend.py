@@ -123,7 +123,12 @@ class Connection(object):
             assert doc is None
             return doc
         if val == '__data__':
-            doc['value'] = pickle.loads(doc.pop('__data__'))
+            try:
+                doc['value'] = pickle.loads(doc.pop('__data__'))
+            except UnicodeDecodeError:
+                # Data stored in Python 2 is hard to read in Python 3,
+                # just trigger a re-calc instead of trying.
+                return None
         return doc
 
     # def delete(self, _id):
