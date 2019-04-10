@@ -73,6 +73,43 @@ class MongoBackend(BackendBase):
 
         return out, stored_updated, depends_on
 
+    def delete_mouse(self, mouse, no_action=True):
+        """Delete all entries for a given mouse."""
+        if no_action:
+            num = self.db.collection.count_documents({'mouse': mouse})
+            if num > 0:
+                print("Found documents for mouse {}: {}".format(mouse, num))
+            else:
+                print("No matching documents found for mouse {}.".format(
+                    mouse))
+        else:
+            result = self.db.collection.delete_many({'mouse': mouse})
+            if result.deleted_count > 0:
+                print("Documents deleted for mouse {}: {}".format(
+                    mouse, result.deleted_count))
+            else:
+                print("No matching documents found for mouse {}.".format(
+                    mouse))
+
+    def delete_analysis(self, analysis, no_action=True):
+        """Delete all entries for a given analysis."""
+        if no_action:
+            num = self.db.collection.count_documents({'analysis': analysis})
+            if num > 0:
+                print("Found documents for analysis {}: {}".format(
+                    analysis, num))
+            else:
+                print("No matching documents found for analysis {}.".format(
+                    analysis))
+        else:
+            result = self.db.collection.delete_many({'analysis': analysis})
+            if result.deleted_count > 0:
+                print("Documents deleted for analysis {}: {}".format(
+                    analysis, result.deleted_count))
+            else:
+                print("No matching documents found for analysis {}.".format(
+                    analysis))
+
 
 class Connection(object):
     """Database class that handles connecting with the mongodb server."""

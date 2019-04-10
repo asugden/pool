@@ -200,6 +200,14 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         """
         pass
 
+    def delete_mouse(self, mouse, no_action=True):
+        """Delete all entries for a given mouse."""
+        raise NotImplementedError
+
+    def delete_analysis(self, analysis, no_action=True):
+        """Delete all entries for a given analysis."""
+        raise NotImplementedError
+
     #
     # End of customizable functions.
     #
