@@ -5,6 +5,8 @@ from builtins import object, range, str
 from subprocess import getoutput
 
 from copy import copy
+import matplotlib as mpl
+mpl.use('Agg')
 import matplotlib.gridspec as grd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -16,7 +18,6 @@ except ImportError:
 
 import flow
 from flow import classify2p, config, misc, paths
-from flow.classifier import _old_classify
 
 import pool
 from pool.plotting import colors, graphfns

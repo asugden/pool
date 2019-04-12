@@ -198,6 +198,46 @@ class BaseTests(with_metaclass(ABCMeta, object)):
             self.db.recall(analysis_name=analysis_name, keys=keys)
         assert_equal(val2, val)
 
+    def test_delete_mouse(self):
+        analysis_name = 'test_delete_mouse'
+        keys = deepcopy(self.keys)
+        keys['mouse'] = 'TM007'
+        val = 42
+        self.db.store(
+            analysis_name=analysis_name, data=val, keys=keys,
+            updated=self.updated)
+        val1, updated1, dependencies1 = \
+            self.db.recall(analysis_name=analysis_name, keys=keys)
+        assert_equal(val1, val)
+        assert_equal(updated1, self.updated)
+        assert_equal(dependencies1, {})
+        self.db.delete_mouse(keys['mouse'], no_action=False)
+        val2, updated2, dependencies2 = \
+            self.db.recall(analysis_name=analysis_name, keys=keys)
+        assert_equal(val2, None)
+        assert_equal(updated2, None)
+        assert_equal(dependencies2, None)
+
+    def test_delete_analysis(self):
+        analysis_name = 'test_delete_analysis'
+        keys = deepcopy(self.keys)
+        keys['mouse'] = 'TM007'
+        val = 42
+        self.db.store(
+            analysis_name=analysis_name, data=val, keys=keys,
+            updated=self.updated)
+        val1, updated1, dependencies1 = \
+            self.db.recall(analysis_name=analysis_name, keys=keys)
+        assert_equal(val1, val)
+        assert_equal(updated1, self.updated)
+        assert_equal(dependencies1, {})
+        self.db.delete_analysis(analysis_name, no_action=False)
+        val2, updated2, dependencies2 = \
+            self.db.recall(analysis_name=analysis_name, keys=keys)
+        assert_equal(val2, None)
+        assert_equal(updated2, None)
+        assert_equal(dependencies2, None)
+
 
 if __name__ == "__main__":
     run_module_suite()

@@ -92,7 +92,7 @@ class CouchBackend(BackendBase):
         """The underlying database."""
         return self._database
 
-    def delete_mouse(self, mouse):
+    def delete_mouse(self, mouse, no_action=True):
         """Delete all entries for a given mouse."""
         query = {
             "selector": {
@@ -102,13 +102,20 @@ class CouchBackend(BackendBase):
         }
         num = 0
         for row in self.database.find(query):
-            self.database.delete(row['_id'])
+            if not no_action:
+                self.database.delete(row['_id'])
             num += 1
 
-        if num:
-            print('SUCCESS: {} entries deleted for {}.'.format(num, mouse))
+        if num > 0:
+            if no_action:
+                print("Found documents for mouse {}: {}".format(mouse, num))
+            else:
+                print("Documents deleted for mouse {}: {}".format(mouse, num))
+        else:
+            print("No matching documents found for mouse {}.".format(
+                mouse))
 
-    def delete_analysis(self, analysis):
+    def delete_analysis(self, analysis, no_action=True):
         """Delete all entries for a given analysis."""
         query = {
             "selector": {
@@ -118,12 +125,20 @@ class CouchBackend(BackendBase):
         }
         num = 0
         for row in self.database.find(query):
-            self.database.delete(row['_id'])
+            if not no_action:
+                self.database.delete(row['_id'])
             num += 1
 
-        if num:
-            print("SUCCESS: {} entries deleted for '{}'.".format(
-                num, analysis))
+        if num > 0:
+            if no_action:
+                print("Found documents for analysis {}: {}".format(
+                    analysis, num))
+            else:
+                print("Documents deleted for analysis {}: {}".format(
+                    analysis, num))
+        else:
+            print("No matching documents found for analysis {}.".format(
+                analysis))
 
 
 def timestamp():

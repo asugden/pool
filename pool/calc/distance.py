@@ -1,5 +1,11 @@
 """Measures of population distance."""
-import itertools as it
+try:
+    # Python 2
+    from itertools import izip
+except ImportError:
+    # Python 3
+    izip = zip
+from itertools import repeat
 from multiprocessing import cpu_count, Pool
 import numpy as np
 from scipy.spatial.distance import cosine
@@ -7,6 +13,14 @@ try:
     from bottleneck import nanmean, nanmedian, nanmax
 except ImportError:
     from numpy import nanmean, nanmedian, nanmax
+from bottleneck import move_max
+# Could add a bottleneck alternative (or use the AODE one?)
+# import pandas as pd
+# def move_max(arr, window, min_count=None, axis=-1):
+#     """Moving max."""
+#     return np.array(
+#         pd.Series(arr).rolling(window, min_periods=min_count).max())
+
 import warnings
 
 from ..database import memoize
@@ -14,10 +28,12 @@ from .. import stimulus
 from . import cell_activity
 
 
-@memoize(across='run', updated=190226, returns='other')
+@memoize(across='run', updated=190331, returns='other')
 def cosine_similarity_continuous(
         run, group, tracetype='deconvolved', trange=(0, 1), rectify=False,
-        exclude_outliers=False, remove_group=None, drop_glm_zeros=False):
+        exclude_outliers=False, remove_group=None, drop_glm_zeros=False,
+        weight_by_protovector=False, smooth_method=None, smooth_window=None,
+        glm_type='simpglm'):
     """
     Calculate the cosine distance between a GLM protovector and the population.
 
@@ -40,6 +56,16 @@ def cosine_similarity_continuous(
         If not None, remove this group protovector from the result.
     drop_glm_zeros : bool
         If True, remove all cells in which the GLM protovector is <= 0.
+    weight_by_protovector : bool
+        If True, weight each cell's contribution to the cosine similarity by
+        it's protovector weight.
+    smooth_method : {'max'}, optional
+        If not None, method uses to smooth trace before calculating similarity.
+        Has no effect on the protovector itself.
+    smooth_window : int
+        Size of smoothing window.
+    glm_type : str
+        Type of GLM to use.
 
     Returns
     -------
@@ -50,31 +76,43 @@ def cosine_similarity_continuous(
 
     """
 
-    glm = run.parent.glm()
+    glm = run.parent.glm(glm_type=glm_type)
     unit = glm.protovector(
         group, trange=trange, rectify=rectify, err=-1,
         remove_group=remove_group)
     trace = run.trace2p().trace(tracetype)
 
+    # Drop cells with any non-finite values
+    keep = np.isfinite(unit)
+    keep = keep & np.all(np.isfinite(trace), axis=1)
+    # Optionally drop outliers
     if exclude_outliers:
-        keep = cell_activity.keep(run.parent, run_type=run.run_type)
-        unit = unit[keep]
-        trace = trace[keep, :]
-
+        keep = keep & cell_activity.keep(run.parent, run_type=run.run_type)
+    # Optionally drop non-positive GLM coefficients
     if drop_glm_zeros:
-        keep = unit > 0
-        unit = unit[keep]
-        trace = trace[keep, :]
+        keep = keep & (unit > 0)
+    # Do the dropping
+    unit = unit[keep]
+    trace = trace[keep, :]
+    if smooth_method == 'max':
+        trace = move_max(trace, window=smooth_window, axis=1)
 
     n_processes = cpu_count() - 2
     pool = Pool(processes=n_processes)
     n_frames = trace.shape[1]
     chunksize = min(200, n_frames // n_processes)
     result = np.empty(n_frames, dtype=float)
-    for idx, res in enumerate(pool.imap(
-            _unpack_cosine, it.izip(trace.T, it.repeat(unit)),
-            chunksize=chunksize)):
-        result[idx] = res
+    if not weight_by_protovector:
+        for idx, res in enumerate(pool.imap(
+                _unpack_cosine, izip(trace.T, repeat(unit)),
+                chunksize=chunksize)):
+            result[idx] = res
+    else:
+        weights = np.clip(unit, 0., 1.)
+        for idx, res in enumerate(pool.imap(
+                _unpack_cosine, izip(trace.T, repeat(unit), repeat(weights)),
+                chunksize=chunksize)):
+            result[idx] = res
     pool.close()
 
     # scipy.spatial.distance.cdist should be able to do this, but as of 190207
@@ -88,7 +126,7 @@ def _unpack_cosine(a):
     """Unpacker for parallelizing cosine calc."""
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        result = cosine(a[0], a[1])
+        result = cosine(*a)
     return result
 
 
@@ -312,7 +350,7 @@ def correlation_continuous(
     chunksize = min(200, n_frames // n_processes)
     result = np.empty(n_frames, dtype=float)
     for idx, res in enumerate(pool.imap(
-            np.corrcoef, it.izip(trace.T, it.repeat(unit)),
+            np.corrcoef, izip(trace.T, repeat(unit)),
             chunksize=chunksize)):
         result[idx] = res[0, 1]
     pool.close()

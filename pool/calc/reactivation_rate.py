@@ -10,7 +10,7 @@ from ..database import memoize
 from . import good
 
 
-@memoize(across='date', updated=190130, returns='value')
+@memoize(across='date', updated=190402, returns='value')
 def freq(date, cs, state='sated', classifier_threshold=0.1):
     """
     Return the frequency of reactivation averaged across times of inactivity.
@@ -35,13 +35,13 @@ def freq(date, cs, state='sated', classifier_threshold=0.1):
     nframes = 0.0
     framerate = 0.0
 
-    runs = (date.runs('spontaneous') if state == 'all'
-            else date.runs('spontaneous', tags='state'))
+    runs = date.runs('spontaneous') if state == 'all' \
+        else date.runs('spontaneous', tags=[state])
 
     for run in runs:
         t2p = run.trace2p()
         framerate = t2p.framerate
-        trs = t2p.traces('deconvolved')
+        trs = t2p.trace('deconvolved')
         mask = t2p.inactivity()
 
         c2p = run.classify2p()

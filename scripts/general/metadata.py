@@ -1,6 +1,6 @@
 """Script to add mice/dates/runs to the metadata record."""
 from __future__ import print_function
-from builtins import str
+from builtins import input, str
 import argparse
 import glob
 import os
@@ -243,6 +243,8 @@ def list_runs(
             new_meta = meta
         print(new_meta)
 
+    return new_meta
+
 
 def main():
     """Main script."""
@@ -260,7 +262,11 @@ def main():
         > python metadata.py OA178
         
         List all matching runs and don't add anything.
-        > python metadata.py --list OA178 180701
+        > python metadata.py OA178 180701 --list
+
+        Delete all matching runs. Will print out match and then prompt for
+        confirmation.
+        > python metadata.py OA178 180701 --delete
         """), epilog=textwrap.dedent("""
         Run types and default run tags are inferred based on our lab standards.
         Photometry and the tags can be specified multiple times to add more
@@ -297,6 +303,9 @@ def main():
         "-l", "--list", action="store_true",
         help="Only list currently matching runs, don't actually add anything.")
     arg_parser.add_argument(
+        "--delete", action="store_true",
+        help="Delete matching runs from the metadata. Prompts for confirmation.")
+    arg_parser.add_argument(
         "-n", "--no_action", action="store_true",
         help="Do nothing.")
     arg_parser.add_argument(
@@ -309,6 +318,21 @@ def main():
                   args.date_tag, args.run_tag, args.photometry)
         return
 
+    if args.delete:
+        runs = list_runs(args.mouse, args.date, args.runs, args.mouse_tag,
+                         args.date_tag, args.run_tag, args.photometry)
+        if not len(runs):
+            print('No matching runs.')
+            return
+        prompt = input("Confirm deletion of listed runs? (y/N) ")
+        if prompt == 'y':
+            fm.delete_runs(
+                runs.index.get_values(), errors='error', remove_empty=True)
+            print("{} runs deleted.".format(len(runs)))
+        else:
+            print('Aborting.')
+        return
+
     dates = check_date(args.mouse, args.date)
 
     for date in dates:
@@ -316,7 +340,7 @@ def main():
         add_mouse_date_runs(
             mouse=args.mouse, date=date, runs=runs,
             mouse_tags=args.mouse_tag, date_tags=args.date_tag,
-            run_tags=args.run_tag,  photometry=args.photometry,
+            run_tags=args.run_tag, photometry=args.photometry,
             run_type=args.run_type, replace_run_tags=args.replace_run_tags,
             no_action=args.no_action, verbose=args.verbose)
 
