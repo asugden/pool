@@ -46,7 +46,11 @@ class EngagementHMM:
             rewlicks = t2p.stimlicks('', 2, 4)
             if 'pavlovian' in codes:
                 errors[(conditions == codes['pavlovian']) & (rewlicks > 0)] = 0
-                conditions[conditions == codes['pavlovian']] = codes['plus']
+                if 'plus' in codes:
+                    conditions[conditions == codes['pavlovian']] = codes['plus']
+                else:
+                    codes['plus'] = 3
+                    conditions[conditions == codes['pavlovian']] = codes['plus']
 
             errors[conditions == codes['plus']] = 1 - errors[conditions == codes['plus']]
             conditions[conditions == 9] = -3
