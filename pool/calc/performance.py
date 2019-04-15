@@ -7,7 +7,7 @@ from ..database import memoize
 from .. import engagement_hmm
 
 
-@memoize(across='run', updated=190220)
+@memoize(across='run', updated=190226)
 def engaged(run, across_run=True):
     """
     Return result of engagement HMM.
@@ -32,6 +32,7 @@ def engaged(run, across_run=True):
         runs = []
         for training_run in date.runs('training', tags=['hungry']):
             runs.append(training_run)
+        hmm.set_runs(runs).calculate()
 
         return hmm.engagement(run)
     else:

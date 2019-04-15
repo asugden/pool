@@ -1,16 +1,18 @@
 from numpy.testing import run_module_suite
 
-from pool.backends.couch_backend import CouchBackend
+from pool.backends.mongo_backend import MongoBackend
 from pool.backends.tests.base_test import BaseTests
 
 host = 'localhost'
 database = 'testing'
+collection = 'analysis'
 
 
-class TestCouchDB(BaseTests):
+class TestMongoDB(BaseTests):
 
     def setup(self):
-        self.db = CouchBackend(host=host, database=database)
+        self.db = MongoBackend(
+            host=host, database=database, collection=collection)
         self.keys = {'date': 180101,
                      'mouse': 'TM001'}
         self.updated = 180413

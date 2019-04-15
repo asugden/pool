@@ -6540,7 +6540,7 @@
           ]
         }
       ],
-      "name": "JF17",
+      "name": "JZ01",
       "tags": [
         "jeff"
       ]
@@ -19672,10 +19672,14 @@
           "runs": [
             {
               "run": 1,
-              "run_type": "training",
+              "run_type": "other",
               "tags": [
                 "hungry",
-                "naive"
+                "hungry",
+                "kelly",
+                "naive",
+                "naive",
+                "orientation_mapping"
               ]
             },
             {

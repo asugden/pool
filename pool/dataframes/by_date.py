@@ -5,6 +5,7 @@ import flow.grapher
 import flow.metadata
 import flow.misc
 import flow.paths
+import flow.sorters
 from flow.misc.type_conversion import nannone
 
 from .. import calc
@@ -81,7 +82,7 @@ def date_fraction(df):
 
 def main(args):
     """Main function."""
-    sorter = flow.metadata.DateSorter.frommeta(
+    sorter = flow.sorters.DateSorter.frommeta(
         mice=args.mice, dates=args.dates, tags=args.tags)
     # np.warnings.filterwarnings('ignore')
 

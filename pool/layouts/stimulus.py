@@ -9,8 +9,8 @@ from pool.plotting import stimulus as pps
 
 def trial_responses(
         date, roi_idx, t_range_s=(-1, 2), trace_type='dff', cses=None,
-        mode='traces', fig_kw=None, **kwargs):
-    """Plots all stimuli responses for a single ROI.
+        mode='traces', fig_kw=None, colorbar=False, **kwargs):
+    """Plot all stimuli responses for a single ROI.
 
     Parameters
     ----------
@@ -29,6 +29,8 @@ def trial_responses(
     fig_kw : dict
         Keyword arguments to be passed to the figure-generating
         function.
+    colorbar : bool
+        If True, include a colorsbar.
     **kwargs
         Additional keyword arguments are passed to the stim trace plotter.
 
@@ -51,9 +53,10 @@ def trial_responses(
         elif mode == 'heatmap':
             pps.trial_heatmap(
                 ax, date, roi_idx, cs, t_range_s=t_range_s, trace_type=trace_type,
-                **kwargs)
+                colorbar=(ax == axs[-1] and colorbar), **kwargs)
         if ax != axs[0]:
             ax.set_ylabel('')
+
     fig.suptitle(
         '{} - {} - {}'.format(
             date.mouse, date.date, roi_idx))

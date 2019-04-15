@@ -57,7 +57,7 @@ def save(fig, path, format='pdf'):
         plt.savefig(filename, transparent=True)
     plt.close(fig)
 
-def axheatmap(fig, ax, data, borders, tracetype='dff', cmax='auto'):
+def axheatmap(fig, ax, data, borders, tracetype='dff', cmax='auto', colorbar=False):
     """
     Plot a heatmap of data data with interstitial boundaries defined by borders.
     :param fig: mpl figure
@@ -66,6 +66,7 @@ def axheatmap(fig, ax, data, borders, tracetype='dff', cmax='auto'):
     :param borders: dict of groups to vertically separate
     :param tracetype: 'dff' or 'deconvolved', used for cmap
     :param cmax: set to a float if desired, otherwise fixed value based on tracetype
+    :param colorbar: add a colorbar, i
     :return: heatmap on mpl axis
     """
 
@@ -89,7 +90,8 @@ def axheatmap(fig, ax, data, borders, tracetype='dff', cmax='auto'):
 
     im = ax.pcolormesh(list(range(nframes)), list(range(ncells)), data, vmin=vrange[0], vmax=vrange[1], cmap=cmap)
     im.set_rasterized(True)
-    # fig.colorbar(im)
+    if colorbar:
+        fig.colorbar(im)
 
     for gr in borders:
         grname = gr.split('-')[0]

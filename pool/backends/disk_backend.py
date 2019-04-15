@@ -1,3 +1,7 @@
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 from getpass import getuser
 import json
 import numpy as np
@@ -25,7 +29,14 @@ class DiskBackend(BackendBase):
     def _filename(self, analysis_name, keys):
         """File location of desired analysis."""
         _id = keyname(analysis_name, **keys)
-        file = opath.join(self.savedir, analysis_name, _id)
+        file_base = opath.join(self.savedir, analysis_name)
+        # If there's a mouse, date, and run in keys, group by mouse and date
+        if 'mouse' in keys and 'date' in keys and 'run' in keys:
+            file_base = opath.join(file_base, keys['mouse'], str(keys['date']))
+        # If there's a mouse and date in keys (but no run), group by mouse
+        elif 'mouse' in keys and 'date' in keys:
+            file_base = opath.join(file_base, keys['mouse'])
+        file = opath.join(file_base, _id)
         flow.misc.mkdir_p(opath.dirname(file))
         return file
 
@@ -43,13 +54,12 @@ class DiskBackend(BackendBase):
             updated=int(updated),
             depends_on=depends_on,
             **keys)
-
-        if isinstance(data, np.ndarray):
-            doc['value'] = '__ndarray__'
-            np.save(file + '.npy', data)
-        elif isinstance(data, pd.DataFrame):
-            doc['value'] = '__DataFrame__'
-            data.to_pickle(file + '.pkl', compression=None)
+        if isinstance(data, np.ndarray) or \
+                isinstance(data, pd.DataFrame) or \
+                isinstance(data, np.bool_):
+            doc['value'] = '__data__'
+            with open(file + '.pkl', 'wb') as f:
+                pickle.dump(data, f, protocol=2)
         else:
             doc['value'] = data
 
@@ -68,12 +78,9 @@ class DiskBackend(BackendBase):
         except IOError:
             return None, None, None
 
-        if info['value'] == '__ndarray__':
-            with open(file + '.npy', 'r') as f:
-                data = np.load(f)
-        elif info['value'] == '__DataFrame__':
-            with open(file + '.pkl', 'r') as f:
-                data = pd.read_pickle(f)
+        if info['value'] == '__data__':
+            with open(file + '.pkl', 'rb') as f:
+                data = pickle.load(f)
         else:
             data = info['value']
 

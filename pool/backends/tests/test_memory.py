@@ -1,16 +1,13 @@
 from numpy.testing import run_module_suite
 
-from pool.backends.couch_backend import CouchBackend
+from pool.backends.memory_backend import MemoryBackend
 from pool.backends.tests.base_test import BaseTests
-
-host = 'localhost'
-database = 'testing'
 
 
 class TestCouchDB(BaseTests):
 
     def setup(self):
-        self.db = CouchBackend(host=host, database=database)
+        self.db = MemoryBackend()
         self.keys = {'date': 180101,
                      'mouse': 'TM001'}
         self.updated = 180413

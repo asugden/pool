@@ -4,6 +4,7 @@ import flow.grapher
 import flow.metadata
 import flow.misc
 import flow.paths
+import flow.sorters
 import pool.calc.clusters
 import pool.database
 import pool.plotting.colors as colors
@@ -22,7 +23,7 @@ def main():
     """Main function."""
     args = parse_args()
     andb = pool.database.db()
-    sorter = flow.metadata.DateSorter.frommeta(
+    sorter = flow.sorters.DateSorter.frommeta(
         mice=args.mice, dates=args.dates, tags=args.tags)
     np.warnings.filterwarnings('ignore')
 

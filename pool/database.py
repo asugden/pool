@@ -6,13 +6,26 @@ import inspect
 
 from flow import paths
 from . import config
-from .backends import \
-    MemoryBackend, ShelveBackend, CouchBackend, DiskBackend, NullBackend
+from .backends.base_backend import default_parameters
+
+from .backends.disk_backend import DiskBackend
+from .backends.memory_backend import MemoryBackend
+from .backends.null_backend import NullBackend
+from .backends.shelve_backend import ShelveBackend
+
+# Couch and Mongo are optional backends that will be available if installed.
+try:
+    from .backends.couch_backend import CouchBackend
+except ImportError:
+    pass
+try:
+    from .backends.mongo_backend import MongoBackend
+except ImportError:
+    pass
 try:
     from .backends._cloudant_backend import CloudantBackend
 except ImportError:
     pass
-from .backends.base_backend import default_parameters
 
 _dbs = {}
 
@@ -35,6 +48,8 @@ def db(backend=None, **kwargs):
             _dbs['shelve'] = ShelveBackend(**options)
         elif backend == 'couch':
             _dbs['couch'] = CouchBackend(**options)
+        elif backend == 'mongo':
+            _dbs['mongo'] = MongoBackend(**options)
         elif backend == 'memory':
             _dbs['memory'] = MemoryBackend(**options)
         elif backend == 'cloudant':
@@ -47,7 +62,7 @@ def db(backend=None, **kwargs):
     try:
         return _dbs[backend]
     except KeyError:
-        raise ValueError("Unrecognized 'backend' option: {}".format(backend))
+        raise ValueError("Unrecognized backend option: {}".format(backend))
 
 
 class memoize(object):
