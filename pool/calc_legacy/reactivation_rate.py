@@ -20,3 +20,24 @@ def freq(date, cs):
     """
 
     pass
+
+
+@memoize_legacy(across='date', returns='cell array',
+                format_string='repcount-%.1f-%s', format_args=['threshold', 'cs'])
+def cell(date, cs, threshold=0.1):
+    """
+    Return the inverse log p-value of drivenness of cells.
+
+    Parameters
+    ----------
+    date : Date
+    cs : str
+    threshold :
+
+    Result
+    ------
+    float
+
+    """
+
+    pass
