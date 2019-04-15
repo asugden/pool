@@ -4,6 +4,7 @@ from __future__ import division, print_function
 from builtins import object
 
 from bson.binary import Binary
+from bson.errors import InvalidDocument
 try:
     import cPickle as pickle
 except ImportError:
@@ -140,13 +141,16 @@ class Connection(object):
 
     def put(self, doc):
         """Store a value in the database."""
-        if isinstance(doc['value'], np.ndarray) or \
-                isinstance(doc['value'], pd.DataFrame) or \
-                isinstance(doc['value'], np.bool_):
+        try:
+            self.collection.find_one_and_replace(
+                {'_id': doc['_id']}, doc, upsert=True)
+        except InvalidDocument:
+            # If the document contains any binary data (np.ndarray,
+            # pd.DataFrame, etc.), pickle it and store as binary.
             doc['__data__'] = Binary(pickle.dumps(doc['value'], protocol=2))
             doc['value'] = '__data__'
-        self.collection.find_one_and_replace(
-            {'_id': doc['_id']}, doc, upsert=True)
+            self.collection.find_one_and_replace(
+                {'_id': doc['_id']}, doc, upsert=True)
 
     def get(self, key):
         """Return the value from the data store for a given analysis."""

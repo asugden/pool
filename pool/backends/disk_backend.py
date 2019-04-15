@@ -55,9 +55,10 @@ class DiskBackend(BackendBase):
             depends_on=depends_on,
             **keys)
         if isinstance(data, np.ndarray) or \
-                isinstance(data, pd.DataFrame):
+                isinstance(data, pd.DataFrame) or \
+                isinstance(data, np.bool_):
             doc['value'] = '__data__'
-            with open(file + '.pkl', 'w') as f:
+            with open(file + '.pkl', 'wb') as f:
                 pickle.dump(data, f, protocol=2)
         else:
             doc['value'] = data
@@ -78,7 +79,7 @@ class DiskBackend(BackendBase):
             return None, None, None
 
         if info['value'] == '__data__':
-            with open(file + '.pkl', 'r') as f:
+            with open(file + '.pkl', 'rb') as f:
                 data = pickle.load(f)
         else:
             data = info['value']

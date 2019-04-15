@@ -3,7 +3,8 @@ from six import with_metaclass
 
 from abc import ABCMeta, abstractmethod
 from copy import deepcopy
-from numpy.testing import run_module_suite, assert_array_equal, assert_equal
+from numpy.testing import \
+    run_module_suite, assert_array_equal, assert_equal, SkipTest
 import numpy as np
 import pandas as pd
 import uuid
@@ -199,6 +200,12 @@ class BaseTests(with_metaclass(ABCMeta, object)):
         assert_equal(val2, val)
 
     def test_delete_mouse(self):
+        try:
+            self.db.delete_mouse('mouse')
+        except NotImplementedError:
+            raise SkipTest
+        except:
+            pass
         analysis_name = 'test_delete_mouse'
         keys = deepcopy(self.keys)
         keys['mouse'] = 'TM007'
@@ -219,6 +226,12 @@ class BaseTests(with_metaclass(ABCMeta, object)):
         assert_equal(dependencies2, None)
 
     def test_delete_analysis(self):
+        try:
+            self.db.delete_analysis('analysis')
+        except NotImplementedError:
+            raise SkipTest
+        except:
+            pass
         analysis_name = 'test_delete_analysis'
         keys = deepcopy(self.keys)
         keys['mouse'] = 'TM007'
