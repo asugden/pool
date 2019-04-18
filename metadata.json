@@ -5238,6 +5238,208 @@
     {
       "dates": [
         {
+          "date": 190305,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 8,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190306,
+          "photometry": [
+            "true"
+          ],
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 8,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190307,
+          "photometry": [
+            "true"
+          ],
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 8,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190308,
+          "photometry": [
+            "true"
+          ],
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 8,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "AS71"
+    },
+    {
+      "dates": [
+        {
           "date": 160503,
           "photometry": [],
           "runs": [
