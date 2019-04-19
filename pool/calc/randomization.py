@@ -5,7 +5,9 @@ from ..database import memoize
 
 
 @memoize(across='date', updated=190002)
-def false_positive_rate(date, cs, randomization_type='identity', match_activity=False):
+def false_positive_rate(
+        date, cs, randomization_type='identity', classifier='aode',
+        match_activity=False):
     """
     Return the per-cs false-positive rate for a particular randomization type.
 
@@ -16,6 +18,8 @@ def false_positive_rate(date, cs, randomization_type='identity', match_activity=
         Stimulus type {'plus', 'neutral', 'minus'}
     randomization_type : str {'time', 'identity'}
         Randomize in time or identity
+    classifier : {'aode', 'naive-bayes'}
+        Classifier to use.
     match_activity : bool
         If True, match the activity of all cells across time.
 
@@ -26,7 +30,7 @@ def false_positive_rate(date, cs, randomization_type='identity', match_activity=
 
     """
 
-    added_pars = {}
+    added_pars = {'classifier': classifier}
     if match_activity:
         added_pars['equalize-cell-activity'] = True
 
