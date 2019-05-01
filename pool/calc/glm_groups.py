@@ -14,7 +14,6 @@ try:
 except ImportError:
     pass
 
-
 @memoize(across='date', updated=190308, returns='value')
 def responses(date,
               group,
