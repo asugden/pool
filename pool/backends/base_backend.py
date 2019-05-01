@@ -492,7 +492,7 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         return dependents
 
 
-def keyname(analysis, mouse, date, run=None, classifier_word=None, **kwargs):
+def keyname(analysis, mouse, date=None, run=None, classifier_word=None, **kwargs):
     """Parse the keys and analysis name in to a single keyname.
 
     Parameters
@@ -501,7 +501,7 @@ def keyname(analysis, mouse, date, run=None, classifier_word=None, **kwargs):
         Name of analysis.
     mouse : str
         Mouse name.
-    date : int or str
+    date : int or str, optional
         Date as int (or string).
     run : int, optional
         If a run-based analysis, the run number.
@@ -512,7 +512,10 @@ def keyname(analysis, mouse, date, run=None, classifier_word=None, **kwargs):
         Any additional parameters to the analysis.
 
     """
-    keyname = '%s-%i' % (mouse, int(date))
+    keyname = str(mouse)
+
+    if date is not None:
+        keyname += '-%i' % (int(date))
 
     if run is not None:
         keyname += '-%02i' % (run)
