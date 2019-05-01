@@ -3,6 +3,7 @@ from builtins import object
 
 import functools
 import inspect
+from warnings import warn
 
 from flow import paths
 from . import config
@@ -44,20 +45,25 @@ def db(backend=None, **kwargs):
     options.update(kwargs)
 
     if backend not in _dbs:
-        if backend == 'shelve':
-            _dbs['shelve'] = ShelveBackend(**options)
-        elif backend == 'couch':
-            _dbs['couch'] = CouchBackend(**options)
-        elif backend == 'mongo':
-            _dbs['mongo'] = MongoBackend(**options)
-        elif backend == 'memory':
-            _dbs['memory'] = MemoryBackend(**options)
-        elif backend == 'cloudant':
-            _dbs['cloudant'] = CloudantBackend(**options)
-        elif backend == 'disk':
-            _dbs['disk'] = DiskBackend(**options)
-        elif backend == 'null':
-            _dbs['null'] = NullBackend(**options)
+        try:
+            if backend == 'shelve':
+                _dbs['shelve'] = ShelveBackend(**options)
+            elif backend == 'couch':
+                _dbs['couch'] = CouchBackend(**options)
+            elif backend == 'mongo':
+                _dbs['mongo'] = MongoBackend(**options)
+            elif backend == 'memory':
+                _dbs['memory'] = MemoryBackend(**options)
+            elif backend == 'cloudant':
+                _dbs['cloudant'] = CloudantBackend(**options)
+            elif backend == 'disk':
+                _dbs['disk'] = DiskBackend(**options)
+            elif backend == 'null':
+                _dbs['null'] = NullBackend(**options)
+        except Exception as err:
+            print(err)
+            warn('Unable to initialize database, falling back to no caching.')
+            _dbs[backend] = NullBackend()
 
     try:
         return _dbs[backend]

@@ -3,6 +3,7 @@ from builtins import object
 
 import functools
 import inspect
+from warnings import warn
 
 from flow import paths
 from replay.lib import analysis
@@ -20,7 +21,12 @@ def db(backend='couch', **kwargs):
     global _dbs
 
     if backend not in _dbs:
-        _dbs[backend] = analysis.db(backend)
+        try:
+            _dbs[backend] = analysis.db(backend)
+        except Exception as err:
+            print(err)
+            warn('Unable to initialize database, falling back to memory backend.')
+            _dbs[backend] = analysis.db('memory')
 
     try:
         return _dbs[backend]
