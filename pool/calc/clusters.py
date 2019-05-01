@@ -6,8 +6,11 @@ from ..database import memoize
 from . import correlations
 from . import driven
 
-from ..calc_legacy import driven as driven_legacy
-from ..calc_legacy import correlations as correlations_legacy
+try:
+    from ..calc_legacy import driven as driven_legacy
+    from ..calc_legacy import correlations as correlations_legacy
+except ImportError:
+    pass
 
 
 @memoize(across='date', updated=190312, returns='cell array')
