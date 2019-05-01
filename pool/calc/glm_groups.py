@@ -9,8 +9,11 @@ except ImportError:
 from ..database import memoize
 from .. import stimulus
 import flow.glm
-from ..calc_legacy import driven
 
+try:
+    from ..calc_legacy import driven
+except ImportError:
+    pass
 
 @memoize(across='date', updated=190308, returns='value')
 def responses(date,
