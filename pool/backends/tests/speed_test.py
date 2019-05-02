@@ -14,11 +14,11 @@ def test_store_float(db, verbose=True):
     updated = 111111
     depends_on = {'other_test': 222222}
     times = 0
-    for r in xrange(repeats):
+    for r in range(repeats):
         all_keys = [{'date': 180101,
                      'mouse': 'TM001',
                      'run': 1,
-                     'foo': str(uuid.uuid4())} for x in xrange(n)]
+                     'foo': str(uuid.uuid4())} for x in range(n)]
         start_s = time.time()
         for keys in all_keys:
             db.store(
@@ -45,9 +45,9 @@ def test_replace_float(db, verbose=True):
         analysis_name='test_replace_float', data=data, keys=keys,
         updated=updated, depends_on=depends_on)
     times = 0
-    for r in xrange(repeats):
+    for r in range(repeats):
         start_s = time.time()
-        for _ in xrange(n):
+        for _ in range(n):
             db.store(
                 analysis_name='test_replace_float', data=data, keys=keys,
                 updated=updated, depends_on=depends_on)
@@ -71,9 +71,9 @@ def test_recall_float(db, verbose=True):
         analysis_name='test_recall_float', data=data, keys=keys,
         updated=updated, depends_on=depends_on)
     times = 0
-    for r in xrange(repeats):
+    for r in range(repeats):
         start_s = time.time()
-        for _ in xrange(n):
+        for _ in range(n):
             db.recall(analysis_name='test_recall_float', keys=keys)
         times += (time.time() - start_s) / n
     if verbose:
@@ -88,11 +88,11 @@ def test_store_array(db, verbose=True):
     updated = 111111
     depends_on = {'other_test': 222222}
     times = 0
-    for r in xrange(repeats):
+    for r in range(repeats):
         all_keys = [{'date': 180101,
                      'mouse': 'TM001',
                      'run': 1,
-                     'foo': str(uuid.uuid4())} for x in xrange(n)]
+                     'foo': str(uuid.uuid4())} for x in range(n)]
         start_s = time.time()
         for keys in all_keys:
             db.store(
@@ -118,9 +118,9 @@ def test_replace_array(db, verbose=True):
         analysis_name='test_replace_array', data=data, keys=keys,
         updated=updated, depends_on=depends_on)
     times = 0
-    for r in xrange(repeats):
+    for r in range(repeats):
         start_s = time.time()
-        for _ in xrange(n):
+        for _ in range(n):
             db.store(
                 analysis_name='test_replace_array', data=data, keys=keys,
                 updated=updated, depends_on=depends_on)
@@ -144,9 +144,9 @@ def test_recall_array(db, verbose=True):
         analysis_name='test_recall_array', data=data, keys=keys,
         updated=updated, depends_on=depends_on)
     times = 0
-    for r in xrange(repeats):
+    for r in range(repeats):
         start_s = time.time()
-        for _ in xrange(n):
+        for _ in range(n):
             db.recall(analysis_name='test_recall_array', keys=keys)
         times += (time.time() - start_s) / n
     if verbose:
@@ -164,11 +164,11 @@ def test_store_df(db, verbose=True):
     updated = 111111
     depends_on = {'other_test': 222222}
     times = 0
-    for r in xrange(repeats):
+    for r in range(repeats):
         all_keys = [{'date': 180101,
                      'mouse': 'TM001',
                      'run': 1,
-                     'foo': str(uuid.uuid4())} for x in xrange(n)]
+                     'foo': str(uuid.uuid4())} for x in range(n)]
         start_s = time.time()
         for keys in all_keys:
             db.store(
@@ -198,9 +198,9 @@ def test_replace_df(db, verbose=True):
         analysis_name='test_replace_df', data=data, keys=keys,
         updated=updated, depends_on=depends_on)
     times = 0
-    for r in xrange(repeats):
+    for r in range(repeats):
         start_s = time.time()
-        for _ in xrange(n):
+        for _ in range(n):
             db.store(
                 analysis_name='test_replace_df', data=data, keys=keys,
                 updated=updated, depends_on=depends_on)
@@ -227,9 +227,9 @@ def test_recall_df(db, verbose=True):
         analysis_name='test_recall_df', data=data, keys=keys,
         updated=updated, depends_on=depends_on)
     times = 0
-    for r in xrange(repeats):
+    for r in range(repeats):
         start_s = time.time()
-        for _ in xrange(n):
+        for _ in range(n):
             db.recall(analysis_name='test_recall_df', keys=keys)
         times += (time.time() - start_s) / n
     if verbose:
@@ -241,7 +241,6 @@ def test_recall_df(db, verbose=True):
 def full_test(relative=True):
     mem_db = pool.database.db(backend='memory')
     disk_savedir = mkdtemp()
-    print disk_savedir
     disk_db = pool.database.db(backend='disk', savedir=disk_savedir)
     dbs = [mem_db, disk_db]
     db_names = ['mem', 'disk']
