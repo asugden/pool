@@ -34,7 +34,7 @@ class DiskBackend(BackendBase):
         # If there's a mouse and date in keys (but no run), group by mouse
         elif 'mouse' in keys and 'date' in keys:
             file_base = opath.join(file_base, keys['mouse'])
-        file = opath.join(file_base, _id)
+        file = opath.join(file_base, _id).replace(':', '=')
         flow.misc.mkdir_p(opath.dirname(file))
         return file
 

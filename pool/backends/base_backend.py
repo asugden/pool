@@ -526,7 +526,8 @@ def keyname(analysis, mouse, date=None, run=None, classifier_word=None, **kwargs
     keyname += '-%s' % (analysis)
 
     for key in sorted(kwargs):
-        if isinstance(kwargs[key], (list, tuple)) and len(kwargs[key]) > 2:
+        if isinstance(kwargs[key], (list, tuple, np.ndarray)) and \
+                len(kwargs[key]) > 2:
             val = '#{}#'.format(word(kwargs[key], use_new=True))
         else:
             val = kwargs[key]
