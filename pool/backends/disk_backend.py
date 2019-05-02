@@ -4,9 +4,7 @@ except ImportError:
     import pickle
 from getpass import getuser
 import json
-import numpy as np
 import os.path as opath
-import pandas as pd
 
 import flow
 from .base_backend import BackendBase, keyname
@@ -53,19 +51,19 @@ class DiskBackend(BackendBase):
             user=getuser(),
             updated=int(updated),
             depends_on=depends_on,
+            value=data,
             **keys)
-        if isinstance(data, np.ndarray) or \
-                isinstance(data, pd.DataFrame) or \
-                isinstance(data, np.bool_):
+        try:
+            with open(file + '.json', 'w') as f:
+                # Compact dump
+                json.dump(doc, f, separators=(',', ':'))
+        except TypeError:
             doc['value'] = '__data__'
             with open(file + '.pkl', 'wb') as f:
                 pickle.dump(data, f, protocol=2)
-        else:
-            doc['value'] = data
-
-        with open(file + '.json', 'w') as f:
-            # Compact dump
-            json.dump(doc, f, separators=(',', ':'))
+            with open(file + '.json', 'w') as f:
+                # Compact dump
+                json.dump(doc, f, separators=(',', ':'))
 
     def recall(self, analysis_name, keys):
         """Recall data."""
