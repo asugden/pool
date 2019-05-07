@@ -350,8 +350,7 @@ def correlation_continuous(
     chunksize = min(200, n_frames // n_processes)
     result = np.empty(n_frames, dtype=float)
     for idx, res in enumerate(pool.imap(
-            np.corrcoef, izip(trace.T, repeat(unit)),
-            chunksize=chunksize)):
+            np.corrcoef, izip(trace.T, repeat(unit)), chunksize=chunksize)):
         result[idx] = res[0, 1]
     pool.close()
 

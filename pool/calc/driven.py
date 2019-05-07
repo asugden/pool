@@ -60,6 +60,29 @@ def visually(date, cs, integrate_bins=6, ncses=3):
 
     return maxinvps
 
+
+@memoize(across='date', updated=190506, returns='value')
+def visually_fraction(date, cs, threshold=50, integrate_bins=6, ncses=3):
+    """Calculate the fraction of cells visually driven.
+
+    Parameters
+    ----------
+    threshold : float
+        Visually driven threshold.
+    **kwargs
+        See pool.calc.driven.visually for additional arguments.
+
+    Returns
+    -------
+    float
+
+    """
+
+    maxinvps = visually(
+        date=date, cs=cs, integrate_bins=integrate_bins, ncses=ncses)
+    return np.sum(maxinvps >= threshold) / float(len(maxinvps))
+
+
 @memoize(across='date', updated=190130, returns='cell array')
 def visually_inhib(date, cs, integrate_bins=6, ncses=3):
     """
