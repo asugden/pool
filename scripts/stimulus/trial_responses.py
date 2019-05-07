@@ -21,9 +21,10 @@ def parse_args():
     arg_parser = misc.default_parser(
         description="""
         Script to plot mean stimulus response over days.""",
-        epilog="""
-        This is the epilog.
-        """, arguments=('mice', 'tags', 'dates', 'overwrite', 'verbose'))
+        # epilog="""
+        # This is the epilog.
+        # """,
+        arguments=('mice', 'tags', 'dates', 'overwrite', 'verbose'))
     arg_parser.add_argument(
         "-T", "--trace_type", choices=('dff', 'deconvolved', 'raw'), default="dff",
         help="Trace type to plot.")
@@ -112,7 +113,8 @@ def main():
         figs = responses_per_cell(
             date, args.trace_type, args.t_range_s, args.errortrials,
             args.baseline, args.maxrois, args.normalize, args.mode)
-        summary_fig = misc.summary_page(date.runs(), figsize=(16, 9), **vars(args))
+        summary_fig = misc.summary_page(
+            date.runs(), figsize=(16, 9), **vars(args))
         misc.save_figs(save_path, it.chain([summary_fig], figs))
         print(save_path)
 
