@@ -27,6 +27,8 @@ class DiskBackend(BackendBase):
     def _filename(self, analysis_name, keys):
         """File location of desired analysis."""
         _id = keyname(analysis_name, **keys)
+        # Convert the id to a 16-character string
+        _id = flow.misc.wordhash.hash(_id, use_new=True)[:16]
         file_base = opath.join(self.savedir, analysis_name)
         # If there's a mouse, date, and run in keys, group by mouse and date
         if 'mouse' in keys and 'date' in keys and 'run' in keys:
@@ -34,7 +36,7 @@ class DiskBackend(BackendBase):
         # If there's a mouse and date in keys (but no run), group by mouse
         elif 'mouse' in keys and 'date' in keys:
             file_base = opath.join(file_base, keys['mouse'])
-        file = opath.join(file_base, _id).replace(':', '=')
+        file = opath.join(file_base, _id)
         flow.misc.mkdir_p(opath.dirname(file))
         return file
 
