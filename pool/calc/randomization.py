@@ -7,7 +7,8 @@ from ..database import memoize
 @memoize(across='date', updated=190002)
 def false_positive_rate(
         date, cs, randomization_type='identity', classifier='aode',
-        match_activity=False):
+        match_activity=False, threshold=0.1, run_types='spontaneous',
+        tags='sated', inactivity_mask=True):
     """
     Return the per-cs false-positive rate for a particular randomization type.
 
@@ -35,12 +36,14 @@ def false_positive_rate(
         added_pars['equalize-cell-activity'] = True
 
     nreal, nrand = 0, 0
-    runs = date.runs(run_types='spontaneous', tags='sated')
+    runs = date.runs(run_types=run_types, tags=tags)
     for run in runs:
         c2p = run.classify2p(newpars=added_pars)
-        rand = c2p.randomization(randomization_type)
+        rand = c2p.randomization(
+            randomization_type, inactivity_mask=inactivity_mask)
 
-        nrunreal, nrunrand = rand.real_false_positives(cs, threshold=0.1)
+        nrunreal, nrunrand = rand.real_false_positives(
+            cs, threshold=threshold, inactivity_mask=inactivity_mask)
         nreal += nrunreal
         nrand += nrunrand
 
