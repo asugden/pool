@@ -4,11 +4,11 @@ from __future__ import division
 from ..database import memoize
 
 
-@memoize(across='date', updated=190002)
+@memoize(across='date', updated=190509)
 def false_positive_rate(
         date, cs, randomization_type='identity', classifier='aode',
         match_activity=False, threshold=0.1, run_types='spontaneous',
-        tags='sated', inactivity_mask=True):
+        tags='sated', mask_running=True, mask_licking=True, mask_motion=True):
     """
     Return the per-cs false-positive rate for a particular randomization type.
 
@@ -40,10 +40,10 @@ def false_positive_rate(
     for run in runs:
         c2p = run.classify2p(newpars=added_pars)
         rand = c2p.randomization(
-            randomization_type, inactivity_mask=inactivity_mask)
+            randomization_type, mask_running=mask_running,
+            mask_licking=mask_licking, mask_motion=mask_motion)
 
-        nrunreal, nrunrand = rand.real_false_positives(
-            cs, threshold=threshold, inactivity_mask=inactivity_mask)
+        nrunreal, nrunrand = rand.real_false_positives(cs, threshold=threshold)
         nreal += nrunreal
         nrand += nrunrand
 
