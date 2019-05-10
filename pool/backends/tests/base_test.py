@@ -267,6 +267,33 @@ class BaseTests(with_metaclass(ABCMeta, object)):
         assert_equal(updated2, None)
         assert_equal(dependencies2, None)
 
+    def test_delete_date(self):
+        try:
+            self.db.delete_date('mouse', 'date')
+        except NotImplementedError:
+            raise SkipTest
+        except:
+            raise
+        analysis_name = 'test_delete_date'
+        keys = deepcopy(self.keys)
+        keys['mouse'] = 'TM007'
+        keys['date'] = 190101
+        val = 42
+        self.db.store(
+            analysis_name=analysis_name, data=val, keys=keys,
+            updated=self.updated)
+        val1, updated1, dependencies1 = \
+            self.db.recall(analysis_name=analysis_name, keys=keys)
+        assert_equal(val1, val)
+        assert_equal(updated1, self.updated)
+        assert_equal(dependencies1, {})
+        self.db.delete_date(keys['mouse'], keys['date'], no_action=False)
+        val2, updated2, dependencies2 = \
+            self.db.recall(analysis_name=analysis_name, keys=keys)
+        assert_equal(val2, None)
+        assert_equal(updated2, None)
+        assert_equal(dependencies2, None)
+
     def test_delete_analysis(self):
         try:
             self.db.delete_analysis('analysis')

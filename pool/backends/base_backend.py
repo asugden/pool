@@ -204,6 +204,10 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         """Delete all entries for a given mouse."""
         raise NotImplementedError
 
+    def delete_date(self, mouse, date, no_action=True):
+        """Delete all entries for a given mouse_date."""
+        raise NotImplementedError
+
     def delete_analysis(self, analysis, no_action=True):
         """Delete all entries for a given analysis."""
         raise NotImplementedError
