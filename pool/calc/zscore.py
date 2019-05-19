@@ -7,6 +7,7 @@ except ImportError:
 
 from ..database import memoize
 
+
 @memoize(across='date', updated=190519, returns='cell array')
 def stim_min(date, window=5, nan_artifacts=False, thresh=20):
     """
@@ -68,6 +69,7 @@ def stim_min(date, window=5, nan_artifacts=False, thresh=20):
     mn = np.nanmin(traces[:, masks], axis=1)
 
     return mn
+
 
 @memoize(across='date', updated=190519, returns='cell array')
 def stim_max(date, window=5, nan_artifacts=False, thresh=20):
