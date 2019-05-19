@@ -1,3 +1,4 @@
+"""Test suite for analysis backends."""
 from builtins import object
 from six import with_metaclass
 
@@ -110,6 +111,17 @@ class BaseTests(with_metaclass(ABCMeta, object)):
             self.db.recall(analysis_name=analysis_name, keys=self.keys)
         assert_equal(val2, val)
 
+    def test_dict(self):
+        analysis_name = 'test_dict'
+        val = {'first': 1, 'second': 2., 'third': 'foo', 'fourth': np.int64(1),
+               'fifth': np.float64(2.)}
+        self.db.store(
+            analysis_name=analysis_name, data=val, keys=self.keys,
+            updated=self.updated)
+        val2, updated2, dependencies2 = \
+            self.db.recall(analysis_name=analysis_name, keys=self.keys)
+        assert_equal(val2, val)
+
     def test_array(self):
         analysis_name = 'test_array'
         val = np.array([1, 2., 'foo', np.int64(1), np.float64(2.)])
@@ -140,9 +152,39 @@ class BaseTests(with_metaclass(ABCMeta, object)):
             self.db.recall(analysis_name=analysis_name, keys=self.keys)
         assert_equal(val2, val)
 
+    def test_nan_dict(self):
+        analysis_name = 'test_nan_dict'
+        val = {'first': np.nan, 'second': 1, 'third': 2.}
+        self.db.store(
+            analysis_name=analysis_name, data=val, keys=self.keys,
+            updated=self.updated)
+        val2, updated2, dependencies2 = \
+            self.db.recall(analysis_name=analysis_name, keys=self.keys)
+        assert_equal(val2, val)
+
     def test_nan_array(self):
         analysis_name = 'test_nan_array'
         val = np.array([np.nan, 1, 2.])
+        self.db.store(
+            analysis_name=analysis_name, data=val, keys=self.keys,
+            updated=self.updated)
+        val2, updated2, dependencies2 = \
+            self.db.recall(analysis_name=analysis_name, keys=self.keys)
+        assert_equal(val2, val)
+
+    def test_array_list(self):
+        analysis_name = 'test_array_list'
+        val = [1, 'test', np.arange(3)]
+        self.db.store(
+            analysis_name=analysis_name, data=val, keys=self.keys,
+            updated=self.updated)
+        val2, updated2, dependencies2 = \
+            self.db.recall(analysis_name=analysis_name, keys=self.keys)
+        assert_equal(val2, val)
+
+    def test_array_dict(self):
+        analysis_name = 'test_array_dict'
+        val = {'first': 1, 'second': 'test', 'third': np.arange(3)}
         self.db.store(
             analysis_name=analysis_name, data=val, keys=self.keys,
             updated=self.updated)
@@ -205,7 +247,7 @@ class BaseTests(with_metaclass(ABCMeta, object)):
         except NotImplementedError:
             raise SkipTest
         except:
-            pass
+            raise
         analysis_name = 'test_delete_mouse'
         keys = deepcopy(self.keys)
         keys['mouse'] = 'TM007'
@@ -225,13 +267,40 @@ class BaseTests(with_metaclass(ABCMeta, object)):
         assert_equal(updated2, None)
         assert_equal(dependencies2, None)
 
+    def test_delete_date(self):
+        try:
+            self.db.delete_date('mouse', 'date')
+        except NotImplementedError:
+            raise SkipTest
+        except:
+            raise
+        analysis_name = 'test_delete_date'
+        keys = deepcopy(self.keys)
+        keys['mouse'] = 'TM007'
+        keys['date'] = 190101
+        val = 42
+        self.db.store(
+            analysis_name=analysis_name, data=val, keys=keys,
+            updated=self.updated)
+        val1, updated1, dependencies1 = \
+            self.db.recall(analysis_name=analysis_name, keys=keys)
+        assert_equal(val1, val)
+        assert_equal(updated1, self.updated)
+        assert_equal(dependencies1, {})
+        self.db.delete_date(keys['mouse'], keys['date'], no_action=False)
+        val2, updated2, dependencies2 = \
+            self.db.recall(analysis_name=analysis_name, keys=keys)
+        assert_equal(val2, None)
+        assert_equal(updated2, None)
+        assert_equal(dependencies2, None)
+
     def test_delete_analysis(self):
         try:
             self.db.delete_analysis('analysis')
         except NotImplementedError:
             raise SkipTest
         except:
-            pass
+            raise
         analysis_name = 'test_delete_analysis'
         keys = deepcopy(self.keys)
         keys['mouse'] = 'TM007'

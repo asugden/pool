@@ -9,7 +9,6 @@ except ImportError:
 from ..database import memoize
 from .. import stimulus
 import flow.glm
-
 try:
     from ..calc_legacy import driven
 except ImportError:

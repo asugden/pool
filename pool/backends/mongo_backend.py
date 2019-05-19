@@ -92,6 +92,26 @@ class MongoBackend(BackendBase):
                 print("No matching documents found for mouse {}.".format(
                     mouse))
 
+    def delete_date(self, mouse, date, no_action=True):
+        """Delete all entries for a given mouse_date."""
+        if no_action:
+            num = self.db.collection.count_documents(
+                {'mouse': mouse, 'date': date})
+            if num > 0:
+                print("Found documents for date {}: {}".format(date, num))
+            else:
+                print("No matching documents found for date {}.".format(
+                    date))
+        else:
+            result = self.db.collection.delete_many(
+                {'mouse': mouse, 'date': date})
+            if result.deleted_count > 0:
+                print("Documents deleted for date {}: {}".format(
+                    date, result.deleted_count))
+            else:
+                print("No matching documents found for date {}.".format(
+                    date))
+
     def delete_analysis(self, analysis, no_action=True):
         """Delete all entries for a given analysis."""
         if no_action:

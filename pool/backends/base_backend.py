@@ -204,6 +204,10 @@ class BackendBase(with_metaclass(ABCMeta, object)):
         """Delete all entries for a given mouse."""
         raise NotImplementedError
 
+    def delete_date(self, mouse, date, no_action=True):
+        """Delete all entries for a given mouse_date."""
+        raise NotImplementedError
+
     def delete_analysis(self, analysis, no_action=True):
         """Delete all entries for a given analysis."""
         raise NotImplementedError
@@ -526,7 +530,8 @@ def keyname(analysis, mouse, date=None, run=None, classifier_word=None, **kwargs
     keyname += '-%s' % (analysis)
 
     for key in sorted(kwargs):
-        if isinstance(kwargs[key], (list, tuple)) and len(kwargs[key]) > 2:
+        if isinstance(kwargs[key], (list, tuple, np.ndarray)) and \
+                len(kwargs[key]) > 2:
             val = '#{}#'.format(word(kwargs[key], use_new=True))
         else:
             val = kwargs[key]
