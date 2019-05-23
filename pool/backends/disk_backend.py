@@ -8,7 +8,6 @@ import os.path as opath
 
 import flow
 from .base_backend import BackendBase, keyname
-from .couch_backend import timestamp
 
 
 class DiskBackend(BackendBase):
@@ -49,7 +48,7 @@ class DiskBackend(BackendBase):
 
         doc = dict(
             analysis=analysis_name,
-            timestamp=timestamp(),
+            timestamp=flow.misc.timestamp(),
             user=getuser(),
             updated=int(updated),
             depends_on=depends_on,
