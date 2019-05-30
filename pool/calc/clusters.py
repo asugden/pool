@@ -93,7 +93,6 @@ def number_legacy(date, cs, visual_drivenness=50, correlation='noise'):
     corr = correlations_legacy.noise(date, 'plus')
     ncells = np.shape(corr)[0]
     nc = flow.netcom.nxgraph(np.arange(ncells), corr, limits=vdrive).communities()
-    import pdb;pdb.set_trace()
 
     return nc
 
