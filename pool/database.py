@@ -3,6 +3,7 @@ from builtins import object
 
 import functools
 import inspect
+from warnings import warn
 
 from flow import paths
 from . import config
@@ -44,20 +45,25 @@ def db(backend=None, **kwargs):
     options.update(kwargs)
 
     if backend not in _dbs:
-        if backend == 'shelve':
-            _dbs['shelve'] = ShelveBackend(**options)
-        elif backend == 'couch':
-            _dbs['couch'] = CouchBackend(**options)
-        elif backend == 'mongo':
-            _dbs['mongo'] = MongoBackend(**options)
-        elif backend == 'memory':
-            _dbs['memory'] = MemoryBackend(**options)
-        elif backend == 'cloudant':
-            _dbs['cloudant'] = CloudantBackend(**options)
-        elif backend == 'disk':
-            _dbs['disk'] = DiskBackend(**options)
-        elif backend == 'null':
-            _dbs['null'] = NullBackend(**options)
+        try:
+            if backend == 'shelve':
+                _dbs['shelve'] = ShelveBackend(**options)
+            elif backend == 'couch':
+                _dbs['couch'] = CouchBackend(**options)
+            elif backend == 'mongo':
+                _dbs['mongo'] = MongoBackend(**options)
+            elif backend == 'memory':
+                _dbs['memory'] = MemoryBackend(**options)
+            elif backend == 'cloudant':
+                _dbs['cloudant'] = CloudantBackend(**options)
+            elif backend == 'disk':
+                _dbs['disk'] = DiskBackend(**options)
+            elif backend == 'null':
+                _dbs['null'] = NullBackend(**options)
+        except Exception as err:
+            print(err)
+            warn('Unable to initialize database, falling back to no caching.')
+            _dbs[backend] = NullBackend()
 
     try:
         return _dbs[backend]
@@ -71,11 +77,11 @@ class memoize(object):
 
     Parameters
     ----------
-    across : {'date', 'run'}
-        Defines if the analysis is a 'date' or 'run' analysis. Might be able to
-        infer this from the parsed kwargs if all functions must adhere to a
-        specific argument convention (must have either a 'date' or 'run'
-        argument).
+    across : {'mouse', 'date', 'run'}
+        Defines if the analysis is a 'mouse', 'date' or 'run' analysis. Might
+        be able to infer this from the parsed kwargs if all functions must
+        adhere to a specific argument convention (must have either a 'mouse',
+        'date' or 'run' argument).
     updated : int
         Date of last update. Used to force a re-calculation if needed. If the
         stored date is different (doesn't check for older/newer), ignores
@@ -112,7 +118,7 @@ class memoize(object):
             large_output=False):
         """Init."""
         self.across = across
-        assert across in ['date', 'run']
+        assert across in ['mouse', 'date', 'run']
         self.updated = int(updated)
         self.requires_classifier = requires_classifier
         self.returns = returns
@@ -142,17 +148,23 @@ class memoize(object):
             parsed_kwargs = inspect.getcallargs(fn, *args, **kwargs)
 
             # Extract mouse/date/run
+            if self.across == 'mouse':
+                mdr_obj = parsed_kwargs['mouse']
+                keys = {'mouse': mdr_obj.mouse}
             if self.across == 'date':
-                date_or_run = parsed_kwargs['date']
-                keys = {'mouse': date_or_run.mouse,
-                        'date': date_or_run.date}
+                mdr_obj = parsed_kwargs['date']
+                keys = {'mouse': mdr_obj.mouse,
+                        'date': mdr_obj.date}
             elif self.across == 'run':
-                date_or_run = parsed_kwargs['run']
-                keys = {'mouse': date_or_run.mouse,
-                        'date': date_or_run.date,
-                        'run': date_or_run.run}
+                mdr_obj = parsed_kwargs['run']
+                keys = {'mouse': mdr_obj.mouse,
+                        'date': mdr_obj.date,
+                        'run': mdr_obj.run}
 
-            subset = date_or_run.cells
+            if self.across in ('date', 'run'):
+                subset = mdr_obj.cells
+            else:
+                subset = None
 
             # Get default parameters for the classifier if needed.
             if self.requires_classifier:
@@ -164,7 +176,7 @@ class memoize(object):
                 parsed_kwargs['pars'] = pars
 
             for key in parsed_kwargs:
-                if key not in ['date', 'run', 'pars']:
+                if key not in ['mouse', 'date', 'run', 'pars']:
                     keys[key] = parsed_kwargs[key]
 
             analysis_name = '{}.{}'.format(fn.__module__, fn.__name__)
@@ -176,10 +188,10 @@ class memoize(object):
                     analysis_name, self.updated, stored_updated, depends_on)
             if force or doupdate:
                 print('Recalcing {}: {} {} {}'.format(
-                    analysis_name, keys['mouse'], keys['date'],
+                    analysis_name, keys['mouse'], keys.get('date', ''),
                     keys.get('run', '')))
                 if subset is not None:
-                    date_or_run.set_subset(None)
+                    mdr_obj.set_subset(None)
 
                 self.db.pre_calc(analysis_name)
                 out = fn(**parsed_kwargs)
@@ -190,7 +202,7 @@ class memoize(object):
                     depends_on=depends_on)
 
                 if subset is not None:
-                    date_or_run.set_subset(subset)
+                    mdr_obj.set_subset(subset)
 
             if subset is not None and self.returns == 'cell array':
                 return out[subset]

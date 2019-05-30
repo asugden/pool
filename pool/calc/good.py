@@ -8,9 +8,11 @@ except ImportError:
 from ..database import memoize
 from .. import stimulus
 
+
 @memoize(across='date', updated=181003, returns='value')
 def reactivation(date, cs):
     """
+    Check if a date has good enough data to trust reactivations.
 
     Parameters
     ----------
@@ -28,6 +30,9 @@ def reactivation(date, cs):
 
     trs = nanmean(trs, axis=2)
     trs = nanmean(trs, axis=1)
+
+    if not len(trs):
+        return False
 
     # Across ncells
     dff_active = np.sum(trs > 0.025)/float(len(trs))

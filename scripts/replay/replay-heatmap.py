@@ -679,7 +679,7 @@ def graph(path, frame, ttype, gri):
         path, ts, trs, cls, beh, bord, top, clrs, tracetype=ttype)
 
 
-def grevents(classifier, t2p, md, gri, lpars, basepath):
+def grevents(classifier, t2p, md, gri, lpars, basepath, word=None):
     """
     Graph all events above a threshold
     :param classifier:
@@ -704,7 +704,14 @@ def grevents(classifier, t2p, md, gri, lpars, basepath):
                         path = opath.join(basepath, 'replay %s-%s-%02i %s-%i.pdf'%(md[0], md[1], md[2], cs, frame))
                         graph(path, frame, lpars['display-type'])
     else:
-        path = opath.join(basepath, '%s-%s-%02i-heat-classifier.png'%(md[0], md[1], md[2]))
+        if word is not None:
+            path = opath.join(
+                basepath, '{}-{}-{}-{}-heat-classifier.png'.format(
+                    md[0], md[1], md[2], word))
+        else:
+            path = opath.join(
+                basepath,
+                '%s-%s-%02i-heat-classifier.png'%(md[0], md[1], md[2]))
         graph(path, -1, lpars['display-type'], gri)
 
     print(path)
@@ -790,66 +797,6 @@ def stim_mask(t2p, pre_pad_s=0.2, post_pad_s=0.3, post_pavlovian_pad_s=None):
     return mask
 
 
-def old_main():
-    from sys import argv
-    from flow import parseargv
-
-    defaults = {
-        'sort': '',  # 'dff-no-lick', 'information'
-
-        'display-classifier': 'identity',  # can also be 'time' or 'joint'
-        'display-ancillary': False,
-        'display-other': False,
-        'temporal-filter': False,
-
-        'events': False,
-        'display-training': False,
-        'skip-boxcar': False,
-        'threshold': 0.25,
-        'trange-m': (-1, 1),
-        'frame': -1,
-
-        'top-trace': 'photometry',  # can be 'ripple', 'temporal', or 'none', False
-        'top-tracetype': 'dff',  # can be 'deconvolved', only applied if top-trace is photometry
-
-        'display-type': 'deconvolved',  # can be 'dff'
-
-        'delete-classifier': False,
-        'open': False,
-
-        'realtime': False,
-    }
-
-    lpars = parseargv.extractkv(argv, defaults)
-    runs = parseargv.sortedruns(argv, classifier=True, trace=True, force=True, allruns=lpars['display-training'])
-    # FIX WHOA DOUBLE CHECK that days can include training days, if need be
-
-    andb = pool.database.db()
-    while runs.next():
-        md, args, gm, t2p = runs.get()
-        print(md)
-
-        if lpars['realtime']:
-            from lib import train_classifier
-
-            andb.md(md)
-            actbl, actvar, actouts = activity(andb)
-            rc, pars = train_classifier.get(md[0], md[1], [2, 3, 4], [1, 5], actouts)
-
-            t2p = paths.gett2p(md[0], md[1], md[2])
-            trs = np.clip(t2p.trace('deconvolved')*pars['analog-comparison-multiplier'], 0.0, 1.0)
-            gm = {'results': rc.compare(
-                trs, pars['probability'], 4, actbl, actvar,
-                pars['classification-frames'])}
-
-        gri = ReplayGraphInputs(andb, args, lpars, gm, t2p, md[0], md[1], args['classification-ms'], args['probability']['plus'])
-        basepath = paths.graphgroup(args, 'heatmap')
-        path = grevents(gm, t2p, md, gri, lpars, basepath)
-
-        if lpars['delete-classifier']: deleteclassifier(args)
-        if lpars['open']: getoutput('open %s'%path.replace(' ', '\\ '))
-
-
 def parse_args():
     arg_parser = misc.default_parser(
         description="""
@@ -866,6 +813,9 @@ def parse_args():
     arg_parser.add_argument(
         "-M", "--mask_stimuli", action="store_true",
         help="Mask out stimulus times from traces and classifier probability.")
+    arg_parser.add_argument(
+        "--new_path", action='store_true',
+        help='Use new save path format: SCRIPT/mouse/cword')
 
     args = arg_parser.parse_args()
 
@@ -929,12 +879,31 @@ def main():
                 run.mouse, run.date, run_types=['running'])
 
             t2p = run.trace2p()
-            c2p = run.classify2p()
+            try:
+                c2p = run.classify2p()
+            except classify2p.NoClassifierError as err:
+                print('Unable to classify: {}_{}_{}'.format(
+                    run.mouse, run.date, run.run))
+                print(err)
+                continue
 
             gri = ReplayGraphInputs(andb, params, lpars, c2p.d, t2p, md[0], md[1], params['classification-ms'],
                                     params['probability']['plus'])
-            basepath = paths.graphgroup(params, 'heatmap')
-            path = grevents(c2p, t2p, md, gri, lpars, basepath)
+            if args.new_path:
+                basepath = paths.graphgroup2(
+                    date.mouse, 'replay_heatmap', date.date)
+                good = True
+                for cs in pool.config.stimuli():
+                    good = good and pool.calc.good.reactivation(date, cs)
+                if not good:
+                    basepath = opath.join(basepath, 'bad')
+                    flow.misc.mkdir_p(basepath)
+                path = grevents(
+                    c2p, t2p, md, gri, lpars, basepath,
+                    flow.misc.wordhash.word(params, use_new=True))
+            else:
+                basepath = paths.graphgroup(params, 'heatmap')
+                path = grevents(c2p, t2p, md, gri, lpars, basepath)
 
             if lpars['delete-classifier']: deleteclassifier(params)
             if lpars['open']: getoutput('open %s' % path.replace(' ', '\\ '))
