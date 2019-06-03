@@ -9,10 +9,6 @@ from __future__ import division, print_function
 
 from builtins import object, str, zip
 
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
 import couchdb
 from couchdb.mapping import DateTimeField
 import datetime
@@ -200,21 +196,31 @@ class Database(object):
 
     def put(self, _id=None, **data):
         """Store a value in the database."""
-        data = _put_prep(data)
-        try:
-            _id, _rev = self._put_assume_new(_id, **data)
-        except (TypeError, ValueError):
-            val = data['value']
-            data['value'] = '__attachment__'
-            _id, _rev = self._put_assume_new(_id, **data)
+        new_data, attachment_data = _put_prep(data)
+        _id, _rev = self._put_assume_new(_id, **new_data)
+        if attachment_data is not None:
             doc = {'_id': _id, '_rev': _rev}
             temp_file = TemporaryFile()
-            pickle.dump(val, temp_file, protocol=2)
+            if new_data['value'] == '__attachment__':
+                np.save(temp_file, attachment_data)
+            else:  # new_data['value'] should be '__df_attachment__'
+                attachment_data.to_pickle(temp_file, compression=None)
             temp_file.seek(0)
             self._db.put_attachment(
                 doc, temp_file, filename='value',
                 content_type='application/octet-stream')
         return _id, _rev
+
+    # def put(self, _id=None, **data):
+    #     """Store a value in the database."""
+    #     new_data = self._put_prep(data)
+    #     _id, _rev = self._put_assume_new(_id, **new_data)
+    #     return _id, _rev
+
+    # @staticmethod
+    # def _put_prep(data):
+    #     data['value'] = numpy_encode(data['value'])
+    #     return data
 
     def _put_assume_new(self, _id=None, **data):
         """Store a value in the database.
@@ -298,7 +304,9 @@ class Database(object):
             assert doc is None
             return doc
         if val == '__attachment__':
-            doc['value'] = pickle.load(self._get_attachment(doc['_id']))
+            doc['value'] = np.load(self._get_attachment(doc['_id']))
+        elif val == '__df_attachment__':
+            doc['value'] = pd.read_pickle(self._get_attachment(doc['_id']))
         else:
             doc['value'] = _restore_nan(doc['value'])
         return doc
@@ -360,11 +368,17 @@ def _put_prep(data):
 
     """
     val = data.get('value')
+    if isinstance(val, np.ndarray):
+        data['value'] = '__attachment__'
+        return data, val
+    elif isinstance(val, pd.DataFrame):
+        data['value'] = '__df_attachment__'
+        return data, val
     if isinstance(val, np.generic):
         # Should catch all numpy scalars and convert them to basic types
         val = val.item()
     data['value'] = _strip_nan(val)
-    return data
+    return data, None
 
 
 def _strip_nan(val):
@@ -380,8 +394,7 @@ def _strip_nan(val):
     elif isinstance(val, list) or isinstance(val, tuple):
         return [_strip_nan(item) for item in val]
     elif isinstance(val, set):
-        # raise NotImplementedError
-        pass
+        raise NotImplementedError
     return val
 
 
