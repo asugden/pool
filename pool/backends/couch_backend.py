@@ -294,7 +294,7 @@ class Database(object):
 
     def get(self, _id):
         """Return the value from the data store for a given analysis."""
-        doc = self._db.get(_id, default=None)
+        doc = self._db.get(unicode(_id), default=None)
         return self._parse_doc(doc)
 
     def _parse_doc(self, doc):
