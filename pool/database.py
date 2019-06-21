@@ -6,6 +6,8 @@ import inspect
 from warnings import warn
 
 from flow import paths
+from flow import config as fconfig
+from flow.misc import wordhash
 from . import config
 from .backends.base_backend import default_parameters
 
@@ -114,13 +116,14 @@ class memoize(object):
     """
 
     def __init__(
-            self, across, updated, requires_classifier=False, returns='value',
-            large_output=False):
+            self, across, updated, returns='value', large_output=False,
+            requires_classifier=False, requires_psytracker=False):
         """Init."""
         self.across = across
         assert across in ['mouse', 'date', 'run']
         self.updated = int(updated)
         self.requires_classifier = requires_classifier
+        self.requires_psytracker = requires_psytracker
         self.returns = returns
 
         if large_output:
@@ -174,6 +177,15 @@ class memoize(object):
                         mouse=keys['mouse'], date=keys['date'])
                 keys['classifier_word'] = paths.classifierword(pars)
                 parsed_kwargs['pars'] = pars
+
+            # Get psytracker word if needed
+            if self.requires_psytracker:
+                pars = fconfig.params()['psytrack_defaults']
+                newpars = parsed_kwargs.get('pars')
+                if newpars is not None:
+                    pars.update(newpars)
+                word = wordhash.word(pars, use_new=True)
+                keys['psytracker_word'] = word
 
             for key in parsed_kwargs:
                 if key not in ['mouse', 'date', 'run', 'pars']:

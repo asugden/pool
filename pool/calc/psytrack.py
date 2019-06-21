@@ -5,9 +5,10 @@ from flow import Run
 
 from ..database import memoize
 
-# @memoize(across='mouse', updated='')
-def dprime(mouse, combine_passives=True, newpars=None):
-    psy = mouse.psytracker(newpars=newpars)
+
+@memoize(across='mouse', updated='190621', requires_psytracker=True)
+def dprime(mouse, combine_passives=True, pars=None):
+    psy = mouse.psytracker(pars=pars)
 
     # Gather all the oris for this mouse and their index within the inputs
     oris = {key[4:] for key in psy.weight_labels if key[:4] == 'ori_'}
@@ -24,15 +25,9 @@ def dprime(mouse, combine_passives=True, newpars=None):
     neutral_inputs = inputs.copy()
     minus_inputs = inputs.copy()
 
-    # cum_trials = np.cumsum(psy.data['dayLength'])
-    # total_trials = inputs.shape[0]
-    # day_idx, run_idx = 0, 0
     start_trial = 0
     plus_ori, neutral_ori, minus_ori = -1, -1, -1
-    # while day_idx < len(psy.data['days']) and run_idx < len(psy.data['runs']):
     for run_idx, (date, run) in enumerate(psy.data['dateRuns']):
-        # date = psy.data['days'][day_idx]
-        # run = psy.data['runs'][run_idx]
         run_length = psy.data['runLength'][run_idx]
 
         run_obj = Run(mouse.mouse, date, run)
@@ -56,14 +51,9 @@ def dprime(mouse, combine_passives=True, newpars=None):
         minus_inputs[
             start_trial:start_trial + run_length, input_idxs[minus_ori]] = 1
 
-        # Move indexes up a date/run as needed
-        # run_idx += 1
         start_trial += run_length
-        # if start_trial == cum_trials[day_idx]:
-        #     # Next date
-        #     day_idx += 1
-        # if start_trial > total_trials or start_trial > cum_trials[day_idx]:
-        #     raise ValueError("Malformed data, unable to match trials.")
+
+    # Make sure things ended evenly
     assert(start_trial == inputs.shape[0])
 
     # The lick probability on each trial will be our predicted hit/FA rate
@@ -79,3 +69,38 @@ def dprime(mouse, combine_passives=True, newpars=None):
     z_fa_rate = norm.ppf(fa_rate)
 
     return z_hit_rate - z_fa_rate
+
+
+@memoize(across='date', updated='190621', requires_psytracker=True)
+def dprime_date_start(date, combine_passives=True, pars=None):
+    dp = dprime(
+        date.parent, combine_passives=combine_passives, pars=pars)
+
+    psy = date.parent.psytacker(pars=pars)
+    date_idx = psy.data['days'].index(date.date)
+    run_idx = sum(date_idx.data['dayLength'][:date_idx])
+
+    return dp[run_idx]
+
+
+@memoize(across='date', updated='190621', requires_psytracker=True)
+def dprime_date_end(date, combine_passives=True, pars=None):
+    dp = dprime(
+        date.parent, combine_passives=combine_passives, pars=pars)
+
+    psy = date.parent.psytacker(pars=pars)
+    date_idx = psy.data['days'].index(date.date)
+    run_idx = sum(date_idx.data['dayLength'][:date_idx+1])
+
+    return dp[run_idx-1]
+
+
+@memoize(across='date', updated='190621', requires_psytracker=True)
+def d_dprime_day(date, combine_passives=True, pars=None):
+    return \
+        dprime_date_end(
+            date, combine_passives=combine_passives, pars=pars) - \
+        dprime_date_start(
+            date, combine_passives=combine_passives, pars=pars)
+
+# def d_dprime_overnight(date, combine_passives=True, pars=None):
