@@ -24,14 +24,15 @@ def dprime(mouse, combine_passives=True, newpars=None):
     neutral_inputs = inputs.copy()
     minus_inputs = inputs.copy()
 
-    cum_trials = np.cumsum(psy.data['dayLength'])
-    total_trials = inputs.shape[0]
-    day_idx, run_idx = 0, 0
+    # cum_trials = np.cumsum(psy.data['dayLength'])
+    # total_trials = inputs.shape[0]
+    # day_idx, run_idx = 0, 0
     start_trial = 0
     plus_ori, neutral_ori, minus_ori = -1, -1, -1
-    while day_idx < len(psy.data['days']) and run_idx < len(psy.data['runs']):
-        date = psy.data['days'][day_idx]
-        run = psy.data['runs'][run_idx]
+    # while day_idx < len(psy.data['days']) and run_idx < len(psy.data['runs']):
+    for run_idx, (date, run) in enumerate(psy.data['dateRuns']):
+        # date = psy.data['days'][day_idx]
+        # run = psy.data['runs'][run_idx]
         run_length = psy.data['runLength'][run_idx]
 
         run_obj = Run(mouse.mouse, date, run)
@@ -56,13 +57,14 @@ def dprime(mouse, combine_passives=True, newpars=None):
             start_trial:start_trial + run_length, input_idxs[minus_ori]] = 1
 
         # Move indexes up a date/run as needed
-        run_idx += 1
+        # run_idx += 1
         start_trial += run_length
-        if start_trial == cum_trials[day_idx]:
-            # Next date
-            day_idx += 1
-        elif start_trial > total_trials or start_trial > cum_trials[day_idx]:
-            raise ValueError("Malformed data, unable to match trials.")
+        # if start_trial == cum_trials[day_idx]:
+        #     # Next date
+        #     day_idx += 1
+        # if start_trial > total_trials or start_trial > cum_trials[day_idx]:
+        #     raise ValueError("Malformed data, unable to match trials.")
+    assert(start_trial == inputs.shape[0])
 
     # The lick probability on each trial will be our predicted hit/FA rate
     hit_rate = psy.predict(data=plus_inputs)
