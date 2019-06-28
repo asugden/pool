@@ -1,3 +1,4 @@
+import datetime
 import numpy as np
 import pandas as pd
 
@@ -28,18 +29,30 @@ def dataframe_date(date):
     df = pd.DataFrame([date.mouse], columns=['mouse'])
     # df['mouse'] = date.mouse
     df['date'] = date.date
+    df['date_obj'] = df['date'].apply(
+        lambda x: datetime.datetime.strptime(str(x), '%y%m%d'))
     df['dprime'] = calc_legacy.performance.dprime(date)
     df['dprime_new'] = calc.performance.dprime(date)
+    df['dprime_new_alltrials'] = calc.performance.dprime(
+        date, hmm_engaged=False)
     df['dprime_run'] = calc.performance.dprime(date, across_run=False)
+    df['dprime_day_start'] = calc.psytrack.dprime_day_start(date)
+    df['dprime_day_end'] = calc.psytrack.dprime_day_end(date)
+    df['d_dprime_day'] = calc.psytrack.d_dprime_day(date)
     df['reversed'] = flow.metadata.reversal(date.mouse) < date.date
 
-    df['react_plus'] = nannone(calc_legacy.reactivation_rate.freq(date, 'plus'))
-    df['react_neutral'] = nannone(calc_legacy.reactivation_rate.freq(date, 'neutral'))
-    df['react_minus'] = nannone(calc_legacy.reactivation_rate.freq(date, 'minus'))
+    # df['react_plus'] = nannone(calc_legacy.reactivation_rate.freq(date, 'plus'))
+    # df['react_neutral'] = nannone(calc_legacy.reactivation_rate.freq(date, 'neutral'))
+    # df['react_minus'] = nannone(calc_legacy.reactivation_rate.freq(date, 'minus'))
 
-    # df['react_new_plus'] = nannone(calc.reactivation_rate.freq(date, 'plus'))
-    # df['react_new_neutral'] = nannone(calc.reactivation_rate.freq(date, 'neutral'))
-    # df['react_new_minus'] = nannone(calc.reactivation_rate.freq(date, 'minus'))
+    df['react_new_plus'] = nannone(calc.reactivation_rate.freq(date, 'plus'))
+    df['react_new_neutral'] = nannone(calc.reactivation_rate.freq(date, 'neutral'))
+    df['react_new_minus'] = nannone(calc.reactivation_rate.freq(date, 'minus'))
+    df['react_new_comb'] = \
+        df['react_new_plus'] + df['react_new_neutral'] + df['react_new_minus']
+    df['react_all_plus'] = nannone(calc.reactivation_rate.freq(date, 'plus', state='all'))
+    df['react_all_neutral'] = nannone(calc.reactivation_rate.freq(date, 'neutral', state='all'))
+    df['react_all_minus'] = nannone(calc.reactivation_rate.freq(date, 'minus', state='all'))
 
     # df['cosdist_plus'] = nannone(calc_legacy.cosine_distance.stimulus(date, 'plus'))
     # df['cosdist_neutral'] = nannone(calc_legacy.cosine_distance.stimulus(date, 'neutral'))

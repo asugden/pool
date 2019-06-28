@@ -35,6 +35,8 @@ def dprime(mouse, combine_passives=True, pars=None):
         # If an ori wasn't shown this run, keep the previous association
         if 'plus' in t2p.d['orientations']:
             plus_ori = t2p.d['orientations']['plus']
+        elif 'pavlovian' in t2p.d['orientations']:
+            plus_ori = t2p.d['orientations']['pavlovian']
         if 'neutral' in t2p.d['orientations']:
             neutral_ori = t2p.d['orientations']['neutral']
         if 'minus' in t2p.d['orientations']:
@@ -72,25 +74,25 @@ def dprime(mouse, combine_passives=True, pars=None):
 
 
 @memoize(across='date', updated='190621', requires_psytracker=True)
-def dprime_date_start(date, combine_passives=True, pars=None):
+def dprime_day_start(date, combine_passives=True, pars=None):
     dp = dprime(
         date.parent, combine_passives=combine_passives, pars=pars)
 
-    psy = date.parent.psytacker(pars=pars)
-    date_idx = psy.data['days'].index(date.date)
-    run_idx = sum(date_idx.data['dayLength'][:date_idx])
+    psy = date.parent.psytracker(pars=pars)
+    date_idx = psy.data['days'].tolist().index(date.date)
+    run_idx = sum(psy.data['dayLength'][:date_idx])
 
     return dp[run_idx]
 
 
 @memoize(across='date', updated='190621', requires_psytracker=True)
-def dprime_date_end(date, combine_passives=True, pars=None):
+def dprime_day_end(date, combine_passives=True, pars=None):
     dp = dprime(
         date.parent, combine_passives=combine_passives, pars=pars)
 
-    psy = date.parent.psytacker(pars=pars)
-    date_idx = psy.data['days'].index(date.date)
-    run_idx = sum(date_idx.data['dayLength'][:date_idx+1])
+    psy = date.parent.psytracker(pars=pars)
+    date_idx = psy.data['days'].tolist().index(date.date)
+    run_idx = sum(psy.data['dayLength'][:date_idx+1])
 
     return dp[run_idx-1]
 
@@ -98,9 +100,9 @@ def dprime_date_end(date, combine_passives=True, pars=None):
 @memoize(across='date', updated='190621', requires_psytracker=True)
 def d_dprime_day(date, combine_passives=True, pars=None):
     return \
-        dprime_date_end(
+        dprime_day_end(
             date, combine_passives=combine_passives, pars=pars) - \
-        dprime_date_start(
+        dprime_day_start(
             date, combine_passives=combine_passives, pars=pars)
 
 # def d_dprime_overnight(date, combine_passives=True, pars=None):
