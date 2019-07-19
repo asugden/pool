@@ -57,8 +57,9 @@ def freq(date, cs, state='sated', classifier_threshold=0.1):
 
     return reps/nframes*framerate
 
-@memoize(across='date', updated=190530, returns='value')
-def freq_denominator(date, state='sated', classifier_threshold=0.1):
+
+@memoize(across='date', updated=190629, returns='value')
+def freq_denominator(date, state='sated'):
     """
     Return the frequency of reactivation averaged across times of inactivity.
 
@@ -75,25 +76,77 @@ def freq_denominator(date, state='sated', classifier_threshold=0.1):
 
     # Only calculate if reactivation can be trusted
     nframes = 0.0
-    framerate = 0.0
+    framerate = date.framerate
 
     runs = date.runs('spontaneous') if state == 'all' \
         else date.runs('spontaneous', tags=[state])
 
     for run in runs:
         t2p = run.trace2p()
-        framerate = t2p.framerate
         mask = t2p.inactivity()
-        nframes += np.sum(mask > 0)
+        nframes += np.sum(mask)
+
+    # Catch when we can't find the events
+    if nframes == 0:
+        return None
+    return nframes/framerate
+
+
+@memoize(across='date', updated=190628, returns='value')
+def count(date, cs, state='sated', classifier_threshold=0.1):
+    """
+    Return the frequency of reactivation averaged across times of inactivity.
+
+    Parameters
+    ----------
+    date : Date object
+    cs : str, stimulus
+    state : str {'sated', 'hungry', 'all'}
+    classifier_threshold : float
+
+    Returns
+    -------
+    Frequency per day
+    """
+
+    # Only calculate if reactivation can be trusted
+    if not good.reactivation(date, cs):
+        return None
+
+    nframes = 0.0
+
+    runs = date.runs('spontaneous') if state == 'all' \
+        else date.runs('spontaneous', tags=[state])
+
+    rep = None
+
+    for run in runs:
+        t2p = run.trace2p()
+
+        if rep is None:
+            rep = 0
+
+        trs = t2p.trace('deconvolved')
+        mask = t2p.inactivity()
+
+        c2p = run.classify2p()
+        evs = c2p.events(cs, classifier_threshold, trs, mask=mask, xmask=True)
+
+        rep += len(evs)
+
+        nframes += np.sum(mask)
 
     # Catch when we can't find the events
     if nframes == 0:
         return None
 
-    return nframes/framerate
+    return rep
+
 
 @memoize(across='date', updated=190423, returns='cell array')
-def count_cell(date, cs, state='sated', classifier_threshold=0.1, deconvolved_threshold=0.2):
+def count_cell(
+        date, cs, state='sated', classifier_threshold=0.1,
+        deconvolved_threshold=0.2):
     """
     Return the frequency of reactivation averaged across times of inactivity.
 
@@ -149,7 +202,9 @@ def count_cell(date, cs, state='sated', classifier_threshold=0.1, deconvolved_th
 
 
 @memoize(across='date', updated=190423, returns='cell matrix')
-def count_pair(date, cs, state='sated', classifier_threshold=0.1, deconvolved_threshold=0.2):
+def count_pair(
+        date, cs, state='sated', classifier_threshold=0.1,
+        deconvolved_threshold=0.2):
     """
     Return the frequency of reactivation averaged across times of inactivity.
 
