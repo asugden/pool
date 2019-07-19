@@ -54,6 +54,11 @@ def dataframe_date(date):
     df['react_all_neutral'] = nannone(calc.reactivation_rate.freq(date, 'neutral', state='all'))
     df['react_all_minus'] = nannone(calc.reactivation_rate.freq(date, 'minus', state='all'))
 
+    df['count_plus'] = nannone(calc.reactivation_rate.count(date, 'plus'))
+    df['count_neutral'] = nannone(calc.reactivation_rate.count(date, 'neutral'))
+    df['count_minus'] = nannone(calc.reactivation_rate.count(date, 'minus'))
+    df['freq_denom'] = nannone(calc.reactivation_rate.freq_denominator(date))
+
     # df['cosdist_plus'] = nannone(calc_legacy.cosine_distance.stimulus(date, 'plus'))
     # df['cosdist_neutral'] = nannone(calc_legacy.cosine_distance.stimulus(date, 'neutral'))
     # df['cosdist_minus'] = nannone(calc_legacy.cosine_distance.stimulus(date, 'minus'))
