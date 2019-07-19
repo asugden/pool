@@ -26,8 +26,14 @@ DEFAULTS = {
     4: {
         'run_type': 'training',
         'tags': ['hungry']},
+    5: {
+        'run_type': 'spontaneous',
+        'tags': ['hungry']},
     6: {
         'run_type': 'spontaneous',
+        'tags': ['sated']},
+    7: {
+        'run_type': 'training',
         'tags': ['sated']},
     8: {
         'run_type': 'spontaneous',
