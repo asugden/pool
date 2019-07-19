@@ -26,6 +26,10 @@ try:
 except ImportError:
     from io import BytesIO as StringIO
 
+import sys
+if sys.version_info.major == 3:
+    unicode = str
+
 
 class CouchBackend(BackendBase):
     """Analysis backend that stores data in a CouchDB database.
@@ -197,7 +201,7 @@ class Database(object):
     def put(self, _id=None, **data):
         """Store a value in the database."""
         new_data, attachment_data = _put_prep(data)
-        _id, _rev = self._put_assume_new(_id, **new_data)
+        _id, _rev = self._put_assume_new(unicode(_id), **new_data)
         if attachment_data is not None:
             doc = {'_id': _id, '_rev': _rev}
             temp_file = TemporaryFile()
@@ -229,15 +233,20 @@ class Database(object):
 
         """
         if _id is None:
-            _id = str(uuid4())
+            _id = unicode(str(uuid4()))
         doc = dict(_id=_id, **data)
+        #
+        # for key in doc:
+        #     if isinstance(doc[key], str):
+        #         doc[key] = unicode(doc[key])
         try:
             _id, _rev = self._db.save(doc)
         except couchdb.http.ResourceConflict:
             # TODO: _rev is in header, don't need to get entire doc
             # Don't use self.get, don't want to actually download an attachment
-            current_doc = self._db.get(_id)
+            current_doc = self._db.get(unicode(_id))
             doc['_rev'] = current_doc.rev
+
             _id, _rev = self._db.save(doc)
         return _id, _rev
 
