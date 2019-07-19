@@ -5238,6 +5238,613 @@
     {
       "dates": [
         {
+          "date": 181004,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 181010,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 181016,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 181019,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 181020,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 181021,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 181022,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "AS59"
+    },
+    {
+      "dates": [
+        {
+          "date": 181203,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 5,
+              "run_type": "spontaneous",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 181206,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 181207,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 9,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 10,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 181208,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 8,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 181214,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 8,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 181220,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 8,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "AS63"
+    },
+    {
+      "dates": [
+        {
           "date": 190305,
           "runs": [
             {
@@ -5433,9 +6040,745 @@
               ]
             }
           ]
+        },
+        {
+          "date": 190312,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 8,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190322,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 8,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
         }
       ],
       "name": "AS71"
+    },
+    {
+      "dates": [
+        {
+          "date": 190313,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 8,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190315,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 8,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190318,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 8,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190319,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 8,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190320,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 8,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190325,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 8,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190326,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 8,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190327,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 8,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190328,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 8,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190329,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 8,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190401,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 8,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190402,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 8,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190404,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 8,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190408,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "running",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 4,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 6,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            },
+            {
+              "run": 8,
+              "run_type": "spontaneous",
+              "tags": [
+                "sated"
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "AS73"
     },
     {
       "dates": [
@@ -7382,8 +8725,8 @@
       ],
       "name": "OA178",
       "tags": [
-        "jeff",
-        "PER"
+        "PER",
+        "jeff"
       ]
     },
     {
@@ -8350,8 +9693,8 @@
       ],
       "name": "OA191",
       "tags": [
-        "jeff",
-        "PER"
+        "PER",
+        "jeff"
       ]
     },
     {
@@ -9172,8 +10515,8 @@
       ],
       "name": "OA192",
       "tags": [
-        "jeff",
-        "PER"
+        "PER",
+        "jeff"
       ]
     },
     {
@@ -9803,8 +11146,8 @@
       ],
       "name": "OA205",
       "tags": [
-        "jeff",
-        "PER"
+        "PER",
+        "jeff"
       ]
     },
     {
