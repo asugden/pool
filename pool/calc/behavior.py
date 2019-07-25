@@ -581,6 +581,12 @@ class HMM:
         self.breaks = [0]
         for t2p in t2ps:
             condd, coded = t2p.conditions()
+            assert 'plus' in coded or 'pavlovian' in coded
+            if 'plus' not in coded and 'pavlovian' in coded:
+                # This number really doesn't matter.
+                # Change it if it ever comes up, just should be unique
+                assert 99 not in coded.values()
+                coded['plus'] = 99
             errd = t2p.errors()
             # Correct
             condd = condd.astype(np.int16)
