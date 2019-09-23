@@ -8027,6 +8027,2170 @@
     {
       "dates": [
         {
+          "date": 180701,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 180702,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 180703,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 180704,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 180705,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 180708,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 180709,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 180711,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "IS17"
+    },
+    {
+      "dates": [
+        {
+          "date": 190701,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190702,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190705,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190708,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190709,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190816,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "IS18"
+    },
+    {
+      "dates": [
+        {
+          "date": 190723,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190724,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190725,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190726,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190729,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190730,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190731,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190801,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190802,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190805,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190807,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190808,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190809,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190812,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190813,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190814,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190815,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190816,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190819,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190821,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190822,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190823,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190826,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190827,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190828,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190829,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190830,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190903,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190904,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190905,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190909,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190910,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190911,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190912,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190913,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "IS19"
+    },
+    {
+      "dates": [
+        {
+          "date": 190723,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190724,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190725,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190726,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190729,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190730,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190731,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190801,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190802,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190805,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190807,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190808,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190809,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190812,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190813,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190814,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190815,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190816,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190819,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190821,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190822,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190823,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190826,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190827,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190828,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190829,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190830,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190903,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190904,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190905,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190909,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190910,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190911,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        },
+        {
+          "date": 190913,
+          "runs": [
+            {
+              "run": 1,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 2,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            },
+            {
+              "run": 3,
+              "run_type": "training",
+              "tags": [
+                "hungry"
+              ]
+            }
+          ]
+        }
+      ],
+      "name": "IS20"
+    },
+    {
+      "dates": [
+        {
           "date": 190217,
           "runs": [
             {
