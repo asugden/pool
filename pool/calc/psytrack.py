@@ -8,6 +8,17 @@ from ..database import memoize
 
 @memoize(across='mouse', updated='190621', requires_psytracker=True)
 def dprime(mouse, combine_passives=True, pars=None):
+    """PsyTrack estimate of trial-by-trial performance/discriminability.
+
+    Parameters
+    ----------
+    mouse : flow.Mouse
+    combine_passives : boolean
+        If True, average prediction from neutral and minus trials.
+    pars : dict, optional
+        Override default PsyTracker defaults with a dict of new options.
+
+    """
     psy = mouse.psytracker(pars=pars)
 
     # Gather all the oris for this mouse and their index within the inputs
@@ -75,6 +86,17 @@ def dprime(mouse, combine_passives=True, pars=None):
 
 @memoize(across='date', updated='190621', requires_psytracker=True)
 def dprime_day_start(date, combine_passives=True, pars=None):
+    """PsyTrack estimated d` at the start of the day.
+
+    Parameters
+    ----------
+    date : flow.Date
+    combine_passives : boolean
+        If True, average prediction from neutral and minus trials.
+    pars : dict, optional
+        Override default PsyTracker defaults with a dict of new options.
+
+    """
     dp = dprime(
         date.parent, combine_passives=combine_passives, pars=pars)
 
@@ -87,6 +109,17 @@ def dprime_day_start(date, combine_passives=True, pars=None):
 
 @memoize(across='date', updated='190621', requires_psytracker=True)
 def dprime_day_end(date, combine_passives=True, pars=None):
+    """PsyTrack estimated d` at the end of the day.
+
+    Parameters
+    ----------
+    date : flow.Date
+    combine_passives : boolean
+        If True, average prediction from neutral and minus trials.
+    pars : dict, optional
+        Override default PsyTracker defaults with a dict of new options.
+
+    """
     dp = dprime(
         date.parent, combine_passives=combine_passives, pars=pars)
 
@@ -99,10 +132,19 @@ def dprime_day_end(date, combine_passives=True, pars=None):
 
 @memoize(across='date', updated='190621', requires_psytracker=True)
 def d_dprime_day(date, combine_passives=True, pars=None):
+    """Change in PsyTrack estimated d` within a day.
+
+    Parameters
+    ----------
+    date : flow.Date
+    combine_passives : boolean
+        If True, average prediction from neutral and minus trials.
+    pars : dict, optional
+        Override default PsyTracker defaults with a dict of new options.
+
+    """
     return \
         dprime_day_end(
             date, combine_passives=combine_passives, pars=pars) - \
         dprime_day_start(
             date, combine_passives=combine_passives, pars=pars)
-
-# def d_dprime_overnight(date, combine_passives=True, pars=None):
